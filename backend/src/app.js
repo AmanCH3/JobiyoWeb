@@ -7,7 +7,7 @@ import swaggerJsdoc from 'swagger-jsdoc';
 const app = express();
 
 app.use(cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: process.env.CORS_ORIGIN === "*" ? "http://localhost:5173" : process.env.CORS_ORIGIN,
     credentials: true,
 }));
 
@@ -24,8 +24,8 @@ const swaggerOptions = {
       version: '1.0.0',
       description: 'API documentation for the Jobiyo job portal backend.',
       contact: {
-        name: 'Nikesh Pyakurel',
-        email: 'nikeshpyakurel@gmail.com',
+        name: 'Aman Chaudhary',
+        email: 'amanchaudhary@gmail.com',
       },
     },
     servers: [

@@ -24,7 +24,7 @@ const createCompany = asyncHandler(async (req, res) => {
         if (!logo) {
             throw new ApiError(500, "Failed to upload logo");
         }
-        logoUrl = logo.url;
+        logoUrl = logo.secure_url;
     }
 
     const company = await Company.create({
@@ -78,7 +78,7 @@ const updateCompany = asyncHandler(async (req, res) => {
         const logoLocalPath = req.file.path;
         const logo = await uploadOnCloudinary(logoLocalPath);
         if (!logo) throw new ApiError(500, "Failed to upload new logo");
-        company.logo = logo.url;
+        company.logo = logo.secure_url;
     }
 
     const updatedCompany = await company.save();
