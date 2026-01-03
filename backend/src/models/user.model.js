@@ -19,12 +19,18 @@ const userSchema = new mongoose.Schema(
     },
     phoneNumber: {
       type: String,
-      required: true,
       trim: true,
     },
     password: {
       type: String,
-      required: [true, "Password is required"],
+    },
+    authProvider: {
+      type: String,
+      enum: ["local", "google"],
+      default: "local",
+    },
+    googleId: {
+      type: String,
     },
     role: {
       type: String,

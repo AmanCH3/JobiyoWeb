@@ -7,6 +7,9 @@ import path from "path";
 import sendEmail from "../utils/sendEmail.js";
 import crypto from "crypto";
 import { getPasswordResetTemplate } from "../utils/emailTemplates.js";
+import { OAuth2Client } from 'google-auth-library';
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -274,4 +277,81 @@ const resetPassword = asyncHandler(async (req, res) => {
 
 });
 
-export { registerUser, getUserPublicProfile, getJobRecommendations, loginUser, getCurrentUser, updateProfile, forgotPassword, verifyOTP, resetPassword };
+const googleAuth = asyncHandler(async (req, res) => {
+    const { idToken, role } = req.body;
+
+    if (!idToken) {
+        throw new ApiError(400, "Google ID Token is required");
+    }
+
+    try {
+        const ticket = await client.verifyIdToken({
+            idToken,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+
+        const payload = ticket.getPayload();
+        const { sub: googleId, email, name, picture } = payload;
+
+        let user = await User.findOne({ email });
+
+        if (user) {
+            if (!user.googleId) {
+                user.googleId = googleId;
+                user.authProvider = 'google';
+                if (!user.profile?.avatar) {
+                    user.profile = { ...user.profile, avatar: picture };
+                }
+                await user.save({ validateBeforeSave: false });
+            }
+        } else {
+            if (!role) {
+                throw new ApiError(404, "User not found. Please register first with a role.");
+            }
+
+            user = await User.create({
+                fullName: name,
+                email,
+                role,
+                googleId,
+                authProvider: 'google',
+                profile: {
+                    avatar: picture
+                },
+                phoneNumber: "" // Providing empty string since it's optional but might be expected
+            });
+        }
+
+        const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+
+        const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
+
+        const options = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+        };
+
+        return res
+            .status(200)
+            .cookie("accessToken", accessToken, options)
+            .cookie("refreshToken", refreshToken, options)
+            .json(new ApiResponse(200, { user: loggedInUser, accessToken, refreshToken }, "Google login successful"));
+
+    } catch (error) {
+        console.error("Google Auth Error:", error);
+        throw new ApiError(401, error.message || "Invalid Google Token");
+    }
+});
+
+export { 
+    registerUser, 
+    getUserPublicProfile, 
+    getJobRecommendations, 
+    loginUser, 
+    getCurrentUser, 
+    updateProfile, 
+    forgotPassword, 
+    verifyOTP, 
+    resetPassword,
+    googleAuth 
+};

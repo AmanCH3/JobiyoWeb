@@ -7,7 +7,8 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { useLoginMutation } from "@/api/authApi";
+import { GoogleLogin } from '@react-oauth/google';
+import { useLoginMutation, useGoogleAuthMutation } from "@/api/authApi";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@/redux/slices/userSlice";
 import { Loader2, ArrowLeft } from "lucide-react";
@@ -25,6 +26,7 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loginUser, { isLoading }] = useLoginMutation();
+  const [googleAuth, { isLoading: isGoogleLoading }] = useGoogleAuthMutation();
   const recaptchaRef = useRef(null);
   const [recaptchaToken, setRecaptchaToken] = useState(null); 
 
@@ -33,6 +35,24 @@ const Login = () => {
   });
 
   const selectedRole = watch('role');
+
+  const handleGoogleSuccess = async (response) => {
+    if (!selectedRole) {
+        toast.error("Please select a role before signing in with Google.");
+        return;
+    }
+
+    try {
+        const result = await googleAuth({ idToken: response.credential, role: selectedRole }).unwrap();
+        dispatch(setCredentials(result.data));
+        toast.success("Google login successful!");
+        const userRole = result.data.user.role;
+        const targetPath = userRole === 'admin' ? '/admin' : userRole === 'recruiter' ? '/recruiter' : '/';
+        navigate(targetPath);
+    } catch (err) {
+        toast.error(err.data?.message || "Google Authentication failed.");
+    }
+  };
 
   const onSubmit = async (data) => {
     if (!recaptchaToken) {
@@ -117,6 +137,25 @@ const Login = () => {
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Log In
             </Button>
+
+            <div className="relative my-4">
+                <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+                </div>
+            </div>
+
+            <div className="flex justify-center flex-col gap-2">
+                 <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={() => toast.error("Google Login Failed")}
+                    useOneTap
+                    theme="outline"
+                    width="100%"
+                />
+            </div>
           </form>
           <div className="mt-4 text-center text-sm">
             Don't have an account?{" "}

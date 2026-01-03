@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registerUser, loginUser, updateProfile, getCurrentUser, getJobRecommendations, getUserPublicProfile, forgotPassword, verifyOTP, resetPassword } from "../controllers/user.controller.js";
+import { registerUser, loginUser, updateProfile, getCurrentUser, getJobRecommendations, getUserPublicProfile, forgotPassword, verifyOTP, resetPassword, googleAuth } from "../controllers/user.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
 import { verifyRecaptcha } from "../middleware/recaptcha.middleware.js";
@@ -291,6 +291,7 @@ router.route("/profile/:userId").get(verifyJWT, getUserPublicProfile);
 router.route("/forgot-password").post(forgotPassword);
 router.route("/verify-otp").post(verifyOTP);
 router.route("/reset-password").post(resetPassword);
+router.route("/auth/google").post(googleAuth);
 
 router.route("/recommendations").get(verifyJWT, getJobRecommendations);
 

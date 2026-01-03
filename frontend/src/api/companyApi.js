@@ -8,7 +8,7 @@ export const companyApi = createApi({
         baseUrl: '/api/v1', 
         credentials: 'include',
     }),
-    tagTypes: ['Company'],
+    tagTypes: ['Company', 'PublicCompany'],
     endpoints: (builder) => ({
         getMyCompanies: builder.query({
             query: () => '/companies',
