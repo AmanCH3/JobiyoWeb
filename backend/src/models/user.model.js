@@ -41,6 +41,12 @@ const userSchema = new mongoose.Schema(
       resumeOriginalName: { type: String },
       avatar: { type: String }
     },
+    resetPasswordOTP: {
+      type: String
+    },
+    resetPasswordOTPExpiry: {
+      type: Date
+    },
   },
   { timestamps: true }
 );

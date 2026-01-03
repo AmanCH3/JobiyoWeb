@@ -35,7 +35,28 @@ export const authApi = createApi({
            query: (userId) => `/users/profile/${userId}`,
            transformResponse: (response) => response.data,
            providesTags: (result, error, id) => [{ type: 'User', id }],
-       })
+       }),
+       forgotPassword: builder.mutation({
+           query: (data) => ({
+               url: '/users/forgot-password',
+               method: 'POST',
+               body: data,
+           }),
+       }),
+       verifyOtp: builder.mutation({
+           query: (data) => ({
+               url: '/users/verify-otp',
+               method: 'POST',
+               body: data,
+           }),
+       }),
+       resetPassword: builder.mutation({
+           query: (data) => ({
+               url: '/users/reset-password',
+               method: 'POST',
+               body: data,
+           }),
+       }),
    }),
 });
 
@@ -43,5 +64,8 @@ export const {
     useRegisterMutation,
     useLoginMutation, 
     useUpdateProfileMutation,
-    useGetUserPublicProfileQuery 
+    useGetUserPublicProfileQuery,
+    useForgotPasswordMutation,
+    useVerifyOtpMutation,
+    useResetPasswordMutation
 } = authApi;

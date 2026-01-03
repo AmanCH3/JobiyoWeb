@@ -6,7 +6,7 @@ import { initSocketIO } from "./socket.js";
 
 dotenv.config();
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8080;
 
 
 const httpServer = http.createServer(app);

@@ -8,6 +8,7 @@ import CompanyDetails from './pages/public/CompanyDetails';
 import PublicProfile from './pages/public/PublicProfile';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
+import ForgotPassword from './pages/Auth/ForgotPassword';
 import Profile from './pages/student/Profile';
 import MyApplications from './pages/student/MyApplications';
 import DashboardLayout from './components/layout/DashboardLayout';
@@ -50,6 +51,7 @@ function App() {
 
        <Route path="/login" element={<Login />} />
        <Route path="/register" element={<Register />} />
+       <Route path="/forgot-password" element={<ForgotPassword />} />
 
        <Route
          path="/student"

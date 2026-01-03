@@ -4,6 +4,9 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { User } from "../models/user.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import path from "path";
+import sendEmail from "../utils/sendEmail.js";
+import crypto from "crypto";
+import { getPasswordResetTemplate } from "../utils/emailTemplates.js";
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -177,4 +180,98 @@ const getJobRecommendations = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, recommendedJobs, "Job recommendations fetched successfully"));
 });
 
-export { registerUser, getUserPublicProfile, getJobRecommendations, loginUser, getCurrentUser, updateProfile };
+const forgotPassword = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        throw new ApiError(400, "Email is required");
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    // Generate 6 digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    // Set OTP and expiry (10 minutes)
+    user.resetPasswordOTP = otp;
+    user.resetPasswordOTPExpiry = Date.now() + 10 * 60 * 1000;
+
+    await user.save({ validateBeforeSave: false });
+
+    // Assuming Frontend runs on localhost:5173 for dev. Ideally use process.env.CORS_ORIGIN or a specific FRONTEND_URL env var.
+    const resetUrl = `http://localhost:5173/forgot-password?email=${user.email}&otp=${otp}`;
+
+    const message = `Your password reset OTP is :- \n\n ${otp} \n\nClick the link below to verify automatically:\n${resetUrl}\n\nIf you have not requested this email then, please ignore it.`;
+    const htmlEmail = getPasswordResetTemplate(otp, resetUrl);
+
+    try {
+        await sendEmail({
+            email: user.email,
+            subject: `Jobiyo Password Recovery`,
+            message,
+            html: htmlEmail,
+        });
+
+        res.status(200).json(new ApiResponse(200, {}, `Email sent to ${user.email} successfully`));
+    } catch (error) {
+        user.resetPasswordOTP = undefined;
+        user.resetPasswordOTPExpiry = undefined;
+
+        await user.save({ validateBeforeSave: false });
+
+        throw new ApiError(500, error.message);
+    }
+});
+
+const verifyOTP = asyncHandler(async (req, res) => {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+        throw new ApiError(400, "Email and OTP are required");
+    }
+
+    const user = await User.findOne({ 
+        email,
+        resetPasswordOTP: otp,
+        resetPasswordOTPExpiry: { $gt: Date.now() }
+    });
+
+    if (!user) {
+        throw new ApiError(400, "Invalid or Expired OTP");
+    }
+
+    return res.status(200).json(new ApiResponse(200, {}, "OTP verified successfully"));
+});
+
+const resetPassword = asyncHandler(async (req, res) => {
+    const { email, otp, newPassword } = req.body;
+
+    if (!email || !otp || !newPassword) {
+        throw new ApiError(400, "All fields are required");
+    }
+
+    const user = await User.findOne({ 
+        email,
+        resetPasswordOTP: otp,
+        resetPasswordOTPExpiry: { $gt: Date.now() }
+    });
+
+    if (!user) {
+        throw new ApiError(400, "Invalid or Expired OTP");
+    }
+
+    user.password = newPassword;
+    user.resetPasswordOTP = undefined;
+    user.resetPasswordOTPExpiry = undefined;
+
+    await user.save();
+
+    return res.status(200).json(new ApiResponse(200, {}, "Password reset successfully"));
+
+});
+
+export { registerUser, getUserPublicProfile, getJobRecommendations, loginUser, getCurrentUser, updateProfile, forgotPassword, verifyOTP, resetPassword };

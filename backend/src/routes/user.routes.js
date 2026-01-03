@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registerUser, loginUser, updateProfile, getCurrentUser, getJobRecommendations, getUserPublicProfile } from "../controllers/user.controller.js";
+import { registerUser, loginUser, updateProfile, getCurrentUser, getJobRecommendations, getUserPublicProfile, forgotPassword, verifyOTP, resetPassword } from "../controllers/user.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
 import { verifyRecaptcha } from "../middleware/recaptcha.middleware.js";
@@ -287,6 +287,11 @@ router.route("/profile/:userId").get(verifyJWT, getUserPublicProfile);
  *                   items:
  *                     type: object # You will define a full 'Job' schema in job.routes.js
  */
+// Forgot Password Routes (no Swagger docs yet for brevity)
+router.route("/forgot-password").post(forgotPassword);
+router.route("/verify-otp").post(verifyOTP);
+router.route("/reset-password").post(resetPassword);
+
 router.route("/recommendations").get(verifyJWT, getJobRecommendations);
 
 export default router;
