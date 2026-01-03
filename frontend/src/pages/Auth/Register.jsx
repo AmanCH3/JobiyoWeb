@@ -9,9 +9,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useRegisterMutation } from "@/api/authApi";
 import { Loader2, ArrowLeft } from "lucide-react";
-import Lottie from "lottie-react";
-import authAnimation from "@/lottie/login_screen.json";
 import ReCAPTCHA from "react-google-recaptcha";
+import AuthLayout from "@/components/layout/AuthLayout";
 import { useRef, useState } from "react"; 
 import PasswordStrengthMeter from "@/components/shared/PasswordStrengthMeter";
 
@@ -32,8 +31,8 @@ const Register = () => {
   const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm({
     resolver: zodResolver(registerSchema),
   });
-  
-  const password = watch('password', ''); 
+
+  const password = watch('password', '');
 
   const onSubmit = async (data) => {
     if (!recaptchaToken) {
@@ -53,9 +52,8 @@ const Register = () => {
   };
 
   return (
-    <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2 xl:min-h-screen">
-      <div className="flex items-center justify-center py-12">
-        <div className="mx-auto grid w-[350px] gap-6">
+    <AuthLayout>
+      <div className="mx-auto grid w-[350px] gap-6">
            <Link to="/" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
               <ArrowLeft size={16}/> Back to Home
           </Link>
@@ -117,11 +115,7 @@ const Register = () => {
             </Link>
           </div>
         </div>
-      </div>
-      <div className="hidden bg-muted lg:flex items-center justify-center">
-         <Lottie animationData={authAnimation} loop={true} style={{ maxWidth: '80%' }}/>
-      </div>
-    </div>
+    </AuthLayout>
   );
 };
 

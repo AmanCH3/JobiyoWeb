@@ -11,10 +11,9 @@ import { useLoginMutation } from "@/api/authApi";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@/redux/slices/userSlice";
 import { Loader2, ArrowLeft } from "lucide-react";
-import Lottie from "lottie-react";
-import authAnimation from "@/lottie/login_screen.json";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useRef, useState } from "react"; 
+import AuthLayout from "@/components/layout/AuthLayout";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -61,16 +60,15 @@ const Login = () => {
   };
 
   return (
-    <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2">
-      <div className="flex items-center justify-center py-12 relative">
-        <div className="absolute top-8 left-8">
-            <Button variant="ghost" asChild>
-                <Link to="/" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
-                    <ArrowLeft size={16}/> Back to Home
-                </Link>
-            </Button>
-        </div>
+    <AuthLayout>
         <div className="mx-auto grid w-[380px] gap-6">
+            <div className="absolute top-8 left-8">
+                <Button variant="ghost" asChild>
+                    <Link to="/" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+                        <ArrowLeft size={16}/> Back to Home
+                    </Link>
+                </Button>
+            </div>
           <div className="grid gap-2 text-left">
             <h1 className="text-3xl font-bold font-philosopher">Welcome Back!</h1>
             <p className="text-muted-foreground">Log in to your Jobiyo account to continue.</p>
@@ -127,11 +125,7 @@ const Login = () => {
             </Link>
           </div>
         </div>
-      </div>
-      <div className="hidden bg-muted lg:flex items-center justify-center p-10">
-        <Lottie animationData={authAnimation} loop={true} style={{ maxWidth: '80%' }}/>
-      </div>
-    </div>
+    </AuthLayout>
   );
 };
 

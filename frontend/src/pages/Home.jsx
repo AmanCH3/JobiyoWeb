@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, Search, UserPlus, ArrowRight } from "lucide-react";
-import heroAnimation from "@/lottie/splash_Screen.json";
+import heroAnimation from "@/lottie/splash_screen.json";
 import FeaturedJobs from "@/components/shared/FeaturedJobs";
 import TopCompanies from "@/components/shared/TopCompanies";
 import RealtimeSearch from "@/components/shared/RealtimeSearch";
