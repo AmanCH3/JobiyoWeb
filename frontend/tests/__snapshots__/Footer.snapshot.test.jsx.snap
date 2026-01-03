@@ -1,0 +1,794 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`About page should match snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="py-12 md:py-20"
+  >
+    <div
+      class="container mx-auto"
+    >
+      <div
+        class="text-center"
+        style="opacity: 0; transform: translateY(-30px);"
+      >
+        <h1
+          class="text-4xl md:text-6xl font-bold tracking-tight"
+        >
+          About Jobiyo
+        </h1>
+        <p
+          class="mt-4 text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto"
+        >
+          Connecting Nepal's talent with global opportunities. Our name, "Jobiyo," means "Work is Needed"—a simple phrase that drives our mission.
+        </p>
+      </div>
+      <div
+        class="mt-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
+        style="opacity: 0; transform: translateY(50px);"
+      >
+        <div
+          class="prose lg:prose-lg text-muted-foreground"
+        >
+          <h2
+            class="text-3xl font-bold text-foreground"
+          >
+            Our Mission
+          </h2>
+          <p>
+            We started Jobiyo to bridge the gap between skilled professionals in Nepal and the companies that need them. We believe that talent is universal, but opportunity is not. Our platform is designed to make that opportunity accessible to everyone, everywhere.
+          </p>
+          <p>
+            Whether you are a job seeker looking for your dream role or a recruiter searching for the perfect candidate, Jobiyo provides the tools, insights, and connections you need to succeed.
+          </p>
+        </div>
+        <div
+          class="flex justify-center"
+        >
+          <div
+            animationdata="[object Object]"
+            class="max-w-md w-full"
+            data-testid="lottie-mock"
+            loop=""
+            style="width: 100%; max-width: 400px;"
+          />
+        </div>
+      </div>
+      <div
+        class="mt-20"
+      >
+        <h2
+          class="text-3xl font-bold text-center mb-12"
+        >
+          What We Do
+        </h2>
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+        >
+          <div
+            class="text-center p-6 border rounded-lg bg-card shadow-sm"
+          >
+            <svg
+              class="lucide lucide-briefcase h-10 w-10 mx-auto text-primary mb-4"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"
+              />
+              <rect
+                height="14"
+                rx="2"
+                width="20"
+                x="2"
+                y="6"
+              />
+            </svg>
+            <h3
+              class="font-semibold text-lg"
+            >
+              Job Listings
+            </h3>
+            <p
+              class="text-muted-foreground mt-2 text-sm"
+            >
+              Access to thousands of verified job openings from top companies.
+            </p>
+          </div>
+          <div
+            class="text-center p-6 border rounded-lg bg-card shadow-sm"
+          >
+            <svg
+              class="lucide lucide-users h-10 w-10 mx-auto text-primary mb-4"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
+              />
+              <circle
+                cx="9"
+                cy="7"
+                r="4"
+              />
+              <path
+                d="M22 21v-2a4 4 0 0 0-3-3.87"
+              />
+              <path
+                d="M16 3.13a4 4 0 0 1 0 7.75"
+              />
+            </svg>
+            <h3
+              class="font-semibold text-lg"
+            >
+              Talent Matching
+            </h3>
+            <p
+              class="text-muted-foreground mt-2 text-sm"
+            >
+              Our smart algorithms help connect the right people to the right roles.
+            </p>
+          </div>
+          <div
+            class="text-center p-6 border rounded-lg bg-card shadow-sm"
+          >
+            <svg
+              class="lucide lucide-shield-check h-10 w-10 mx-auto text-primary mb-4"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+              />
+              <path
+                d="m9 12 2 2 4-4"
+              />
+            </svg>
+            <h3
+              class="font-semibold text-lg"
+            >
+              Verified Companies
+            </h3>
+            <p
+              class="text-muted-foreground mt-2 text-sm"
+            >
+              We verify every company on our platform to ensure safety and quality.
+            </p>
+          </div>
+          <div
+            class="text-center p-6 border rounded-lg bg-card shadow-sm"
+          >
+            <svg
+              class="lucide lucide-building2 h-10 w-10 mx-auto text-primary mb-4"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"
+              />
+              <path
+                d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"
+              />
+              <path
+                d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"
+              />
+              <path
+                d="M10 6h4"
+              />
+              <path
+                d="M10 10h4"
+              />
+              <path
+                d="M10 14h4"
+              />
+              <path
+                d="M10 18h4"
+              />
+            </svg>
+            <h3
+              class="font-semibold text-lg"
+            >
+              Recruiter Tools
+            </h3>
+            <p
+              class="text-muted-foreground mt-2 text-sm"
+            >
+              A full suite of tools for recruiters to manage postings and applicants.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mt-20 text-center bg-muted p-10 rounded-lg"
+      >
+        <h2
+          class="text-3xl font-bold"
+        >
+          Join Our Community
+        </h2>
+        <p
+          class="text-muted-foreground mt-2 max-w-xl mx-auto"
+        >
+          Ready to take the next step in your career or find your next great hire? Join Jobiyo today.
+        </p>
+        <a
+          class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-10 rounded-md px-8 mt-6"
+          href="/register"
+        >
+          Get Started Now
+        </a>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Contact page should match snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="py-12 md:py-20"
+  >
+    <div
+      class="container mx-auto"
+    >
+      <div
+        class="text-center"
+        style="opacity: 0; transform: translateY(-30px);"
+      >
+        <h1
+          class="text-4xl md:text-6xl font-bold tracking-tight"
+        >
+          Get In Touch
+        </h1>
+        <p
+          class="mt-4 text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto"
+        >
+          Have a question or a proposal? We'd love to hear from you.
+        </p>
+      </div>
+      <div
+        class="mt-16 grid grid-cols-1 md:grid-cols-2 gap-16 items-start"
+      >
+        <div
+          class="space-y-8"
+        >
+          <h2
+            class="text-2xl font-bold"
+          >
+            Contact Information
+          </h2>
+          <div
+            class="flex items-start gap-4"
+          >
+            <svg
+              class="lucide lucide-mail h-6 w-6 mt-1 text-primary"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="16"
+                rx="2"
+                width="20"
+                x="2"
+                y="4"
+              />
+              <path
+                d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"
+              />
+            </svg>
+            <div>
+              <h3
+                class="font-semibold"
+              >
+                Email
+              </h3>
+              <a
+                class="text-muted-foreground hover:text-primary"
+                href="mailto:support@Jobiyo.com"
+              >
+                support@Jobiyo.com
+              </a>
+            </div>
+          </div>
+          <div
+            class="flex items-start gap-4"
+          >
+            <svg
+              class="lucide lucide-phone h-6 w-6 mt-1 text-primary"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+              />
+            </svg>
+            <div>
+              <h3
+                class="font-semibold"
+              >
+                Phone
+              </h3>
+              <p
+                class="text-muted-foreground"
+              >
+                +977 980 000 0000
+              </p>
+            </div>
+          </div>
+          <div
+            class="flex items-start gap-4"
+          >
+            <svg
+              class="lucide lucide-map-pin h-6 w-6 mt-1 text-primary"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"
+              />
+              <circle
+                cx="12"
+                cy="10"
+                r="3"
+              />
+            </svg>
+            <div>
+              <h3
+                class="font-semibold"
+              >
+                Office
+              </h3>
+              <p
+                class="text-muted-foreground"
+              >
+                123 Tech Street, Kathmandu, Nepal
+              </p>
+            </div>
+          </div>
+        </div>
+        <form
+          class="space-y-6 bg-card p-8 border rounded-lg shadow-sm"
+        >
+          <div>
+            <label
+              class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              for="fullName"
+            >
+              Full Name
+            </label>
+            <input
+              class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+              id="fullName"
+              name="fullName"
+            />
+          </div>
+          <div>
+            <label
+              class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              for="email"
+            >
+              Email Address
+            </label>
+            <input
+              class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+              id="email"
+              name="email"
+              type="email"
+            />
+          </div>
+          <div>
+            <label
+              class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              for="subject"
+            >
+              Subject
+            </label>
+            <input
+              class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+              id="subject"
+              name="subject"
+            />
+          </div>
+          <div>
+            <label
+              class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              for="message"
+            >
+              Message
+            </label>
+            <textarea
+              class="flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+              id="message"
+              name="message"
+              rows="5"
+            />
+          </div>
+          <button
+            class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 w-full"
+            type="submit"
+          >
+            Send Message
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Footer component should match snapshot 1`] = `
+<DocumentFragment>
+  <footer
+    class="border-t bg-secondary/50"
+  >
+    <div
+      class="container mx-auto py-12 px-4 sm:px-6 lg:px-8"
+    >
+      <div
+        class="grid grid-cols-1 md:grid-cols-4 gap-8"
+      >
+        <div
+          class="space-y-4"
+        >
+          <h2
+            class="font-philosopher text-2xl font-bold"
+          >
+            Jobiyo
+          </h2>
+          <p
+            class="text-muted-foreground text-sm"
+          >
+            Your next career move starts here. Connecting talent with opportunity.
+          </p>
+          <div
+            class="flex space-x-4"
+          >
+            <a
+              class="text-muted-foreground hover:text-primary"
+              href="https://www.facebook.com/nikeshpyaku"
+            >
+              <svg
+                class="lucide lucide-facebook"
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+                />
+              </svg>
+            </a>
+            <a
+              class="text-muted-foreground hover:text-primary"
+              href="http://github.com/nikeshpyakurel"
+            >
+              <svg
+                class="lucide lucide-github"
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"
+                />
+                <path
+                  d="M9 18c-4.51 2-5-2-7-2"
+                />
+              </svg>
+            </a>
+            <a
+              class="text-muted-foreground hover:text-primary"
+              href="https://www.linkedin.com/in/nikeshpyakurel/"
+            >
+              <svg
+                class="lucide lucide-linkedin"
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"
+                />
+                <rect
+                  height="12"
+                  width="4"
+                  x="2"
+                  y="9"
+                />
+                <circle
+                  cx="4"
+                  cy="4"
+                  r="2"
+                />
+              </svg>
+            </a>
+          </div>
+        </div>
+        <div>
+          <h3
+            class="font-semibold tracking-wider uppercase"
+          >
+            For Job Seekers
+          </h3>
+          <ul
+            class="mt-4 space-y-2"
+          >
+            <li>
+              <a
+                class="text-sm text-muted-foreground hover:text-primary"
+                href="/jobs"
+              >
+                Browse Jobs
+              </a>
+            </li>
+            <li>
+              <a
+                class="text-sm text-muted-foreground hover:text-primary"
+                href="/companies"
+              >
+                Browse Companies
+              </a>
+            </li>
+            <li>
+              <a
+                class="text-sm text-muted-foreground hover:text-primary"
+                href="/student/profile"
+              >
+                Your Profile
+              </a>
+            </li>
+            <li>
+              <a
+                class="text-sm text-muted-foreground hover:text-primary"
+                href="/student/applications"
+              >
+                My Applications
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h3
+            class="font-semibold tracking-wider uppercase"
+          >
+            For Recruiters
+          </h3>
+          <ul
+            class="mt-4 space-y-2"
+          >
+            <li>
+              <a
+                class="text-sm text-muted-foreground hover:text-primary"
+                href="/recruiter/jobs/new"
+              >
+                Post a Job
+              </a>
+            </li>
+            <li>
+              <a
+                class="text-sm text-muted-foreground hover:text-primary"
+                href="/recruiter"
+              >
+                Dashboard
+              </a>
+            </li>
+            <li>
+              <a
+                class="text-sm text-muted-foreground hover:text-primary"
+                href="/login"
+              >
+                Recruiter Login
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h3
+            class="font-semibold tracking-wider uppercase"
+          >
+            Company
+          </h3>
+          <ul
+            class="mt-4 space-y-2"
+          >
+            <li>
+              <a
+                class="text-sm text-muted-foreground hover:text-primary"
+                href="/about"
+              >
+                About Us
+              </a>
+            </li>
+            <li>
+              <a
+                class="text-sm text-muted-foreground hover:text-primary"
+                href="/contact"
+              >
+                Contact
+              </a>
+            </li>
+            <li>
+              <a
+                class="text-sm text-muted-foreground hover:text-primary"
+                href="/privacy"
+              >
+                Privacy Policy
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div
+        class="mt-12 border-t pt-8 text-center text-sm text-muted-foreground"
+      >
+        <p>
+          © 2025 Jobiyo. All rights reserved.
+        </p>
+      </div>
+    </div>
+  </footer>
+</DocumentFragment>
+`;
+
+exports[`JobCardSkeleton should match snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="rounded-xl border bg-card text-card-foreground shadow"
+  >
+    <div
+      class="space-y-1.5 p-6 flex flex-row items-start gap-4"
+    >
+      <div
+        class="animate-pulse bg-primary/10 h-12 w-12 rounded-lg"
+      />
+      <div
+        class="space-y-2"
+      >
+        <div
+          class="animate-pulse rounded-md bg-primary/10 h-4 w-40"
+        />
+        <div
+          class="animate-pulse rounded-md bg-primary/10 h-4 w-24"
+        />
+      </div>
+    </div>
+    <div
+      class="p-6 pt-0 space-y-2"
+    >
+      <div
+        class="animate-pulse rounded-md bg-primary/10 h-4 w-full"
+      />
+      <div
+        class="animate-pulse rounded-md bg-primary/10 h-4 w-full"
+      />
+      <div
+        class="animate-pulse rounded-md bg-primary/10 h-4 w-3/4"
+      />
+    </div>
+    <div
+      class="flex items-center p-6 pt-0"
+    >
+      <div
+        class="animate-pulse rounded-md bg-primary/10 h-10 w-full"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NotFound page should match snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="flex flex-col items-center justify-center min-h-screen text-center px-4"
+  >
+    <div
+      animationdata="[object Object]"
+      data-testid="lottie-mock"
+      loop=""
+      style="width: 100%; max-width: 400px;"
+    />
+    <h1
+      class="text-4xl md:text-6xl font-bold mt-4"
+    >
+      Page Not Found
+    </h1>
+    <p
+      class="mt-4 text-lg text-muted-foreground"
+    >
+      Oops! The page you are looking for does not exist or has been moved.
+    </p>
+    <a
+      class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 mt-8 flex items-center gap-2"
+      href="/"
+    >
+      <svg
+        class="lucide lucide-arrow-left h-4 w-4"
+        fill="none"
+        height="24"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="m12 19-7-7 7-7"
+        />
+        <path
+          d="M19 12H5"
+        />
+      </svg>
+       Go Back to Home
+    </a>
+  </div>
+</DocumentFragment>
+`;
