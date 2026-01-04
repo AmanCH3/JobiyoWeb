@@ -8,6 +8,7 @@ import sendEmail from "../utils/sendEmail.js";
 import crypto from "crypto";
 import { getPasswordResetTemplate } from "../utils/emailTemplates.js";
 import { OAuth2Client } from 'google-auth-library';
+import { LoginAttempt } from "../models/loginAttempt.model.js";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -63,6 +64,13 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Email, password, and role are required");
   }
 
+  const existingAttempt = await LoginAttempt.findOne({ email });
+
+  if (existingAttempt && existingAttempt.blockExpires > Date.now()) {
+      const timeLeft = Math.ceil((existingAttempt.blockExpires - Date.now()) / 60000); // Minutes
+      throw new ApiError(429, `Too many login attempts. Please try again after ${timeLeft} minutes.`);
+  }
+
   const user = await User.findOne({ email });
 
   if (!user) {
@@ -76,7 +84,24 @@ const loginUser = asyncHandler(async (req, res) => {
   const isPasswordValid = await user.isPasswordCorrect(password);
 
   if (!isPasswordValid) {
+    if (existingAttempt) {
+        existingAttempt.attempts += 1;
+        if (existingAttempt.attempts >= 5) {
+            existingAttempt.blockExpires = Date.now() + 10 * 60 * 1000; // 10 minutes block
+        }
+        await existingAttempt.save();
+    } else {
+        await LoginAttempt.create({
+            email,
+            attempts: 1,
+        });
+    }
     throw new ApiError(401, "Invalid user credentials");
+  }
+
+  // Clear failed attempts on successful login
+  if (existingAttempt) {
+      await LoginAttempt.deleteOne({ email });
   }
 
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
