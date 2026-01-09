@@ -8,7 +8,8 @@ import {
     Users, 
     MessageSquare,
     Calendar,
-    Bot 
+    Bot,
+    ScrollText, 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useDispatch, useSelector } from "react-redux";
@@ -81,6 +82,9 @@ const DashboardLayout = () => {
                  </SidebarLink>
                  <SidebarLink to="/admin/chatbot" icon={<Bot className="h-4 w-4" />}>
                    Chatbot Settings
+                 </SidebarLink>
+                 <SidebarLink to="/admin/logs" icon={<ScrollText className="h-4 w-4" />}>
+                   System Logs
                  </SidebarLink>
                </>
              )}

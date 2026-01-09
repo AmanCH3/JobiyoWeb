@@ -21,6 +21,7 @@ import Applicants from './pages/recruiter/Applicants';
 import AdminCompanies from './pages/admin/AdminCompanies';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminChatbot from './pages/admin/AdminChatbot';
+import SystemLogs from './pages/admin/SystemLogs';
 import MyInterviews from './pages/shared/MyInterviews';
 import ChatPage from './pages/shared/ChatPage';
 import { Chatbot } from './components/shared/Chatbot';
@@ -95,6 +96,7 @@ function App() {
          <Route path="companies" element={<AdminCompanies />} />
          <Route path="users" element={<AdminUsers />} />
          <Route path="chatbot" element={<AdminChatbot />} />
+         <Route path="logs" element={<SystemLogs />} />
        </Route>
 
        <Route

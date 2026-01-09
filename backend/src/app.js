@@ -15,6 +15,7 @@ app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
+app.use(requestLogger);
 
 const swaggerOptions = {
   definition: {
@@ -61,6 +62,8 @@ import adminRouter from "./routes/admin.routes.js"
 import chatbotRouter from "./routes/chatbot.routes.js";
 import interviewRouter from "./routes/interview.routes.js";
 import chatRouter from "./routes/chat.routes.js";
+import logRouter from "./routes/logRoutes.js";
+import requestLogger from "./middleware/requestLogger.js";
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
@@ -73,6 +76,7 @@ app.use("/api/v1/recruiter-dashboard", recruiterDashboardRouter);
 app.use("/api/v1/chatbot", chatbotRouter); 
 app.use("/api/v1/interviews", interviewRouter);
 app.use("/api/v1/chats", chatRouter);  
+app.use("/api/v1/admin/logs", logRouter);
 app.use(errorHandler);
 
 export { app };

@@ -44,6 +44,11 @@ export const adminApi = createApi({
            }),
            invalidatesTags: ['ChatbotSettings'],
        }),
+
+       getSystemLogs: builder.query({
+           query: () => '/admin/logs',
+           transformResponse: (response) => response.logs, // access logs directly from response object which has keys success, count, logs
+       }),
    }),
 });
 
@@ -53,4 +58,5 @@ export const {
    useGetChatbotSettingsQuery,
    useUpdateChatbotSettingsMutation,
    useToggleCompanyVerificationMutation,
+   useGetSystemLogsQuery,
 } = adminApi;
