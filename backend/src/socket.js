@@ -4,7 +4,7 @@ const initSocketIO = (httpServer) => {
     const io = new Server(httpServer, {
         pingTimeout: 60000,
         cors: {
-            origin: process.env.CORS_ORIGIN === "*" ? "http://localhost:5173" : process.env.CORS_ORIGIN,
+            origin: process.env.CORS_ORIGIN === "*" ? "https://localhost:5173" : process.env.CORS_ORIGIN,
             credentials: true,
         },
     });
