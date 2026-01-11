@@ -6,8 +6,7 @@ import JobDetails from './pages/public/JobDetails';
 import CompaniesPublic from './pages/public/Companies';
 import CompanyDetails from './pages/public/CompanyDetails';
 import PublicProfile from './pages/public/PublicProfile';
-import Login from './pages/Auth/Login';
-import Register from './pages/Auth/Register';
+import AuthPage from './pages/Auth/AuthPage';
 import ForgotPassword from './pages/Auth/ForgotPassword';
 import Profile from './pages/student/Profile';
 import MyApplications from './pages/student/MyApplications';
@@ -50,8 +49,9 @@ function App() {
          <Route path="contact" element={<Contact />} />
        </Route>
 
-       <Route path="/login" element={<Login />} />
-       <Route path="/register" element={<Register />} />
+       {/* Unified Auth Page with animated transitions */}
+       <Route path="/login" element={<AuthPage />} />
+       <Route path="/register" element={<AuthPage />} />
        <Route path="/forgot-password" element={<ForgotPassword />} />
 
        <Route

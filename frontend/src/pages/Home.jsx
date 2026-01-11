@@ -87,16 +87,6 @@ const Home = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-12 lg:gap-20">
             {/* Left Content */}
             <div className="text-center lg:text-left">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6"
-              >
-                <Star className="h-4 w-4 fill-current" />
-                <span>#1 Job Portal in Nepal</span>
-              </motion.div>
-
               <motion.h1
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -105,7 +95,7 @@ const Home = () => {
               >
                 Find Your Next
                 <br />
-                <span className="text-gradient">Career Opportunity</span>
+                <span className="text-primary">Career Opportunity</span>
               </motion.h1>
 
               <motion.p
@@ -163,13 +153,31 @@ const Home = () => {
                 
                 {/* Floating Card 1 */}
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.6 }}
-                  className="absolute -left-8 top-1/4 bg-white dark:bg-slate-800 rounded-xl shadow-lg p-4 flex items-center gap-3"
+                  initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                  animate={{ 
+                    opacity: 1, 
+                    y: [0, -8, 0],
+                    scale: 1
+                  }}
+                  transition={{ 
+                    opacity: { duration: 0.5, delay: 0.6 },
+                    scale: { duration: 0.5, delay: 0.6 },
+                    y: { 
+                      duration: 3, 
+                      delay: 1.1,
+                      repeat: Infinity, 
+                      ease: "easeInOut" 
+                    }
+                  }}
+                  className="absolute -left-8 top-1/4 bg-white dark:bg-slate-800 rounded-xl shadow-lg p-4 flex items-center gap-3 cursor-pointer hover:shadow-xl transition-shadow"
                 >
                   <div className="h-12 w-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                    <CheckCircle className="h-6 w-6 text-emerald-600" />
+                    <motion.div
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                      <CheckCircle className="h-6 w-6 text-emerald-600" />
+                    </motion.div>
                   </div>
                   <div>
                     <p className="font-semibold text-sm">Application Sent!</p>
@@ -250,8 +258,96 @@ const Home = () => {
         </div>
       </section>
 
+      {/* What Makes Us Different Section */}
+      <section className="py-20 md:py-28 bg-blue-50 dark:bg-slate-800/50 overflow-hidden">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            {/* Image Side */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7 }}
+              viewport={{ once: true }}
+              className="relative flex justify-center"
+            >
+              {/* Decorative Circles */}
+              <div className="absolute -left-4 top-1/4 w-64 h-64 bg-emerald-500/80 rounded-full -z-10" />
+              <div className="absolute right-8 top-10 w-16 h-16 bg-purple-500 rounded-full" />
+              <div className="absolute left-1/4 bottom-8 w-10 h-10 bg-yellow-400 rounded-full" />
+              <div className="absolute right-1/4 bottom-1/4 w-6 h-6 bg-emerald-400 rounded-full" />
+              
+              {/* Main Image */}
+              <img
+                src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&h=700&fit=crop&crop=face"
+                alt="Happy professional woman celebrating success"
+                className="relative z-10 rounded-2xl shadow-2xl max-w-sm lg:max-w-md object-cover"
+              />
+            </motion.div>
+
+            {/* Content Side */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="space-y-6"
+            >
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
+                What Makes Us
+                <br />
+                <span className="text-primary">Different From Others</span>
+              </h2>
+              
+              <p className="text-muted-foreground text-lg max-w-lg">
+                Finding the right job requires a dedicated platform that prioritizes your career goals and delivers exceptional results every time.
+              </p>
+
+              <div className="space-y-4 pt-4">
+                {[
+                  { icon: "✓", text: "Guaranteed quality matches from verified employers" },
+                  { icon: "✓", text: "Curated job listings tailored to your skills" },
+                  { icon: "✓", text: "Optimized profiles that stand out to recruiters" },
+                  { icon: "✓", text: "Weekly career tips, insights, and newsletters" }
+                ].map((item, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
+                    viewport={{ once: true }}
+                    className="flex items-center gap-3"
+                  >
+                    <div className="flex-shrink-0 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <span className="text-primary font-bold text-sm">{item.icon}</span>
+                    </div>
+                    <p className="text-foreground font-medium">{item.text}</p>
+                  </motion.div>
+                ))}
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.7 }}
+                viewport={{ once: true }}
+                className="pt-4"
+              >
+                <Link to="/jobs">
+                  <Button size="lg" className="rounded-full px-8 font-semibold">
+                    Explore Opportunities
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+              </motion.div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* Featured Jobs */}
       <FeaturedJobs />
+       {/* Top Companies */}
+      <TopCompanies />
 
       {/* Testimonials Section */}
       <section className="py-20 md:py-28 bg-gradient-to-b from-background to-secondary/30">
@@ -308,8 +404,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Top Companies */}
-      <TopCompanies />
+     
 
       {/* CTA Section */}
       <section className="py-20 md:py-28">
@@ -341,7 +436,7 @@ const Home = () => {
                   </Button>
                 </Link>
                 <Link to="/register">
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 px-8">
+                  <Button size="lg" variant="primary" className="border-secondary text-white hover:bg-secondary hover:text-black px-8">
                     Create Account
                   </Button>
                 </Link>

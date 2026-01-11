@@ -11,9 +11,8 @@ import { GoogleLogin } from '@react-oauth/google';
 import { useRegisterMutation, useGoogleAuthMutation } from "@/api/authApi";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@/redux/slices/userSlice";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 import ReCAPTCHA from "react-google-recaptcha";
-import AuthLayout from "@/components/layout/AuthLayout";
 import { useRef, useState } from "react"; 
 import PasswordStrengthMeter from "@/components/shared/PasswordStrengthMeter";
 
@@ -31,38 +30,38 @@ const Register = () => {
   const [registerUser, { isLoading }] = useRegisterMutation();
   const [googleAuth, { isLoading: isGoogleLoading }] = useGoogleAuthMutation();
   const recaptchaRef = useRef(null);
-  const [recaptchaToken, setRecaptchaToken] = useState(null); // State to hold the token
+  const [recaptchaToken, setRecaptchaToken] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm({
     resolver: zodResolver(registerSchema),
   });
 
   const password = watch('password', '');
-
   const selectedRole = watch('role');
 
   const handleGoogleSuccess = async (response) => {
     if (!selectedRole) {
-        toast.error("Please select a role before signing up with Google.");
-        return;
+      toast.error("Please select a role before signing up with Google.");
+      return;
     }
 
     try {
-        const result = await googleAuth({ idToken: response.credential, role: selectedRole }).unwrap();
-        dispatch(setCredentials(result.data));
-        toast.success("Google registration successful!");
-        const userRole = result.data.user.role;
-        const targetPath = userRole === 'admin' ? '/admin' : userRole === 'recruiter' ? '/recruiter' : '/';
-        navigate(targetPath);
+      const result = await googleAuth({ idToken: response.credential, role: selectedRole }).unwrap();
+      dispatch(setCredentials(result.data));
+      toast.success("Google registration successful!");
+      const userRole = result.data.user.role;
+      const targetPath = userRole === 'admin' ? '/admin' : userRole === 'recruiter' ? '/recruiter' : '/';
+      navigate(targetPath);
     } catch (err) {
-        toast.error(err.data?.message || "Google Authentication failed.");
+      toast.error(err.data?.message || "Google Authentication failed.");
     }
   };
 
   const onSubmit = async (data) => {
     if (!recaptchaToken) {
-        toast.error("Please complete the reCAPTCHA verification.");
-        return;
+      toast.error("Please complete the reCAPTCHA verification.");
+      return;
     }
 
     try {
@@ -77,88 +76,264 @@ const Register = () => {
   };
 
   return (
-    <AuthLayout>
-      <div className="mx-auto grid w-[350px] gap-6">
-           <Link to="/" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
-              <ArrowLeft size={16}/> Back to Home
+    <div className="min-h-screen flex flex-col bg-white dark:bg-slate-900">
+      {/* Full Width Navbar with White Background */}
+      <header className="w-full bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 py-4 px-6 flex items-center justify-between z-50">
+        <Link to="/" className="flex items-center gap-2">
+          <img src="/logo.png" alt="Jobiyo" className="h-9 w-9" />
+          <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-green-500 bg-clip-text text-transparent">
+            Jobiyo
+          </span>
+        </Link>
+        <nav className="hidden md:flex items-center gap-6">
+          <Link to="/" className="text-sm font-medium text-gray-600 hover:text-emerald-600 transition-colors">Home</Link>
+          <Link to="/jobs" className="text-sm font-medium text-gray-600 hover:text-emerald-600 transition-colors">Find Jobs</Link>
+          <Link to="/companies" className="text-sm font-medium text-gray-600 hover:text-emerald-600 transition-colors">Companies</Link>
+        </nav>
+        <div className="flex items-center gap-3">
+          <Link to="/login">
+            <Button variant="ghost" className="text-gray-600 hover:text-emerald-600">Log In</Button>
           </Link>
-          <div className="grid gap-2 text-left">
-            <h1 className="text-3xl font-bold font-philosopher">Create an Account</h1>
-            <p className="text-muted-foreground">Join Jobiyo to find your next opportunity.</p>
-          </div>
-          <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
-             <div className="grid gap-2">
-              <Label htmlFor="fullName">Full Name</Label>
-              <Input id="fullName" placeholder="John Doe" {...register("fullName")} />
-              {errors.fullName && <p className="text-red-500 text-sm">{errors.fullName.message}</p>}
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="john.doe@example.com" {...register("email")} />
-              {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
-            </div>
-             <div className="grid gap-2">
-              <Label htmlFor="phoneNumber">Phone Number</Label>
-              <Input id="phoneNumber" placeholder="98XXXXXXXX" {...register("phoneNumber")} />
-              {errors.phoneNumber && <p className="text-red-500 text-sm">{errors.phoneNumber.message}</p>}
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" placeholder="••••••••" {...register("password")} />
-              <PasswordStrengthMeter password={password} />
-              {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
-            </div>
-             <div className="grid gap-2">
-              <Label>I am a...</Label>
-              <RadioGroup onValueChange={(value) => setValue('role', value)} className="flex space-x-4">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="student" id="student" />
-                  <Label htmlFor="student">Job Seeker</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="recruiter" id="recruiter" />
-                  <Label htmlFor="recruiter">Recruiter</Label>
-                </div>
-              </RadioGroup>
-              {errors.role && <p className="text-red-500 text-sm">{errors.role.message}</p>}
-            </div>
-            <ReCAPTCHA
-                ref={recaptchaRef}
-                sitekey={"6LfnlpUrAAAAAF0r2A5A1E4RFgQHph8dONQAVndb"}
-                onChange={(token) => setRecaptchaToken(token)}
-                onExpired={() => setRecaptchaToken(null)}
-            />
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Sign Up
-            </Button>
-            
-            <div className="relative my-4">
-                <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
-                </div>
-            </div>
+          <Link to="/register">
+            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-6">Sign Up</Button>
+          </Link>
+        </div>
+      </header>
 
-            <div className="flex justify-center flex-col gap-2">
-                 <GoogleLogin
-                    onSuccess={handleGoogleSuccess}
-                    onError={() => toast.error("Google Registration Failed")}
-                    theme="outline"
-                    width="100%"
-                />
+      {/* Main Content */}
+      <div className="flex-1 flex">
+        {/* Left Side - Green Gradient with 3D Curved Illustration */}
+        <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+          {/* Green Gradient Background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 via-green-500 to-emerald-600" />
+          
+          {/* Curved Shape Overlay */}
+          <div 
+            className="absolute -right-20 top-0 bottom-0 w-40 bg-white dark:bg-slate-900"
+            style={{
+              borderRadius: '100% 0 0 100% / 50%',
+            }}
+          />
+          
+          {/* Decorative Elements */}
+          <div className="absolute top-20 left-10 w-24 h-24 bg-white/10 rounded-full blur-sm" />
+          <div className="absolute bottom-32 right-32 w-40 h-40 bg-white/10 rounded-full blur-sm" />
+          <div className="absolute top-1/3 left-20 w-16 h-16 bg-yellow-400/40 rounded-full" />
+          <div className="absolute bottom-1/4 left-1/3 w-10 h-10 bg-emerald-300/50 rounded-full" />
+          
+          {/* 3D Image Container */}
+          <div className="relative z-10 flex items-center justify-center w-full p-12">
+            <div 
+              className="relative"
+              style={{
+                perspective: '1000px',
+              }}
+            >
+              {/* Main Image with 3D Transform */}
+              <img 
+                src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=500&h=600&fit=crop"
+                alt="Professional team collaboration"
+                className="rounded-3xl shadow-2xl object-cover"
+                style={{
+                  transform: 'rotateY(-8deg) rotateX(2deg)',
+                  boxShadow: '20px 20px 60px rgba(0,0,0,0.3), -5px -5px 20px rgba(255,255,255,0.1)',
+                  maxWidth: '380px',
+                  height: 'auto',
+                }}
+              />
+              
+              {/* Floating Badge */}
+              <div 
+                className="absolute -left-4 top-1/4 bg-white rounded-2xl shadow-xl p-4 flex items-center gap-3"
+                style={{
+                  transform: 'rotateY(-5deg) translateZ(30px)',
+                }}
+              >
+                <div className="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                  <span className="text-emerald-600 text-xl">✓</span>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">50,000+</p>
+                  <p className="text-xs text-gray-500">Happy Users</p>
+                </div>
+              </div>
+
+              {/* Bottom Floating Badge */}
+              <div 
+                className="absolute -right-2 bottom-8 bg-white rounded-2xl shadow-xl p-3 flex items-center gap-2"
+                style={{
+                  transform: 'rotateY(-5deg) translateZ(20px)',
+                }}
+              >
+                <div className="flex -space-x-2">
+                  <div className="h-8 w-8 rounded-full bg-emerald-500 border-2 border-white" />
+                  <div className="h-8 w-8 rounded-full bg-blue-500 border-2 border-white" />
+                  <div className="h-8 w-8 rounded-full bg-purple-500 border-2 border-white" />
+                </div>
+                <span className="text-xs font-medium text-gray-600">Join Now!</span>
+              </div>
             </div>
-          </form>
-          <div className="mt-4 text-center text-sm">
-            Already have an account?{" "}
-            <Link to="/login" className="font-semibold text-primary underline">
-              Log In
-            </Link>
           </div>
         </div>
-    </AuthLayout>
+
+        {/* Right Side - Registration Form */}
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white dark:bg-slate-900 overflow-y-auto">
+          <div className="w-full max-w-md">
+            {/* Toggle Button */}
+            <div className="flex justify-center mb-8">
+              <div className="inline-flex bg-gray-100 dark:bg-slate-800 rounded-full p-1">
+                <Link to="/login">
+                  <button className="px-6 py-2.5 rounded-full text-sm font-semibold transition-all text-gray-600 hover:text-emerald-600">
+                    Log In
+                  </button>
+                </Link>
+                <Link to="/register">
+                  <button className="px-6 py-2.5 rounded-full text-sm font-semibold transition-all bg-emerald-600 text-white shadow-md">
+                    Sign Up
+                  </button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Header */}
+            <div className="text-center mb-8">
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+                Create
+              </h1>
+              <h1 className="text-4xl font-bold text-emerald-600">
+                account
+              </h1>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <div className="space-y-2">
+                <Input 
+                  id="fullName" 
+                  placeholder="Full Name" 
+                  className="h-12 rounded-lg border-gray-200 focus:border-emerald-500 focus:ring-emerald-500"
+                  {...register("fullName")} 
+                />
+                {errors.fullName && <p className="text-red-500 text-xs">{errors.fullName.message}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Input 
+                  id="email" 
+                  type="email" 
+                  placeholder="Email address" 
+                  className="h-12 rounded-lg border-gray-200 focus:border-emerald-500 focus:ring-emerald-500"
+                  {...register("email")} 
+                />
+                {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Input 
+                  id="phoneNumber" 
+                  placeholder="Phone Number" 
+                  className="h-12 rounded-lg border-gray-200 focus:border-emerald-500 focus:ring-emerald-500"
+                  {...register("phoneNumber")} 
+                />
+                {errors.phoneNumber && <p className="text-red-500 text-xs">{errors.phoneNumber.message}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <div className="relative">
+                  <Input 
+                    id="password" 
+                    type={showPassword ? "text" : "password"} 
+                    placeholder="Password" 
+                    className="h-12 rounded-lg border-gray-200 focus:border-emerald-500 focus:ring-emerald-500 pr-10"
+                    {...register("password")} 
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
+                </div>
+                <PasswordStrengthMeter password={password} />
+                {errors.password && <p className="text-red-500 text-xs">{errors.password.message}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-sm text-gray-600 dark:text-gray-400">I am a...</Label>
+                <RadioGroup onValueChange={(value) => setValue('role', value)} className="flex gap-4">
+                  <div className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border-2 cursor-pointer transition-all ${selectedRole === 'student' ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20' : 'border-gray-200 hover:border-emerald-300'}`}>
+                    <RadioGroupItem value="student" id="student" className="text-emerald-600" />
+                    <Label htmlFor="student" className="cursor-pointer font-medium">Job Seeker</Label>
+                  </div>
+                  <div className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border-2 cursor-pointer transition-all ${selectedRole === 'recruiter' ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20' : 'border-gray-200 hover:border-emerald-300'}`}>
+                    <RadioGroupItem value="recruiter" id="recruiter" className="text-emerald-600" />
+                    <Label htmlFor="recruiter" className="cursor-pointer font-medium">Recruiter</Label>
+                  </div>
+                </RadioGroup>
+                {errors.role && <p className="text-red-500 text-xs">{errors.role.message}</p>}
+              </div>
+
+              <div className="flex justify-center">
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  sitekey={"6LfnlpUrAAAAAF0r2A5A1E4RFgQHph8dONQAVndb"}
+                  onChange={(token) => setRecaptchaToken(token)}
+                  onExpired={() => setRecaptchaToken(null)}
+                />
+              </div>
+
+              <Button 
+                type="submit" 
+                className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold text-base" 
+                disabled={isLoading}
+              >
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Create account
+              </Button>
+            </form>
+
+            {/* Divider */}
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-gray-200" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="bg-white dark:bg-slate-900 px-4 text-gray-500">or sign up with</span>
+              </div>
+            </div>
+
+            {/* Social Login Buttons */}
+            <div className="flex justify-center gap-4">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => toast.error("Google Registration Failed")}
+                theme="outline"
+                shape="circle"
+                size="large"
+                locale="en"
+              />
+            </div>
+
+            {/* Terms */}
+            <p className="text-center text-xs text-gray-500 mt-6">
+              By creating an account you agree to Jobiyo's{" "}
+              <Link to="/terms" className="text-emerald-600 hover:underline">Terms of Services</Link>
+              {" "}and{" "}
+              <Link to="/privacy" className="text-emerald-600 hover:underline">Privacy Policy</Link>.
+            </p>
+
+            {/* Login Link */}
+            <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-6">
+              Have an account?{" "}
+              <Link to="/login" className="text-emerald-600 font-semibold hover:underline">
+                Log in
+              </Link>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
