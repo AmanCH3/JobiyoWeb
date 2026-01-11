@@ -96,7 +96,7 @@ const ForgotPassword = () => {
 
                 <div className="w-full max-w-md space-y-8">
                     <div className="text-center">
-                        <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 mb-4">
+                        <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 mb-4">
                             <KeyRound className="w-6 h-6" />
                         </div>
                         <h2 className="text-3xl font-bold font-philosopher text-gray-900 dark:text-white">
@@ -127,7 +127,7 @@ const ForgotPassword = () => {
                                             }
                                         })}
                                         type="email"
-                                        className="w-full pl-9 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all outline-none"
+                                        className="w-full pl-9 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none"
                                         placeholder="john@example.com"
                                     />
                                 </div>
@@ -137,7 +137,7 @@ const ForgotPassword = () => {
                             <button
                                 type="submit"
                                 disabled={isSendingOtp}
-                                className="w-full py-2.5 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-medium hover:from-purple-700 hover:to-blue-700 focus:ring-4 focus:ring-purple-500/20 transition-all disabled:opacity-70 flex items-center justify-center gap-2"
+                                className="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-lg font-medium hover:from-emerald-700 hover:to-green-700 focus:ring-4 focus:ring-emerald-500/20 transition-all disabled:opacity-70 flex items-center justify-center gap-2"
                             >
                                 {isSendingOtp ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Send OTP'}
                             </button>
@@ -159,7 +159,7 @@ const ForgotPassword = () => {
                                         })}
                                         type="text"
                                         maxLength={6}
-                                        className="w-full pl-9 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all outline-none tracking-widest text-center font-mono text-lg"
+                                        className="w-full pl-9 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none tracking-widest text-center font-mono text-lg"
                                         placeholder="000000"
                                     />
                                 </div>
@@ -170,7 +170,7 @@ const ForgotPassword = () => {
                                 <button
                                     type="submit"
                                     disabled={isVerifyingOtp}
-                                    className="w-full py-2.5 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-medium hover:from-purple-700 hover:to-blue-700 focus:ring-4 focus:ring-purple-500/20 transition-all disabled:opacity-70 flex items-center justify-center gap-2"
+                                    className="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-lg font-medium hover:from-emerald-700 hover:to-green-700 focus:ring-4 focus:ring-emerald-500/20 transition-all disabled:opacity-70 flex items-center justify-center gap-2"
                                 >
                                     {isVerifyingOtp ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Verify Code'}
                                 </button>
@@ -198,7 +198,7 @@ const ForgotPassword = () => {
                                             minLength: { value: 8, message: 'Password must be at least 8 characters' }
                                         })}
                                         type="password"
-                                        className="w-full pl-9 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all outline-none"
+                                        className="w-full pl-9 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none"
                                         placeholder="••••••••"
                                     />
                                 </div>
@@ -222,7 +222,7 @@ const ForgotPassword = () => {
                                             }
                                         })}
                                         type="password"
-                                        className="w-full pl-9 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all outline-none"
+                                        className="w-full pl-9 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none"
                                         placeholder="••••••••"
                                     />
                                 </div>
@@ -232,7 +232,7 @@ const ForgotPassword = () => {
                             <button
                                 type="submit"
                                 disabled={isResettingPassword}
-                                className="w-full py-2.5 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-medium hover:from-purple-700 hover:to-blue-700 focus:ring-4 focus:ring-purple-500/20 transition-all disabled:opacity-70 flex items-center justify-center gap-2"
+                                className="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-lg font-medium hover:from-emerald-700 hover:to-green-700 focus:ring-4 focus:ring-emerald-500/20 transition-all disabled:opacity-70 flex items-center justify-center gap-2"
                             >
                                 {isResettingPassword ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Reset Password'}
                             </button>

@@ -16,6 +16,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import PasswordStrengthMeter from "@/components/shared/PasswordStrengthMeter";
+import Navbar from "@/components/shared/Navbar";
 
 // Schemas
 const loginSchema = z.object({
@@ -135,27 +136,11 @@ const AuthPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-slate-900">
-      {/* Full Width Navbar */}
-      <header className="w-full bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 py-4 px-6 flex items-center justify-between z-50">
-        <Link to="/" className="flex items-center gap-2">
-          <img src="/logo.png" alt="Jobiyo" className="h-9 w-9" />
-          <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-green-500 bg-clip-text text-transparent">
-            Jobiyo
-          </span>
-        </Link>
-        <nav className="hidden md:flex items-center gap-6">
-          <Link to="/" className="text-sm font-medium text-gray-600 hover:text-emerald-600 transition-colors">Home</Link>
-          <Link to="/jobs" className="text-sm font-medium text-gray-600 hover:text-emerald-600 transition-colors">Find Jobs</Link>
-          <Link to="/companies" className="text-sm font-medium text-gray-600 hover:text-emerald-600 transition-colors">Companies</Link>
-        </nav>
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" className="text-gray-600 hover:text-emerald-600" onClick={() => handleToggle(true)}>Log In</Button>
-          <Button className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-6" onClick={() => handleToggle(false)}>Sign Up</Button>
-        </div>
-      </header>
+      {/* Use the main Navbar component */}
+      <Navbar />
 
-      {/* Main Content */}
-      <div className="flex-1 flex overflow-hidden">
+      {/* Main Content - Add padding top for fixed navbar */}
+      <div className="flex-1 flex overflow-hidden pt-20">
         {/* Left Side - Form (for Login) / Image (for Register) */}
         <AnimatePresence mode="wait">
           {isLogin ? (
@@ -283,8 +268,8 @@ const AuthPage = () => {
               <div className="relative z-10 flex items-center justify-center w-full p-12">
                 <div style={{ perspective: '1000px' }}>
                   <img 
-                    src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=500&h=600&fit=crop"
-                    alt="Team collaboration"
+                    src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=500&h=600&fit=crop"
+                    alt="Professional woman applying for job"
                     className="rounded-3xl shadow-2xl object-cover"
                     style={{ transform: 'rotateY(-8deg) rotateX(2deg)', boxShadow: '20px 20px 60px rgba(0,0,0,0.3)', maxWidth: '380px' }}
                   />
@@ -316,8 +301,8 @@ const AuthPage = () => {
               <div className="relative z-10 flex items-center justify-center w-full p-12">
                 <div style={{ perspective: '1000px' }}>
                   <img 
-                    src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=500&h=600&fit=crop"
-                    alt="Professional working"
+                    src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=500&h=600&fit=crop"
+                    alt="Professional recruiter in interview"
                     className="rounded-3xl shadow-2xl object-cover"
                     style={{ transform: 'rotateY(8deg) rotateX(2deg)', boxShadow: '-20px 20px 60px rgba(0,0,0,0.3)', maxWidth: '380px' }}
                   />

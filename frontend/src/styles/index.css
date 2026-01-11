@@ -7,25 +7,25 @@
 
 @layer base {
     :root {
-        /* Clean Modern Blue Theme - Professional Job Portal */
-        --background: 210 40% 98%;
+        /* Clean Modern Emerald Green Theme - Professional Job Portal */
+        --background: 0 0% 100%;
         --foreground: 222 47% 11%;
         --card: 0 0% 100%;
         --card-foreground: 222 47% 11%;
         --popover: 0 0% 100%;
         --popover-foreground: 222 47% 11%;
 
-        /* Primary - Deep Blue */
-        --primary: 221 83% 53%;
-        --primary-light: 217 91% 60%;
+        /* Primary - Emerald Green */
+        --primary: 160 84% 39%;
+        --primary-light: 158 64% 52%;
         --primary-foreground: 0 0% 100%;
 
-        /* Secondary - Soft Slate */
+        /* Secondary - Soft Gray */
         --secondary: 210 40% 96%;
         --secondary-foreground: 222 47% 11%;
 
-        /* Accent - Emerald Green (Success/Growth) */
-        --accent: 160 84% 39%;
+        /* Accent - Teal */
+        --accent: 172 66% 50%;
         --accent-foreground: 0 0% 100%;
 
         --muted: 210 40% 96%;
@@ -36,12 +36,12 @@
 
         --border: 214 32% 91%;
         --input: 214 32% 91%;
-        --ring: 221 83% 53%;
+        --ring: 160 84% 39%;
         --radius: 0.75rem;
 
-        /* Chart Colors */
-        --chart-1: 221 83% 53%;
-        --chart-2: 160 84% 39%;
+        /* Chart Colors - Green Palette */
+        --chart-1: 160 84% 39%;
+        --chart-2: 172 66% 50%;
         --chart-3: 38 92% 50%;
         --chart-4: 280 65% 60%;
         --chart-5: 340 75% 55%;
@@ -55,14 +55,16 @@
         --popover: 222 47% 9%;
         --popover-foreground: 210 40% 98%;
 
-        --primary: 217 91% 60%;
-        --primary-light: 221 83% 53%;
+        /* Primary - Emerald Green (Dark Mode) */
+        --primary: 158 64% 52%;
+        --primary-light: 160 84% 39%;
         --primary-foreground: 222 47% 6%;
 
         --secondary: 217 33% 17%;
         --secondary-foreground: 210 40% 98%;
 
-        --accent: 160 84% 45%;
+        /* Accent - Teal (Dark Mode) */
+        --accent: 172 66% 50%;
         --accent-foreground: 222 47% 6%;
 
         --muted: 217 33% 17%;
@@ -73,7 +75,7 @@
 
         --border: 217 33% 20%;
         --input: 217 33% 20%;
-        --ring: 217 91% 60%;
+        --ring: 158 64% 52%;
     }
 }
 

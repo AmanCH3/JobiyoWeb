@@ -82,25 +82,27 @@ const Login = () => {
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-slate-900">
       {/* Full Width Navbar with White Background */}
-      <header className="w-full bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 py-4 px-6 flex items-center justify-between z-50">
-        <Link to="/" className="flex items-center gap-2">
-          <img src="/logo.png" alt="Jobiyo" className="h-9 w-9" />
-          <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-green-500 bg-clip-text text-transparent">
-            Jobiyo
-          </span>
-        </Link>
-        <nav className="hidden md:flex items-center gap-6">
-          <Link to="/" className="text-sm font-medium text-gray-600 hover:text-emerald-600 transition-colors">Home</Link>
-          <Link to="/jobs" className="text-sm font-medium text-gray-600 hover:text-emerald-600 transition-colors">Find Jobs</Link>
-          <Link to="/companies" className="text-sm font-medium text-gray-600 hover:text-emerald-600 transition-colors">Companies</Link>
-        </nav>
-        <div className="flex items-center gap-3">
-          <Link to="/login">
-            <Button variant="ghost" className="text-gray-600 hover:text-emerald-600">Log In</Button>
+      <header className="w-full bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 py-4 px-8 z-50">
+        <div className="max-w-7xl mx-auto flex items-center justify-evenly">
+          <Link to="/" className="flex items-center gap-2">
+            <img src="/logo.png" alt="Jobiyo" className="h-9 w-9" />
+            <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-green-500 bg-clip-text text-transparent">
+              Jobiyo
+            </span>
           </Link>
-          <Link to="/register">
-            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-6">Sign Up</Button>
-          </Link>
+          <nav className="hidden md:flex items-center gap-5">
+            <Link to="/" className="text-sm font-medium text-gray-600 hover:text-emerald-600 transition-colors">Home</Link>
+            <Link to="/jobs" className="text-sm font-medium text-gray-600 hover:text-emerald-600 transition-colors">Find Jobs</Link>
+            <Link to="/companies" className="text-sm font-medium text-gray-600 hover:text-emerald-600 transition-colors">Companies</Link>
+          </nav>
+          <div className="flex items-center gap-3">
+            <Link to="/login">
+              <Button variant="ghost" className="text-gray-600 hover:text-emerald-600">Log In</Button>
+            </Link>
+            <Link to="/register">
+              <Button className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-6">Sign Up</Button>
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -309,7 +311,7 @@ const Login = () => {
                 }}
               >
                 <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                  <span className="text-blue-600 text-lg">🔐</span>
+                  <span className="text-emerald-600 text-lg">🔐</span>
                 </div>
                 <span className="text-xs font-medium text-gray-600">Secure Login</span>
               </div>

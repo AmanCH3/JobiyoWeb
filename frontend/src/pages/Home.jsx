@@ -30,7 +30,7 @@ const Home = () => {
       icon: <UserPlus size={28} />, 
       title: "Create Your Profile", 
       text: "Sign up and build a professional profile that showcases your skills and experience.",
-      color: "bg-blue-500/10 text-blue-600"
+      color: "bg-emerald-500/10 text-emerald-600"
     },
     { 
       icon: <Search size={28} />, 

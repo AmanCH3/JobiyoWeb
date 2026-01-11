@@ -1,10 +1,11 @@
-import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { MapPin, Briefcase, Building2 } from "lucide-react";
+import { MapPin, Building2, Bookmark } from "lucide-react";
+import { useState } from "react";
 
-// Fallback company logos from real companies (using logo.dev CDN)
+// Fallback company logos from real companies
 const getFallbackLogo = (companyName) => {
   const logoMap = {
     'google': 'https://logo.clearbit.com/google.com',
@@ -26,54 +27,102 @@ const getFallbackLogo = (companyName) => {
   return null;
 };
 
+// Get time ago string
+const getTimeAgo = (date) => {
+  if (!date) return '';
+  const now = new Date();
+  const posted = new Date(date);
+  const diffMs = now - posted;
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return '1 day ago';
+  if (diffDays < 7) return `${diffDays} days ago`;
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+  return `${Math.floor(diffDays / 30)} months ago`;
+};
+
 const JobCard = ({ job }) => {
+  const [saved, setSaved] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const companyLogo = job.company?.logo || getFallbackLogo(job.company?.name);
 
   return (
-    <Card className="flex flex-col hover:shadow-lg transition-shadow duration-300 border-0 shadow-md">
-      <CardHeader className="flex flex-row items-start gap-4">
-        {companyLogo ? (
-          <img 
-            src={companyLogo} 
-            alt={job.company?.name} 
-            className="h-12 w-12 rounded-lg object-contain bg-white p-1 border"
-            onError={(e) => {
-              e.target.style.display = 'none';
-              e.target.nextSibling.style.display = 'flex';
-            }}
-          />
-        ) : null}
-        <div 
-          className="h-12 w-12 rounded-lg bg-primary/10 items-center justify-center flex-shrink-0"
-          style={{ display: companyLogo ? 'none' : 'flex' }}
+    <Card className="relative bg-gray-50 dark:bg-slate-800/50 hover:bg-emerald-300 dark:hover:bg-emerald-800/30 rounded-3xl p-6 border border-transparent hover:border-emerald-300 dark:hover:border-emerald-700 hover:shadow-[0_20px_50px_-12px_rgba(16,185,129,0.25)] hover:-translate-y-2 transition-all duration-300 cursor-pointer group">
+      {/* Header - Logo and Save Button */}
+      <div className="flex items-start justify-between mb-5">
+        {/* Company Logo */}
+        <div className="h-14 w-14 rounded-full bg-white dark:bg-slate-700 shadow-sm flex items-center justify-center overflow-hidden">
+          {!imageError && companyLogo ? (
+            <img 
+              src={companyLogo} 
+              alt={job.company?.name} 
+              className="h-10 w-10 object-contain"
+              onError={() => setImageError(true)}
+            />
+          ) : (
+            <Building2 className="h-7 w-7 text-gray-400" />
+          )}
+        </div>
+        
+        {/* Save Button */}
+        <button 
+          onClick={(e) => {
+            e.preventDefault();
+            setSaved(!saved);
+          }}
+          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-emerald-600 transition-colors px-3 py-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700"
         >
-          <Building2 className="h-6 w-6 text-primary" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <h3 className="text-lg font-semibold truncate">{job.title}</h3>
-          <p className="text-sm text-muted-foreground truncate">{job.company?.name}</p>
-        </div>
-      </CardHeader>
-      <CardContent className="flex-grow">
-        <div className="flex flex-col gap-2 text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <MapPin className="h-4 w-4 flex-shrink-0" /> 
-            <span className="truncate">{job.location}</span>
+          <span>Save</span>
+          <Bookmark className={`h-4 w-4 ${saved ? 'fill-emerald-500 text-emerald-500' : ''}`} />
+        </button>
+      </div>
+
+      {/* Company Name and Time */}
+      <div className="flex items-center gap-2 mb-2">
+        <span className="font-medium text-gray-900 dark:text-white">{job.company?.name}</span>
+        <span className="text-sm text-gray-400">{getTimeAgo(job.createdAt)}</span>
+      </div>
+
+      {/* Job Title */}
+      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+        {job.title}
+      </h3>
+
+      {/* Tags */}
+      <div className="flex flex-wrap gap-2 mb-6">
+        <Badge variant="outline" className="rounded-full px-4 py-1.5 text-sm font-normal border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700">
+          {job.jobType || 'Full-time'}
+        </Badge>
+        {job.workType && (
+          <Badge variant="outline" className="rounded-full px-4 py-1.5 text-sm font-normal border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700">
+            {job.workType}
+          </Badge>
+        )}
+      </div>
+
+      {/* Divider */}
+      <div className="border-t border-gray-200 dark:border-slate-600 my-4" />
+
+      {/* Footer - Salary and Apply Button */}
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-xl font-bold text-gray-900 dark:text-white">
+            ${job.salary?.toLocaleString() || '0'}/hr
+          </p>
+          <div className="flex items-center gap-1 text-sm text-gray-500 mt-0.5">
+            <MapPin className="h-3.5 w-3.5" />
+            <span>{job.location || 'Remote'}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Briefcase className="h-4 w-4 flex-shrink-0" /> 
-            <span>{job.jobType}</span>
-          </div>
-          <div className="flex items-center gap-2 font-medium text-foreground">
-            Rs. {job.salary?.toLocaleString()}
-          </div>
         </div>
-      </CardContent>
-      <CardFooter>
-        <Button asChild className="w-full">
-          <Link to={`/jobs/${job._id}`}>View Details</Link>
+        
+        <Button 
+          asChild 
+          className="bg-primary hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 text-white rounded-full px-6 py-2 font-medium"
+        >
+          <Link to={`/jobs/${job._id}`}>Apply now</Link>
         </Button>
-      </CardFooter>
+      </div>
     </Card>
   );
 };

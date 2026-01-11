@@ -67,7 +67,7 @@ const Navbar = () => {
          <span className={cn(
            "font-bold tracking-tight transition-all duration-300",
            isScrolled ? "text-lg" : "text-xl",
-           "bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent"
+           "bg-gradient-to-r from-emerald-600 to-green-500 bg-clip-text text-transparent"
          )}>
            Jobiyo
          </span>
@@ -81,29 +81,32 @@ const Navbar = () => {
          <Link 
            to="/" 
            className={cn(
-             "font-medium transition-colors hover:text-primary",
+             "relative font-medium transition-colors hover:text-emerald-600 group",
              isScrolled ? "text-sm text-foreground/80" : "text-sm text-foreground/70"
            )}
          >
            Home
+           <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-emerald-500 transition-all duration-300 group-hover:w-full" />
          </Link>
          <Link 
            to="/jobs" 
            className={cn(
-             "font-medium transition-colors hover:text-primary",
+             "relative font-medium transition-colors hover:text-emerald-600 group",
              isScrolled ? "text-sm text-foreground/80" : "text-sm text-foreground/70"
            )}
          >
            Find Jobs
+           <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-emerald-500 transition-all duration-300 group-hover:w-full" />
          </Link>
          <Link 
            to="/companies" 
            className={cn(
-             "font-medium transition-colors hover:text-primary",
+             "relative font-medium transition-colors hover:text-emerald-600 group",
              isScrolled ? "text-sm text-foreground/80" : "text-sm text-foreground/70"
            )}
          >
            Companies
+           <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-emerald-500 transition-all duration-300 group-hover:w-full" />
          </Link>
        </nav>
 
