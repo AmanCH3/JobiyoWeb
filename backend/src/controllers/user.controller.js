@@ -9,6 +9,12 @@ import crypto from "crypto";
 import { getPasswordResetTemplate } from "../utils/emailTemplates.js";
 import { OAuth2Client } from 'google-auth-library';
 import { LoginAttempt } from "../models/loginAttempt.model.js";
+import { 
+    validatePasswordPolicy, 
+    isPasswordReused, 
+    pushPasswordHistory 
+} from "../utils/passwordUtils.js";
+import bcrypt from "bcryptjs";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -32,6 +38,12 @@ const registerUser = asyncHandler(async (req, res) => {
 
   if ([fullName, email, phoneNumber, password, role].some((field) => field?.trim() === "")) {
     throw new ApiError(400, "All fields are required");
+  }
+
+  // Validate Password Policy
+  const passwordCheck = validatePasswordPolicy(password, { fullName });
+  if (!passwordCheck.isValid) {
+      throw new ApiError(400, passwordCheck.message);
   }
 
   const existedUser = await User.findOne({ email });
@@ -291,6 +303,23 @@ const resetPassword = asyncHandler(async (req, res) => {
     if (!user) {
         throw new ApiError(400, "Invalid or Expired OTP");
     }
+
+    // Validate Password Policy
+    const passwordCheck = validatePasswordPolicy(newPassword, user);
+    if (!passwordCheck.isValid) {
+        throw new ApiError(400, passwordCheck.message);
+    }
+
+    // Check for reuse
+    if (await isPasswordReused(user, newPassword)) {
+        throw new ApiError(400, "You cannot reuse your last 5 passwords.");
+    }
+
+    // Push to history (Hash it first since pre-save re-hashes 'password' field only)
+    // We need to hash it manually for the history entry to mitigate double-hashing issues or timing.
+    // However, since we are inside an async function, we can just hash it.
+    const hashedForHistory = await bcrypt.hash(newPassword, 10);
+    pushPasswordHistory(user, hashedForHistory);
 
     user.password = newPassword;
     user.resetPasswordOTP = undefined;

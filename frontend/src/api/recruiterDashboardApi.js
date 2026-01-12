@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 export const recruiterDashboardApi = createApi({
     reducerPath: 'recruiterDashboardApi',
     baseQuery: fetchBaseQuery({ baseUrl: "/api/v1", credentials: 'include' }),
+    tagTypes: ['Application'],
     endpoints: (builder) => ({
         getStats: builder.query({
             query: () => '/recruiter-dashboard/stats',

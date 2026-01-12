@@ -20,8 +20,26 @@ const registerSchema = z.object({
   fullName: z.string().min(3, { message: "Full name must be at least 3 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
   phoneNumber: z.string().min(10, { message: "Phone number must be at least 10 digits." }),
-  password: z.string().min(8, { message: "Password must be at least 8 characters." }),
+  password: z.string()
+    .min(8, { message: "Password must be at least 8 characters." })
+    .regex(/[A-Z]/, { message: "Password must contain at least one uppercase letter." })
+    .regex(/[a-z]/, { message: "Password must contain at least one lowercase letter." })
+    .regex(/\d/, { message: "Password must contain at least one number." })
+    .regex(/[!@#$%^&*(),.?":{}|<>]/, { message: "Password must contain at least one special character." }),
   role: z.enum(["student", "recruiter"], { required_error: "You must select a role." }),
+}).refine((data) => {
+  if (data.fullName && data.password) {
+      const nameParts = data.fullName.split(/[\s-]+/).filter(part => part.length >= 3);
+      for (const part of nameParts) {
+          if (data.password.toLowerCase().includes(part.toLowerCase())) {
+              return false;
+          }
+      }
+  }
+  return true;
+}, {
+  message: "Password cannot contain parts of your name.",
+  path: ["password"],
 });
 
 const Register = () => {

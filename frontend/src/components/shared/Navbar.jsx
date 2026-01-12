@@ -188,9 +188,9 @@ const Navbar = () => {
                size={isScrolled ? "sm" : "default"}
                className="font-medium"
              >
-               <Link to="/login">Log In</Link>
+               <Link to="/login">Get Started</Link>
              </Button>
-             <Button 
+             {/* <Button 
                asChild 
                size={isScrolled ? "sm" : "default"}
                className={cn(
@@ -199,7 +199,7 @@ const Navbar = () => {
                )}
              >
                <Link to="/register">Sign Up</Link>
-             </Button>
+             </Button> */}
            </nav>
          )}
 
