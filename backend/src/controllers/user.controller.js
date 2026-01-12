@@ -122,7 +122,13 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
 
+  // SESSION FIXATION PROTECTION:
+  // 1. Clear any existing session cookies before setting new ones to ensure no pre-login context remains.
+  // 2. generateAccessAndRefreshTokens() above rotates the refresh token in the DB, invalidating any old tokens.
+  return res
     .status(200)
+    .clearCookie("accessToken", COOKIE_OPTIONS)
+    .clearCookie("refreshToken", COOKIE_OPTIONS)
     .cookie("accessToken", accessToken, ACCESS_COOKIE_OPTIONS)
     .cookie("refreshToken", refreshToken, REFRESH_COOKIE_OPTIONS)
     .json(
@@ -200,6 +206,9 @@ const logoutUser = asyncHandler(async (req, res) => {
         }
     )
 
+    // SESSION FIXATION PROTECTION:
+    // Explicitly destroy the session by removing the refresh token from DB and clearing cookies.
+    // This ensures that even if a cookie is stolen, it cannot be used to refresh the session.
     return res
         .status(200)
         .clearCookie("accessToken", COOKIE_OPTIONS)
@@ -229,6 +238,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         if (incomingRefreshToken !== user?.refreshToken) {
             throw new ApiError(401, "Refresh token is expired or used")
         }
+        
+        const { accessToken, refreshToken: newRefreshToken } = await generateAccessAndRefreshTokens(user._id)
         
         return res
         .status(200)
@@ -377,6 +388,10 @@ const resetPassword = asyncHandler(async (req, res) => {
     user.password = newPassword;
     user.resetPasswordOTP = undefined;
     user.resetPasswordOTPExpiry = undefined;
+    
+    // SESSION PROTECTION:
+    // Invalidate all existing sessions on password reset to prevent access with stolen tokens.
+    user.refreshToken = undefined;
 
     await user.save();
 
@@ -413,9 +428,20 @@ const changePassword = asyncHandler(async (req, res) => {
     pushPasswordHistory(user, hashedForHistory);
 
     user.password = newPassword;
-    await user.save();
+    await user.save({ validateBeforeSave: false }); // Save password first
 
-    return res.status(200).json(new ApiResponse(200, {}, "Password changed successfully"));
+    // SESSION FIXATION PROTECTION:
+    // Rotate tokens effectively. Old refresh token in DB is overwritten.
+    // Issue NEW cookies so the legitimate user stays logged in but with a fresh session.
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+
+    return res
+        .status(200)
+        .clearCookie("accessToken", COOKIE_OPTIONS)
+        .clearCookie("refreshToken", COOKIE_OPTIONS)
+        .cookie("accessToken", accessToken, ACCESS_COOKIE_OPTIONS)
+        .cookie("refreshToken", refreshToken, REFRESH_COOKIE_OPTIONS)
+        .json(new ApiResponse(200, { accessToken, refreshToken }, "Password changed successfully"));
 });
 
 const googleAuth = asyncHandler(async (req, res) => {
