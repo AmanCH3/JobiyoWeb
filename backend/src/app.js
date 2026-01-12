@@ -17,6 +17,12 @@ app.set('trust proxy', 1); // Trust first proxy (required for secure cookies in 
 
 app.use(helmet()); // Set security headers
 
+// app.use(helmet()); // Removed duplicate
+
+// Stripe Webhook requires RAW body for signature verification.
+// Handled in promotion.routes.js now
+import promotionRouter from "./routes/promotion.routes.js";
+
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
@@ -80,6 +86,7 @@ app.use("/api/v1/recruiter-dashboard", recruiterDashboardRouter);
 app.use("/api/v1/chatbot", chatbotRouter); 
 app.use("/api/v1/interviews", interviewRouter);
 app.use("/api/v1/chats", chatRouter);  
+app.use("/api/v1/promotions", promotionRouter);
 app.use("/api/v1/admin/logs", logRouter);
 app.use(errorHandler);
 

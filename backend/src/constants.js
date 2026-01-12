@@ -25,3 +25,48 @@ export const REFRESH_COOKIE_OPTIONS = {
 
 // Export base for clearing cookies
 export const COOKIE_OPTIONS = BASE_COOKIE_OPTIONS;
+
+// Promotion Plans Configuration
+// Validate input against these keys.
+export const PROMOTION_PLANS = {
+    FEATURED_7D: {
+        type: "FEATURED",
+        durationDays: 7,
+        amountCents: 4900, // $49.00
+        currency: "usd",
+        boostScore: 10,
+        pinEnabled: false,
+        homepageBoost: true,
+        emailBoost: true,
+    },
+    FEATURED_30D: {
+        type: "FEATURED",
+        durationDays: 30,
+        amountCents: 14900, // $149.00
+        currency: "usd",
+        boostScore: 15,
+        pinEnabled: false,
+        homepageBoost: true,
+        emailBoost: true,
+    },
+    PROMOTED_7D: {
+        type: "PROMOTED",
+        durationDays: 7,
+        amountCents: 9900, // $99.00
+        currency: "usd",
+        boostScore: 50,
+        pinEnabled: true,
+        homepageBoost: true,
+        emailBoost: true,
+    },
+    PROMOTED_30D: {
+        type: "PROMOTED",
+        durationDays: 30,
+        amountCents: 29900, // $299.00
+        currency: "usd",
+        boostScore: 60,
+        pinEnabled: true,
+        homepageBoost: true,
+        emailBoost: true,
+    }
+};

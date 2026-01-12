@@ -11,3 +11,17 @@
 {"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 404 | User: Guest"}
 {"level":"error","message":"Request Failed: GET /api/v1/jobs/6960fae9b176dd307822d7fe | Status: 404 | User: Guest"}
 {"level":"error","message":"Request Failed: HEAD / | Status: 404 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: GET / | Status: 404 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
