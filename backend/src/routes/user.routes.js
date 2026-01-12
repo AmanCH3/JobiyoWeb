@@ -176,11 +176,16 @@ router.route("/register").post(verifyRecaptcha, registerUser);
  *       '404':
  *         description: User does not exist.
  */
-router.route("/login").post(verifyRecaptcha, loginUser);
+import { rateLimit } from "../middleware/rateLimiter.js";
+
+// Login: Allow 10 attempts per 15 minutes
+router.route("/login").post(rateLimit(15 * 60 * 1000, 10), verifyRecaptcha, loginUser);
 
 // Secured Routes
 router.route("/logout").post(verifyJWT, logoutUser);
-router.route("/refresh-token").post(refreshAccessToken);
+
+// Refresh: Allow 50 attempts per hour (generous for legitimate usage, blocks abuse)
+router.route("/refresh-token").post(rateLimit(60 * 60 * 1000, 50), refreshAccessToken);
 
 /**
  * @swagger

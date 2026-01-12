@@ -17,6 +17,7 @@ import {
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { COOKIE_OPTIONS, ACCESS_COOKIE_OPTIONS, REFRESH_COOKIE_OPTIONS } from "../constants.js";
+import { RefreshToken } from "../models/refreshToken.model.js";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -26,11 +27,26 @@ const generateAccessAndRefreshTokens = async (userId) => {
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
 
-    user.refreshToken = refreshToken;
-    await user.save({ validateBeforeSave: false });
+    // Hash the refresh token for secure storage
+    const tokenHash = crypto
+        .createHash('sha256')
+        .update(refreshToken)
+        .digest('hex');
+
+    // Create a new RefreshToken document
+    await RefreshToken.create({
+        user: userId,
+        token: tokenHash,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days match REFRESH_COOKIE_OPTIONS
+    });
+    
+    // We no longer store refreshToken on the User document itself
+    // user.refreshToken = refreshToken; 
+    // await user.save({ validateBeforeSave: false });
 
     return { accessToken, refreshToken };
   } catch (error) {
+    console.error("Token generation error:", error);
     throw new ApiError(500, "Something went wrong while generating refresh and access tokens");
   }
 };
@@ -194,21 +210,25 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
+    // If we have a refresh token in the cookie, revoke it specifically
+    const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
+    if (incomingRefreshToken) {
+        const tokenHash = crypto.createHash('sha256').update(incomingRefreshToken).digest('hex');
+        await RefreshToken.findOneAndUpdate(
+            { token: tokenHash },
+            { revoked: new Date() }
+        );
+    }
+
+    // Also clear the legacy field on User if it exists, just in case
     await User.findByIdAndUpdate(
         req.user._id,
-        {
-            $unset: {
-                refreshToken: 1 // remove the refresh token from the field
-            }
-        },
-        {
-            new: true
-        }
-    )
+        { $unset: { refreshToken: 1 } },
+        { new: true }
+    );
 
     // SESSION FIXATION PROTECTION:
     // Explicitly destroy the session by removing the refresh token from DB and clearing cookies.
-    // This ensures that even if a cookie is stolen, it cannot be used to refresh the session.
     return res
         .status(200)
         .clearCookie("accessToken", COOKIE_OPTIONS)
@@ -223,38 +243,71 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         throw new ApiError(401, "unauthorized request")
     }
 
+    // Verify JWT integrity FIRST
+    let decodedToken;
     try {
-        const decodedToken = jwt.verify(
+        decodedToken = jwt.verify(
             incomingRefreshToken,
             process.env.REFRESH_TOKEN_SECRET
         )
-        
-        const user = await User.findById(decodedToken?._id)
-        
-        if (!user) {
-            throw new ApiError(401, "Invalid refresh token")
-        }
-        
-        if (incomingRefreshToken !== user?.refreshToken) {
-            throw new ApiError(401, "Refresh token is expired or used")
-        }
-        
-        const { accessToken, refreshToken: newRefreshToken } = await generateAccessAndRefreshTokens(user._id)
-        
-        return res
-        .status(200)
-        .cookie("accessToken", accessToken, ACCESS_COOKIE_OPTIONS)
-        .cookie("refreshToken", newRefreshToken, REFRESH_COOKIE_OPTIONS)
-        .json(
-            new ApiResponse(
-                200,
-                { accessToken, refreshToken: newRefreshToken },
-                "Access token refreshed"
-            )
-        )
     } catch (error) {
-        throw new ApiError(401, error?.message || "Invalid refresh token")
+        throw new ApiError(401, "Invalid refresh token")
     }
+
+    // Verify against DB (Rotation & Reuse Detection)
+    const tokenHash = crypto.createHash('sha256').update(incomingRefreshToken).digest('hex');
+    const existingToken = await RefreshToken.findOne({ token: tokenHash });
+
+    if (!existingToken) {
+        // Token valid signature but not in DB? Possible compromised or very old.
+        throw new ApiError(401, "Refresh token not found or invalid");
+    }
+
+    // REUSE DETECTION
+    if (existingToken.revoked) {
+        // CRITICAL: Attempt to use a revoked token. Assume theft.
+        // Action: Revoke ALL tokens for this user family.
+        await RefreshToken.updateMany(
+            { user: decodedToken._id },
+            { revoked: new Date() }
+        );
+        console.error(`[SECURITY] Refresh Token Reuse Detected! User: ${decodedToken._id}. All sessions revoked.`);
+        throw new ApiError(403, "Security Alert: Session reuse detected. Please sign in again.");
+    }
+    
+    // Check if user still exists
+    const user = await User.findById(decodedToken?._id)
+    if (!user) {
+        throw new ApiError(401, "User not found")
+    }
+
+    // ROTATION:
+    // 1. Mark current token as revoked (and replaced)
+    // 2. Issue NEW tokens
+    
+    // We can't know the *next* token usage ID yet, but we will generate one.
+    // Ideally we generate first.
+    
+    const { accessToken, refreshToken: newRefreshToken } = await generateAccessAndRefreshTokens(user._id);
+    
+    // Hash the NEW token to link them (optional chaining)
+    const newTokenHash = crypto.createHash('sha256').update(newRefreshToken).digest('hex');
+
+    existingToken.revoked = new Date();
+    existingToken.replacedByToken = newTokenHash;
+    await existingToken.save();
+    
+    return res
+    .status(200)
+    .cookie("accessToken", accessToken, ACCESS_COOKIE_OPTIONS)
+    .cookie("refreshToken", newRefreshToken, REFRESH_COOKIE_OPTIONS)
+    .json(
+        new ApiResponse(
+            200,
+            { accessToken, refreshToken: newRefreshToken },
+            "Access token refreshed"
+        )
+    )
 });
 
 const getUserPublicProfile = asyncHandler(async (req, res) => {
@@ -391,7 +444,13 @@ const resetPassword = asyncHandler(async (req, res) => {
     
     // SESSION PROTECTION:
     // Invalidate all existing sessions on password reset to prevent access with stolen tokens.
-    user.refreshToken = undefined;
+    // SESSION PROTECTION:
+    // Invalidate all existing sessions on password reset to prevent access with stolen tokens.
+    // user.refreshToken = undefined; // Deprecated
+    await RefreshToken.updateMany(
+        { user: user._id },
+        { revoked: new Date() }
+    );
 
     await user.save();
 
@@ -431,8 +490,15 @@ const changePassword = asyncHandler(async (req, res) => {
     await user.save({ validateBeforeSave: false }); // Save password first
 
     // SESSION FIXATION PROTECTION:
-    // Rotate tokens effectively. Old refresh token in DB is overwritten.
+    // Rotate tokens effectively.
     // Issue NEW cookies so the legitimate user stays logged in but with a fresh session.
+    
+    // Revoke ALL previous sessions (optional strictly, but good practice on password change to force others out)
+    await RefreshToken.updateMany(
+         { user: user._id },
+         { revoked: new Date() }
+    );
+    
     const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
 
     return res
