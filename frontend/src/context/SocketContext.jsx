@@ -14,8 +14,10 @@ export const SocketProvider = ({ children }) => {
 
     useEffect(() => {
         if (user) {
-            const newSocket = io("https://localhost:8000", {
+            // Use relative path to leverage Vite proxy (avoids CORS/SSL port issues)
+            const newSocket = io({
                 withCredentials: true,
+                path: '/socket.io'
             });
 
             newSocket.on('connect', () => {

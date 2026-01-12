@@ -43,6 +43,12 @@ export default defineConfig({
         changeOrigin: true,
         secure: false, 
       },
+      '/socket.io': {
+        target: 'https://localhost:8000',
+        ws: true,
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 });

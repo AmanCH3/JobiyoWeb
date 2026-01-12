@@ -518,3 +518,5 @@
 {"level":"info","message":"Request Completed: GET /api/v1/recruiter-dashboard/recent-applicants | Status: 304 | User: Guest"}
 {"level":"info","message":"Request Completed: GET /api/v1/jobs | Status: 304 | User: Guest"}
 {"level":"info","message":"Request Completed: GET /api/v1/recruiter-dashboard/stats | Status: 304 | User: Guest"}
+{"level":"info","message":"Incoming Request: HEAD / | User: Guest | IP: ::1"}
+{"level":"error","message":"Request Failed: HEAD / | Status: 404 | User: Guest"}
