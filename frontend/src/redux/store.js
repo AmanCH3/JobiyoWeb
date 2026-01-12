@@ -3,6 +3,7 @@ import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, 
 import storage from 'redux-persist/lib/storage';
 
 import userReducer from "./slices/userSlice";
+import { rtkQueryErrorLogger } from './middleware/errorMiddleware';
 import { authApi } from '../api/authApi';
 import { companyApi } from '../api/companyApi';
 import { jobApi } from '../api/jobApi';
@@ -53,7 +54,7 @@ export const store = configureStore({
        chatApi.middleware,
        interviewApi.middleware,
        chatbotApi.middleware,
-   ),
+   ).concat(rtkQueryErrorLogger),
 });
 
 export const persistor = persistStore(store);

@@ -8,6 +8,7 @@ import CompanyDetails from './pages/public/CompanyDetails';
 import PublicProfile from './pages/public/PublicProfile';
 import AuthPage from './pages/Auth/AuthPage';
 import ForgotPassword from './pages/Auth/ForgotPassword';
+import ChangePassword from './pages/Auth/ChangePassword';
 import Profile from './pages/student/Profile';
 import MyApplications from './pages/student/MyApplications';
 import DashboardLayout from './components/layout/DashboardLayout';
@@ -34,9 +35,11 @@ import NotFound from './pages/public/NotFound';
 
 function App() {
    const user = useSelector(selectCurrentUser);
+   const isPasswordExpired = useSelector((state) => state.user.isPasswordExpired);
+
  return (
    <>
-       {user && <SocketNotificationHandler />}
+       {user && !isPasswordExpired && <SocketNotificationHandler />}
      <Routes>
        <Route path="/" element={<MainLayout />}>
          <Route index element={<Home />} />
@@ -49,10 +52,14 @@ function App() {
          <Route path="contact" element={<Contact />} />
        </Route>
 
+import ChangePassword from './pages/Auth/ChangePassword';
+
+// ... (in routes)
        {/* Unified Auth Page with animated transitions */}
        <Route path="/login" element={<AuthPage />} />
        <Route path="/register" element={<AuthPage />} />
        <Route path="/forgot-password" element={<ForgotPassword />} />
+       <Route path="/change-password" element={<ChangePassword />} />
 
        <Route
          path="/student"
@@ -129,7 +136,7 @@ function App() {
 
      </Routes>
      
-     <Chatbot />
+     {!isPasswordExpired && <Chatbot />}
    </>
  );
 }

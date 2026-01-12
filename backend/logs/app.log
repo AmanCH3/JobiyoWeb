@@ -446,3 +446,17 @@
 {"level":"info","message":"Incoming Request: GET /api/v1/companies/public | User: Guest | IP: ::1"}
 {"level":"info","message":"Request Completed: GET /api/v1/companies/public | Status: 304 | User: Guest"}
 {"level":"info","message":"Request Completed: GET /api/v1/jobs/public? | Status: 304 | User: Guest"}
+{"level":"info","message":"Incoming Request: GET /api/v1/jobs/public? | User: Guest | IP: ::1"}
+{"level":"info","message":"Incoming Request: GET /api/v1/companies/public | User: Guest | IP: ::1"}
+{"level":"info","message":"Request Completed: GET /api/v1/companies/public | Status: 304 | User: Guest"}
+{"level":"info","message":"Request Completed: GET /api/v1/jobs/public? | Status: 304 | User: Guest"}
+{"level":"info","message":"Incoming Request: GET /api/v1/jobs/public?keyword=&location=&jobType=&page=1 | User: Guest | IP: ::1"}
+{"level":"info","message":"Request Completed: GET /api/v1/jobs/public?keyword=&location=&jobType=&page=1 | Status: 200 | User: Guest"}
+{"level":"info","message":"Incoming Request: GET /api/v1/jobs/public/6960fae9b176dd307822d7fe | User: Guest | IP: ::1"}
+{"level":"info","message":"Request Completed: GET /api/v1/jobs/public/6960fae9b176dd307822d7fe | Status: 200 | User: Guest"}
+{"level":"info","message":"Incoming Request: GET /api/v1/companies/public | User: Guest | IP: ::1"}
+{"level":"info","message":"Request Completed: GET /api/v1/companies/public | Status: 304 | User: Guest"}
+{"level":"info","message":"Incoming Request: GET /api/v1/jobs/public? | User: Guest | IP: ::1"}
+{"level":"info","message":"Incoming Request: GET /api/v1/companies/public | User: Guest | IP: ::1"}
+{"level":"info","message":"Request Completed: GET /api/v1/companies/public | Status: 304 | User: Guest"}
+{"level":"info","message":"Request Completed: GET /api/v1/jobs/public? | Status: 304 | User: Guest"}
