@@ -312,7 +312,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 
     // Check for reuse
     if (await isPasswordReused(user, newPassword)) {
-        throw new ApiError(400, "You cannot reuse your last 5 passwords.", [], "", "PASSWORD_REUSED");
+        throw new ApiError(409, "You cannot reuse a recent password.", [], "", "PASSWORD_REUSED");
     }
 
     // Push to history
@@ -350,7 +350,7 @@ const changePassword = asyncHandler(async (req, res) => {
 
     // Check for reuse
     if (await isPasswordReused(user, newPassword)) {
-        throw new ApiError(400, "You cannot reuse your last 5 passwords.", [], "", "PASSWORD_REUSED");
+        throw new ApiError(409, "You cannot reuse a recent password.", [], "", "PASSWORD_REUSED");
     }
 
     // Push to history
