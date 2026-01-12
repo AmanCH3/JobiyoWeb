@@ -43,7 +43,7 @@ const registerUser = asyncHandler(async (req, res) => {
   // Validate Password Policy
   const passwordCheck = validatePasswordPolicy(password, { fullName });
   if (!passwordCheck.isValid) {
-      throw new ApiError(400, passwordCheck.message);
+      throw new ApiError(400, passwordCheck.message, passwordCheck.details, "", "WEAK_PASSWORD");
   }
 
   const existedUser = await User.findOne({ email });
@@ -307,17 +307,15 @@ const resetPassword = asyncHandler(async (req, res) => {
     // Validate Password Policy
     const passwordCheck = validatePasswordPolicy(newPassword, user);
     if (!passwordCheck.isValid) {
-        throw new ApiError(400, passwordCheck.message);
+        throw new ApiError(400, passwordCheck.message, passwordCheck.details, "", "WEAK_PASSWORD");
     }
 
     // Check for reuse
     if (await isPasswordReused(user, newPassword)) {
-        throw new ApiError(400, "You cannot reuse your last 5 passwords.");
+        throw new ApiError(400, "You cannot reuse your last 5 passwords.", [], "", "PASSWORD_REUSED");
     }
 
-    // Push to history (Hash it first since pre-save re-hashes 'password' field only)
-    // We need to hash it manually for the history entry to mitigate double-hashing issues or timing.
-    // However, since we are inside an async function, we can just hash it.
+    // Push to history
     const hashedForHistory = await bcrypt.hash(newPassword, 10);
     pushPasswordHistory(user, hashedForHistory);
 
@@ -329,6 +327,40 @@ const resetPassword = asyncHandler(async (req, res) => {
 
     return res.status(200).json(new ApiResponse(200, {}, "Password reset successfully"));
 
+});
+
+const changePassword = asyncHandler(async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
+    if (!isPasswordCorrect) {
+        throw new ApiError(400, "Invalid old password");
+    }
+
+    // Validate Password Policy
+    const passwordCheck = validatePasswordPolicy(newPassword, user);
+    if (!passwordCheck.isValid) {
+        throw new ApiError(400, passwordCheck.message, passwordCheck.details, "", "WEAK_PASSWORD");
+    }
+
+    // Check for reuse
+    if (await isPasswordReused(user, newPassword)) {
+        throw new ApiError(400, "You cannot reuse your last 5 passwords.", [], "", "PASSWORD_REUSED");
+    }
+
+    // Push to history
+    const hashedForHistory = await bcrypt.hash(newPassword, 10);
+    pushPasswordHistory(user, hashedForHistory);
+
+    user.password = newPassword;
+    await user.save();
+
+    return res.status(200).json(new ApiResponse(200, {}, "Password changed successfully"));
 });
 
 const googleAuth = asyncHandler(async (req, res) => {
@@ -407,5 +439,6 @@ export {
     forgotPassword, 
     verifyOTP, 
     resetPassword,
+    changePassword,
     googleAuth 
 };

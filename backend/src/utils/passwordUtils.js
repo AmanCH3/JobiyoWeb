@@ -19,8 +19,10 @@ export const PASSWORD_EXPIRE_DAYS = 90;
  * @returns {object} { isValid: boolean, message: string }
  */
 export const validatePasswordPolicy = (password, user = null) => {
+    const details = [];
+    
     if (!password || password.length < PASSWORD_MIN_LEN) {
-        return { isValid: false, message: `Password must be at least ${PASSWORD_MIN_LEN} characters long.` };
+        details.push(`Password must be at least ${PASSWORD_MIN_LEN} characters long.`);
     }
 
     const hasUpperCase = /[A-Z]/.test(password);
@@ -28,26 +30,32 @@ export const validatePasswordPolicy = (password, user = null) => {
     const hasNumbers = /\d/.test(password);
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
-    if (!hasUpperCase || !hasLowerCase || !hasNumbers || !hasSpecialChar) {
-        return { isValid: false, message: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.' };
-    }
+    if (!hasUpperCase) details.push("Password must contain at least one uppercase letter.");
+    if (!hasLowerCase) details.push("Password must contain at least one lowercase letter.");
+    if (!hasNumbers) details.push("Password must contain at least one number.");
+    if (!hasSpecialChar) details.push("Password must contain at least one special character.");
 
     const commonPasswords = ['password', '12345678', 'qwertyuiop', 'admin123']; 
     if (commonPasswords.some(cp => password.toLowerCase().includes(cp))) {
-         return { isValid: false, message: 'Password is too common or easily guessable.' };
+         details.push("Password is too common or easily guessable.");
     }
 
     // Check if password contains parts of full name
     if (user && user.fullName) {
-        const nameParts = user.fullName.split(/[\s-]+/).filter(part => part.length >= 3); // Only check parts > 2 chars
+        const nameParts = user.fullName.split(/[\s-]+/).filter(part => part.length >= 3); 
         for (const part of nameParts) {
             if (password.toLowerCase().includes(part.toLowerCase())) {
-                 return { isValid: false, message: 'Password cannot contain parts of your name.' };
+                 details.push("Password cannot contain parts of your name.");
+                 break;
             }
         }
     }
 
-    return { isValid: true, message: 'Password is valid.' };
+    if (details.length > 0) {
+        return { isValid: false, message: "Password does not meet policy.", details };
+    }
+
+    return { isValid: true, message: "Password is valid." };
 };
 
 /**
