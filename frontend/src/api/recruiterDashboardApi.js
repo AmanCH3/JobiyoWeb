@@ -1,8 +1,9 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQueryWithReauth } from './baseQuery';
 
 export const recruiterDashboardApi = createApi({
     reducerPath: 'recruiterDashboardApi',
-    baseQuery: fetchBaseQuery({ baseUrl: "/api/v1", credentials: 'include' }),
+    baseQuery: baseQueryWithReauth,
     tagTypes: ['Application'],
     endpoints: (builder) => ({
         getStats: builder.query({

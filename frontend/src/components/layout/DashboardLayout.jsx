@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { logOut, selectCurrentUser } from "@/redux/slices/userSlice";
+import { useLogoutMutation } from "@/api/authApi";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -44,8 +45,14 @@ const DashboardLayout = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [logoutApiCall] = useLogoutMutation();
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
+        try {
+            await logoutApiCall().unwrap();
+        } catch (error) {
+            console.error("Logout failed", error);
+        }
         dispatch(logOut());
         toast.success("Logged out successfully.");
         navigate("/login");

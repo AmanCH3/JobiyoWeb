@@ -1,15 +1,21 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import helmet from "helmet";
 import { errorHandler } from "./middleware/error.middleware.js";
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
+import requestLogger from "./middleware/requestLogger.js";
 const app = express();
 
 app.use(cors({
     origin: process.env.CORS_ORIGIN === "*" ? "http://localhost:5173" : process.env.CORS_ORIGIN,
     credentials: true,
 }));
+
+app.set('trust proxy', 1); // Trust first proxy (required for secure cookies in production)
+
+app.use(helmet()); // Set security headers
 
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
@@ -63,8 +69,6 @@ import chatbotRouter from "./routes/chatbot.routes.js";
 import interviewRouter from "./routes/interview.routes.js";
 import chatRouter from "./routes/chat.routes.js";
 import logRouter from "./routes/logRoutes.js";
-import requestLogger from "./middleware/requestLogger.js";
-
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use("/api/v1/users", userRouter);

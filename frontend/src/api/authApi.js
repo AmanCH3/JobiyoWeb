@@ -1,12 +1,9 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
-const VITE_API_BASE_URL = "/api/v1";
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQueryWithReauth } from './baseQuery';
 
 export const authApi = createApi({
    reducerPath: 'authApi',
-   baseQuery: fetchBaseQuery({
-       baseUrl: VITE_API_BASE_URL,
-   }),
+   baseQuery: baseQueryWithReauth,
    tagTypes: ['User'],
    endpoints: (builder) => ({
        register: builder.mutation({
@@ -71,6 +68,18 @@ export const authApi = createApi({
                body: data,
            }),
        }),
+       logout: builder.mutation({
+           query: () => ({
+               url: '/users/logout',
+               method: 'POST',
+           }),
+       }),
+       refreshToken: builder.mutation({
+           query: () => ({
+               url: '/users/refresh-token',
+               method: 'POST',
+           }),
+       }),
    }),
 });
 
@@ -83,5 +92,7 @@ export const {
     useVerifyOtpMutation,
     useResetPasswordMutation,
     useGoogleAuthMutation,
-    useChangePasswordMutation
+    useChangePasswordMutation,
+    useLogoutMutation,
+    useRefreshTokenMutation
 } = authApi;

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useSelector, useDispatch } from "react-redux";
 import { selectCurrentUser, logOut } from "@/redux/slices/userSlice";
+import { useLogoutMutation } from "@/api/authApi";
 import {
  DropdownMenu,
  DropdownMenuContent,
@@ -23,6 +24,7 @@ const Navbar = () => {
  const navigate = useNavigate();
  const [isScrolled, setIsScrolled] = useState(false);
  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+ const [logoutApiCall] = useLogoutMutation();
 
  useEffect(() => {
    const handleScroll = () => {
@@ -33,7 +35,12 @@ const Navbar = () => {
    return () => window.removeEventListener("scroll", handleScroll);
  }, []);
 
- const handleLogout = () => {
+ const handleLogout = async () => {
+   try {
+     await logoutApiCall().unwrap();
+   } catch (error) {
+     console.error("Logout failed", error);
+   }
    dispatch(logOut());
    toast.success("Logged out successfully.");
    navigate("/login");

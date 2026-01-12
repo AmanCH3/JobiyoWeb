@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registerUser, loginUser, updateProfile, getCurrentUser, getJobRecommendations, getUserPublicProfile, forgotPassword, verifyOTP, resetPassword, googleAuth, changePassword } from "../controllers/user.controller.js";
+import { registerUser, loginUser, updateProfile, getCurrentUser, getJobRecommendations, getUserPublicProfile, forgotPassword, verifyOTP, resetPassword, googleAuth, changePassword, logoutUser, refreshAccessToken } from "../controllers/user.controller.js";
 import { verifyJWT, requireNonExpiredPassword } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
 import { verifyRecaptcha } from "../middleware/recaptcha.middleware.js";
@@ -177,6 +177,10 @@ router.route("/register").post(verifyRecaptcha, registerUser);
  *         description: User does not exist.
  */
 router.route("/login").post(verifyRecaptcha, loginUser);
+
+// Secured Routes
+router.route("/logout").post(verifyJWT, logoutUser);
+router.route("/refresh-token").post(refreshAccessToken);
 
 /**
  * @swagger
