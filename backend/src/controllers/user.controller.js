@@ -16,7 +16,7 @@ import {
 } from "../utils/passwordUtils.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { COOKIE_OPTIONS } from "../constants.js";
+import { COOKIE_OPTIONS, ACCESS_COOKIE_OPTIONS, REFRESH_COOKIE_OPTIONS } from "../constants.js";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -122,12 +122,9 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
 
-  const options = COOKIE_OPTIONS;
-
-  return res
     .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
+    .cookie("accessToken", accessToken, ACCESS_COOKIE_OPTIONS)
+    .cookie("refreshToken", refreshToken, REFRESH_COOKIE_OPTIONS)
     .json(
       new ApiResponse(
         200,
@@ -233,14 +230,10 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
             throw new ApiError(401, "Refresh token is expired or used")
         }
         
-        const options = COOKIE_OPTIONS
-        
-        const { accessToken, refreshToken: newRefreshToken } = await generateAccessAndRefreshTokens(user._id)
-        
         return res
         .status(200)
-        .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", newRefreshToken, options)
+        .cookie("accessToken", accessToken, ACCESS_COOKIE_OPTIONS)
+        .cookie("refreshToken", newRefreshToken, REFRESH_COOKIE_OPTIONS)
         .json(
             new ApiResponse(
                 200,
@@ -474,12 +467,10 @@ const googleAuth = asyncHandler(async (req, res) => {
 
         const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
 
-        const options = COOKIE_OPTIONS;
-
         return res
             .status(200)
-            .cookie("accessToken", accessToken, options)
-            .cookie("refreshToken", refreshToken, options)
+            .cookie("accessToken", accessToken, ACCESS_COOKIE_OPTIONS)
+            .cookie("refreshToken", refreshToken, REFRESH_COOKIE_OPTIONS)
             .json(new ApiResponse(200, { user: loggedInUser, accessToken, refreshToken }, "Google login successful"));
 
     } catch (error) {
