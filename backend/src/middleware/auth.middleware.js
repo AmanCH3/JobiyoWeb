@@ -2,6 +2,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
 import { User } from "../models/user.model.js";
+import { isPasswordExpired } from "../utils/passwordUtils.js";
 
 export const verifyJWT = asyncHandler(async (req, _, next) => {
   try {
@@ -37,5 +38,18 @@ export const isRecruiter = asyncHandler(async(req, _, next) => {
     if (req.user?.role !== 'recruiter') {
         throw new ApiError(403, "Access denied. Only recruiters can perform this action.");
     }
+    next();
+});
+
+export const requireNonExpiredPassword = asyncHandler(async(req, _, next) => {
+    // Should verifyJWT first to populate req.user
+    if (!req.user) {
+        throw new ApiError(401, "Unauthorized request");
+    }
+
+    if (isPasswordExpired(req.user)) {
+        throw new ApiError(403, "Password expired. Please change your password.", [], "", "PASSWORD_EXPIRED");
+    }
+
     next();
 });

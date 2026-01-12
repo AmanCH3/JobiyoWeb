@@ -116,3 +116,27 @@ export const computePasswordExpiry = (passwordChangedAt) => {
     expiry.setDate(expiry.getDate() + PASSWORD_EXPIRE_DAYS);
     return expiry;
 };
+
+/**
+ * Checks if the password has expired.
+ * @param {object} user 
+ * @returns {boolean}
+ */
+export const isPasswordExpired = (user) => {
+    if (user.passwordExpiresAt && user.passwordExpiresAt < new Date()) {
+        return true;
+    }
+
+    if (user.passwordChangedAt) {
+        const expiry = computePasswordExpiry(user.passwordChangedAt);
+        if (expiry < new Date()) {
+            return true;
+        }
+    }
+    
+    // Fallback: If no dates set, maybe assume expired? Or assume valid for legacy?
+    // User policy implies rotation, so let's assume valid if not set for now to avoid locking out old users immediately, 
+    // or force them to rotate on next login if we want strictness. 
+    // Given the prompt "expired if now > passwordChangedAt + 90 days", implying if passwordChangedAt is present.
+    return false;
+};

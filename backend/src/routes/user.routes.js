@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { registerUser, loginUser, updateProfile, getCurrentUser, getJobRecommendations, getUserPublicProfile, forgotPassword, verifyOTP, resetPassword, googleAuth, changePassword } from "../controllers/user.controller.js";
-import { verifyJWT } from "../middleware/auth.middleware.js";
+import { verifyJWT, requireNonExpiredPassword } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
 import { verifyRecaptcha } from "../middleware/recaptcha.middleware.js";
 
@@ -198,7 +198,7 @@ router.route("/login").post(verifyRecaptcha, loginUser);
  *       '401':
  *         description: Unauthorized. Invalid or missing token.
  */
-router.route("/current-user").get(verifyJWT, getCurrentUser);
+router.route("/current-user").get(verifyJWT, requireNonExpiredPassword, getCurrentUser);
 
 /**
  * @swagger
@@ -239,6 +239,7 @@ router.route("/current-user").get(verifyJWT, getCurrentUser);
  */
 router.route("/update-profile").patch(
     verifyJWT,
+    requireNonExpiredPassword,
     upload.fields([{ name: 'avatar', maxCount: 1 }, { name: 'resume', maxCount: 1 }]),
     updateProfile
 );
@@ -264,7 +265,7 @@ router.route("/update-profile").patch(
  *       '404':
  *         description: User not found.
  */
-router.route("/profile/:userId").get(verifyJWT, getUserPublicProfile);
+router.route("/profile/:userId").get(verifyJWT, requireNonExpiredPassword, getUserPublicProfile);
 
 /**
  * @swagger
@@ -294,6 +295,6 @@ router.route("/reset-password").post(resetPassword);
 router.route("/auth/google").post(googleAuth);
 router.route("/change-password").post(verifyJWT, changePassword);
 
-router.route("/recommendations").get(verifyJWT, getJobRecommendations);
+router.route("/recommendations").get(verifyJWT, requireNonExpiredPassword, getJobRecommendations);
 
 export default router;
