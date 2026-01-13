@@ -23,6 +23,7 @@ import AdminUsers from './pages/admin/AdminUsers';
 import AdminChatbot from './pages/admin/AdminChatbot';
 import SystemLogs from './pages/admin/SystemLogs';
 import ActivityLogs from './pages/admin/ActivityLogs';
+import LogPolicies from './pages/admin/LogPolicies';
 import MyActivity from './pages/user/MyActivity';
 import SecurityLogs from './pages/user/SecurityLogs';
 import MyInterviews from './pages/shared/MyInterviews';
@@ -106,6 +107,7 @@ function App() {
          <Route path="chatbot" element={<AdminChatbot />} />
          <Route path="logs" element={<SystemLogs />} />
          <Route path="activity-logs" element={<ActivityLogs />} />
+         <Route path="log-policies" element={<LogPolicies />} />
        </Route>
 
        <Route

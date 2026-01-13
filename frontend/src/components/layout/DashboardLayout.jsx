@@ -37,6 +37,7 @@ const SidebarData = {
         { title: "User Management", path: "/admin/users", icon: <Users className="w-5 h-5" /> },
         { title: "Chatbot Settings", path: "/admin/chatbot", icon: <Bot className="w-5 h-5" /> },
         { title: "System Logs", path: "/admin/logs", icon: <ScrollText className="w-5 h-5" /> },
+        { title: "Logging Policies", path: "/admin/log-policies", icon: <ShieldCheck className="w-5 h-5" /> },
     ]
 };
 

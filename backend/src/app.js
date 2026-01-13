@@ -6,13 +6,19 @@ import { errorHandler } from "./middleware/error.middleware.js";
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import requestLogger from "./middleware/requestLogger.js";
-import { requestTracker } from "./middleware/requestTracker.js";
+import { requestId } from "./middleware/requestId.middleware.js";
+import { initLogRetention } from "./services/logRetention.service.js";
+
 const app = express();
+
+initLogRetention(); // Initialize Scheduled Jobs
 
 app.use(cors({
     origin: process.env.CORS_ORIGIN === "*" ? "https://localhost:5173" : process.env.CORS_ORIGIN,
     credentials: true,
 }));
+
+app.use(requestId); // Ensure Request ID is assigned early
 
 app.set('trust proxy', 1); // Trust first proxy (required for secure cookies in production)
 
@@ -29,7 +35,6 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
 app.use(requestLogger);
-app.use(requestTracker);
 
 const swaggerOptions = {
   definition: {

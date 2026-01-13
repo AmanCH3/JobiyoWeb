@@ -1,41 +1,5 @@
 import { ActivityLog } from "../models/activityLog.model.js";
-
-/**
- * Sanitizes metadata by removing sensitive keys.
- * @param {Object} data - The metadata object to sanitize.
- * @returns {Object} - The sanitized metadata.
- */
-const sanitizeMetadata = (data) => {
-  if (!data) return {};
-  const sensitiveKeys = [
-    "password",
-    "token",
-    "authorization",
-    "cookie",
-    "otp",
-    "card",
-    "cvv",
-    "secret",
-    "apiKey",
-    "creditCard",
-  ];
-
-  // Deep copy to avoid mutating original object
-  const sanitized = JSON.parse(JSON.stringify(data));
-
-  const mask = (obj) => {
-    for (const key in obj) {
-      if (typeof obj[key] === "object" && obj[key] !== null) {
-        mask(obj[key]);
-      } else if (sensitiveKeys.some((s) => key.toLowerCase().includes(s))) {
-        obj[key] = "***SANITIZED***";
-      }
-    }
-  };
-
-  mask(sanitized);
-  return sanitized;
-};
+import { sanitizePayload } from "./sanitizeLog.js";
 
 /**
  * Logs a user activity.
@@ -92,7 +56,8 @@ export const logActivity = async ({
       action,
       entityType,
       entityId,
-      metadata: sanitizeMetadata(metadata),
+      // Use the strict sanitizer
+      metadata: sanitizePayload(metadata),
       ip,
       userAgent,
       device,

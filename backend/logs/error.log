@@ -28,3 +28,4 @@
 {"level":"error","message":"Request Failed: GET /api/v1/security-logs?userId=696510f6351528c99cc49210&page=1&limit=10& | Status: 401 | User: Guest","timestamp":"2026-01-13T05:08:07.096Z"}
 {"level":"error","message":"Request Failed: GET /api/v1/security-logs?userId=69650fe553a7a5ccca1ae1c5&page=1&limit=10& | Status: 401 | User: Guest","timestamp":"2026-01-13T05:08:15.805Z"}
 {"level":"error","message":"Request Failed: GET /api/v1/security-logs?userId=696510f6351528c99cc49210&page=1&limit=10& | Status: 401 | User: Guest","timestamp":"2026-01-13T05:08:27.775Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/security-logs/export?startDate=2026-01-06&endDate=2026-01-13 | Status: 401 | User: Guest | ReqID: d9ec5f38-e84d-4295-9b36-a42dc68c5e26","timestamp":"2026-01-13T05:26:40.072Z"}

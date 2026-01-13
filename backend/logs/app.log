@@ -854,3 +854,14 @@
 {"level":"info","message":"Request Completed: GET /api/v1/security-logs?userId=69650fe553a7a5ccca1ae1c5&page=1&limit=10& | Status: 200 | User: Guest","timestamp":"2026-01-13T05:10:05.839Z"}
 {"level":"info","message":"Incoming Request: GET /api/v1/security-logs?userId=696510f6351528c99cc49210&page=1&limit=10& | User: Guest | IP: ::1","timestamp":"2026-01-13T05:11:40.989Z"}
 {"level":"info","message":"Request Completed: GET /api/v1/security-logs?userId=696510f6351528c99cc49210&page=1&limit=10& | Status: 304 | User: Guest","timestamp":"2026-01-13T05:11:41.033Z"}
+{"level":"info","message":"Incoming Request: GET /api/v1/security-logs?userId=696510f6351528c99cc49210&page=1&limit=5& | User: Guest | IP: ::1","timestamp":"2026-01-13T05:14:50.532Z"}
+{"level":"info","message":"Request Completed: GET /api/v1/security-logs?userId=696510f6351528c99cc49210&page=1&limit=5& | Status: 200 | User: Guest","timestamp":"2026-01-13T05:14:50.548Z"}
+{"level":"info","message":"Incoming Request: GET /api/v1/security-logs?userId=69650fe553a7a5ccca1ae1c5&page=1&limit=5& | User: Guest | IP: ::1","timestamp":"2026-01-13T05:14:52.880Z"}
+{"level":"info","message":"Request Completed: GET /api/v1/security-logs?userId=69650fe553a7a5ccca1ae1c5&page=1&limit=5& | Status: 200 | User: Guest","timestamp":"2026-01-13T05:14:52.894Z"}
+{"level":"info","message":"Incoming Request: GET /api/v1/admin/companies | User: Guest | IP: ::1 | ReqID: 210b2e68-9c38-4352-a019-3462767bd91d","timestamp":"2026-01-13T05:25:15.987Z"}
+{"level":"info","message":"Request Completed: GET /api/v1/admin/companies | Status: 200 | User: Guest | ReqID: 210b2e68-9c38-4352-a019-3462767bd91d","timestamp":"2026-01-13T05:25:16.035Z"}
+{"level":"info","message":"Incoming Request: GET /api/v1/admin/users | User: Guest | IP: ::1 | ReqID: 4d9616d7-ceb0-461a-aef5-553b860c4ccf","timestamp":"2026-01-13T05:26:22.662Z"}
+{"level":"info","message":"Request Completed: GET /api/v1/admin/users | Status: 304 | User: Guest | ReqID: 4d9616d7-ceb0-461a-aef5-553b860c4ccf","timestamp":"2026-01-13T05:26:22.695Z"}
+{"level":"info","message":"Incoming Request: GET /api/v1/security-logs/export?startDate=2026-01-06&endDate=2026-01-13 | User: Guest | IP: ::1 | ReqID: d9ec5f38-e84d-4295-9b36-a42dc68c5e26","timestamp":"2026-01-13T05:26:40.062Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/security-logs/export?startDate=2026-01-06&endDate=2026-01-13 | Status: 401 | User: Guest | ReqID: d9ec5f38-e84d-4295-9b36-a42dc68c5e26","timestamp":"2026-01-13T05:26:40.075Z"}
+{"level":"info","message":"Incoming Request: GET /api/v1/admin/logs | User: Guest | IP: ::1 | ReqID: 615f2c25-161b-40d8-8ed3-5d5bf3c03bd8","timestamp":"2026-01-13T05:27:05.279Z"}
