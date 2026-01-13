@@ -2,7 +2,7 @@ import { selectCurrentUser, setCredentials } from "@/redux/slices/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useUpdateProfileMutation } from "@/api/authApi";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+// import { toast } from "sonner"; // Removed
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, User, Mail, Link as LinkIcon, FileText } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useToast } from "@/context/ToastContext";
 
 const profileSchema = z.object({
   fullName: z.string().min(2, "Full name is required"),
@@ -24,6 +25,7 @@ const profileSchema = z.object({
 const Profile = () => {
     const dispatch = useDispatch();
     const user = useSelector(selectCurrentUser);
+    const { toast } = useToast();
     const [updateProfile, { isLoading }] = useUpdateProfileMutation();
     
     const [avatarPreview, setAvatarPreview] = useState(user?.profile?.avatar);

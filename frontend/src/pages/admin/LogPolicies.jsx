@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ShieldCheck, FileDown, Clock, Archive, AlertTriangle } from "lucide-react";
-import { toast } from 'sonner';
-
+import { useToast } from "@/context/ToastContext";
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '@/redux/slices/userSlice';
 
@@ -13,14 +12,10 @@ const LogPolicies = () => {
     const [isExporting, setIsExporting] = useState(false);
     const [startDate, setStartDate] = useState(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]); // 7 days ago
     const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
+    const { toast } = useToast();
     
     // Get token from Redux state for manual fetch
-    const token = useSelector(state => state.user.token); // Assuming token is at state.user.token based on slice conventions (or currentUser.token if nested)
-    // Actually let's check store.js or userSlice if we are unsure, but usually it's state.user.token or state.auth.token.
-    // Looking at dashboard layout imports: import { logOut, selectCurrentUser } from "@/redux/slices/userSlice";
-    // Usually selectCurrentUser returns user object, checks if token is inside user or separate.
-    // Let's assume state.user.token for now, or check userSlice. 
-    // Wait, earlier I saw `selectCurrentUser` returning `user` object.
+    const token = useSelector(state => state.user.token); 
     
     const handleExport = async () => {
         setIsExporting(true);
@@ -32,7 +27,7 @@ const LogPolicies = () => {
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
 
             if (diffDays > 30) {
-              toast.error("Export range cannot exceed 30 days.");
+              toast.error("Invalid Range", { description: "Export range cannot exceed 30 days." });
               setIsExporting(false);
               return;
             }
@@ -61,10 +56,14 @@ const LogPolicies = () => {
             window.URL.revokeObjectURL(url);
             document.body.removeChild(a);
             
-            toast.success("Logs exported successfully.");
+            toast.success("Export Complete", {
+                description: `Audit logs from ${startDate} to ${endDate} have been downloaded.`
+            });
         } catch (error) {
             console.error(error);
-            toast.error("Failed to export logs. Ensure you are an admin.");
+            toast.error("Export Failed", {
+                description: error.message || "Please ensure you have admin permissions."
+            });
         } finally {
             setIsExporting(false);
         }

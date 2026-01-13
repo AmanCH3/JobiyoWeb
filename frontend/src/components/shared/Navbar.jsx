@@ -14,15 +14,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogOut, User, Settings, LayoutDashboard, Briefcase, Calendar, Menu, X, Shield } from "lucide-react";
-import { toast } from "sonner";
+// import { toast } from "sonner"; // Removed
 import ChatNotification from "./ChatNotification";
 import { cn } from "@/lib/utils";
 import LogoutModal from "./LogoutModal";
+import { useToast } from "@/context/ToastContext";
 
 const Navbar = () => {
  const user = useSelector(selectCurrentUser);
  const dispatch = useDispatch();
  const navigate = useNavigate();
+ const { toast } = useToast();
  const [isScrolled, setIsScrolled] = useState(false);
  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);

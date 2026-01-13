@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 import { GoogleLogin } from '@react-oauth/google';
 import { useRegisterMutation, useGoogleAuthMutation } from "@/api/authApi";
 import { useDispatch } from "react-redux";
@@ -15,6 +14,7 @@ import { Loader2, Eye, EyeOff } from "lucide-react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useRef, useState } from "react"; 
 import PasswordStrengthMeter from "@/components/shared/PasswordStrengthMeter";
+import { useToast } from "@/context/ToastContext";
 
 const registerSchema = z.object({
   fullName: z.string().min(3, { message: "Full name must be at least 3 characters." }),
