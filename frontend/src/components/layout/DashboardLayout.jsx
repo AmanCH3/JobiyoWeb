@@ -23,6 +23,7 @@ import { logOut, selectCurrentUser } from "@/redux/slices/userSlice";
 import { useLogoutMutation } from "@/api/authApi";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import LogoutModal from "@/components/shared/LogoutModal";
 
 const SidebarData = {
     recruiter: [
@@ -46,6 +47,7 @@ const DashboardLayout = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const [logoutApiCall] = useLogoutMutation();
 
     const handleLogout = async () => {
@@ -124,7 +126,7 @@ const DashboardLayout = () => {
                 <Button 
                     variant="ghost" 
                     className="w-full justify-start gap-2 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 h-9"
-                    onClick={handleLogout}
+                    onClick={() => setIsLogoutModalOpen(true)}
                 >
                     <LogOut className="h-4 w-4" />
                     <span>Log Out</span>
@@ -189,6 +191,11 @@ const DashboardLayout = () => {
                     <Outlet />
                 </div>
             </main>
+            <LogoutModal 
+                open={isLogoutModalOpen} 
+                onClose={() => setIsLogoutModalOpen(false)} 
+                onConfirm={handleLogout} 
+            />
         </div>
     );
 };

@@ -17,6 +17,7 @@ import { LogOut, User, Settings, LayoutDashboard, Briefcase, Calendar, Menu, X, 
 import { toast } from "sonner";
 import ChatNotification from "./ChatNotification";
 import { cn } from "@/lib/utils";
+import LogoutModal from "./LogoutModal";
 
 const Navbar = () => {
  const user = useSelector(selectCurrentUser);
@@ -24,6 +25,7 @@ const Navbar = () => {
  const navigate = useNavigate();
  const [isScrolled, setIsScrolled] = useState(false);
  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+ const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
  const [logoutApiCall] = useLogoutMutation();
 
  useEffect(() => {
@@ -185,7 +187,7 @@ const Navbar = () => {
                     <span>Security Logs</span>
                  </DropdownMenuItem>
                  <DropdownMenuSeparator />
-                 <DropdownMenuItem onClick={handleLogout}>
+                 <DropdownMenuItem onClick={() => setIsLogoutModalOpen(true)}>
                    <LogOut className="mr-2 h-4 w-4" />
                    <span>Log out</span>
                  </DropdownMenuItem>
@@ -255,6 +257,11 @@ const Navbar = () => {
          </nav>
        </div>
      )}
+     <LogoutModal 
+        open={isLogoutModalOpen} 
+        onClose={() => setIsLogoutModalOpen(false)} 
+        onConfirm={handleLogout} 
+      />
    </header>
  );
 };
