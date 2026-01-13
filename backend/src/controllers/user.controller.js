@@ -122,6 +122,16 @@ const loginUser = asyncHandler(async (req, res) => {
         existingAttempt.attempts += 1;
         if (existingAttempt.attempts >= 5) {
             existingAttempt.blockExpires = Date.now() + 10 * 60 * 1000; // 10 minutes block
+            
+            // Log Suspicious Activity
+            await logActivity({ 
+                req, 
+                action: "SUSPICIOUS_ACTIVITY", 
+                status: "FAIL", 
+                severity: "CRITICAL", 
+                category: "SECURITY",
+                metadata: { email, reason: "Rate limit triggered (5 failed attempts)" } 
+            });
         }
         await existingAttempt.save();
     } else {
@@ -135,6 +145,7 @@ const loginUser = asyncHandler(async (req, res) => {
         action: "AUTH_LOGIN_FAIL", 
         status: "FAIL", 
         severity: "WARN", 
+        category: "SECURITY",
         metadata: { email, reason: "Invalid credentials" } 
     });
     throw new ApiError(401, "Invalid user credentials");
@@ -154,7 +165,7 @@ const loginUser = asyncHandler(async (req, res) => {
   // 2. generateAccessAndRefreshTokens() above rotates the refresh token in the DB, invalidating any old tokens.
   // Manually attach user to req for logging since verifyJWT didn't run
   req.user = loggedInUser;
-  await logActivity({ req, action: "AUTH_LOGIN", severity: "INFO" });
+  await logActivity({ req, action: "AUTH_LOGIN", severity: "INFO", category: "SECURITY" });
 
   return res
     .status(200)
@@ -253,7 +264,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 
     // SESSION FIXATION PROTECTION:
     // Explicitly destroy the session by removing the refresh token from DB and clearing cookies.
-    await logActivity({ req, action: "AUTH_LOGOUT", severity: "INFO" });
+    await logActivity({ req, action: "AUTH_LOGOUT", severity: "INFO", category: "SECURITY" });
 
     return res
         .status(200)
@@ -321,7 +332,11 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
     existingToken.revoked = new Date();
     existingToken.replacedByToken = newTokenHash;
+    existingToken.revoked = new Date();
+    existingToken.replacedByToken = newTokenHash;
     await existingToken.save();
+    
+    await logActivity({ req, action: "SESSION_REFRESHED", severity: "INFO", category: "SECURITY" });
     
     return res
     .status(200)
@@ -483,7 +498,7 @@ const resetPassword = asyncHandler(async (req, res) => {
     // The logger utility expects req.user. If undefined, it just logs unknown user.
     // We can manually reconstruct a partial user object for the logger.
     req.user = user; 
-    await logActivity({ req, action: "AUTH_PASSWORD_RESET", severity: "WARN", entityType: "USER", entityId: user._id });
+    await logActivity({ req, action: "AUTH_PASSWORD_RESET", severity: "WARN", category: "SECURITY", entityType: "USER", entityId: user._id });
 
     await user.save();
 
@@ -534,7 +549,7 @@ const changePassword = asyncHandler(async (req, res) => {
     
     const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
 
-    await logActivity({ req, action: "AUTH_PASSWORD_CHANGE", severity: "INFO", entityType: "USER", entityId: user._id });
+    await logActivity({ req, action: "AUTH_PASSWORD_CHANGE", severity: "INFO", category: "SECURITY", entityType: "USER", entityId: user._id });
 
     return res
         .status(200)
@@ -595,7 +610,7 @@ const googleAuth = asyncHandler(async (req, res) => {
         const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
 
         req.user = loggedInUser;
-        await logActivity({ req, action: "AUTH_LOGIN_GOOGLE", severity: "INFO", entityType: "USER", entityId: loggedInUser._id });
+        await logActivity({ req, action: "AUTH_LOGIN_GOOGLE", severity: "INFO", category: "SECURITY", entityType: "USER", entityId: loggedInUser._id });
 
         return res
             .status(200)

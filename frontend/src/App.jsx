@@ -24,6 +24,7 @@ import AdminChatbot from './pages/admin/AdminChatbot';
 import SystemLogs from './pages/admin/SystemLogs';
 import ActivityLogs from './pages/admin/ActivityLogs';
 import MyActivity from './pages/user/MyActivity';
+import SecurityLogs from './pages/user/SecurityLogs';
 import MyInterviews from './pages/shared/MyInterviews';
 import ChatPage from './pages/shared/ChatPage';
 import { Chatbot } from './components/shared/Chatbot';
@@ -139,6 +140,17 @@ function App() {
            <ProtectedRoute>
              <MainLayout>
                 <MyActivity />
+             </MainLayout>
+           </ProtectedRoute>
+         }
+       />
+       
+       <Route
+         path="/security-logs"
+         element={
+           <ProtectedRoute>
+             <MainLayout>
+                <SecurityLogs />
              </MainLayout>
            </ProtectedRoute>
          }

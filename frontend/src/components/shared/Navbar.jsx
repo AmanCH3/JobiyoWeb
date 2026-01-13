@@ -13,7 +13,7 @@ import {
  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LogOut, User, Settings, LayoutDashboard, Briefcase, Calendar, Menu, X } from "lucide-react";
+import { LogOut, User, Settings, LayoutDashboard, Briefcase, Calendar, Menu, X, Shield } from "lucide-react";
 import { toast } from "sonner";
 import ChatNotification from "./ChatNotification";
 import { cn } from "@/lib/utils";
@@ -179,6 +179,11 @@ const Navbar = () => {
                     </DropdownMenuItem>
                  )}
 
+                 <DropdownMenuSeparator />
+                 <DropdownMenuItem onClick={() => navigate('/security-logs')}>
+                    <Shield className="mr-2 h-4 w-4" />
+                    <span>Security Logs</span>
+                 </DropdownMenuItem>
                  <DropdownMenuSeparator />
                  <DropdownMenuItem onClick={handleLogout}>
                    <LogOut className="mr-2 h-4 w-4" />

@@ -47,6 +47,8 @@ const sanitizeMetadata = (data) => {
  * @param {Object} params.metadata - (Optional) Additional context data.
  * @param {string} params.status - 'SUCCESS' or 'FAIL'.
  * @param {string} params.severity - 'INFO', 'WARN', or 'CRITICAL'.
+ * @param {string} params.category - 'SECURITY', 'ACTIVITY', 'SYSTEM'.
+ * @param {string} params.userId - Explicit User ID override (e.g. for failed logins).
  */
 export const logActivity = async ({
   req,
@@ -56,6 +58,8 @@ export const logActivity = async ({
   metadata = {},
   status = "SUCCESS",
   severity = "INFO",
+  category = "ACTIVITY",
+  userId = null,
 }) => {
   try {
     const user = req.user;
@@ -67,9 +71,23 @@ export const logActivity = async ({
     const method = req.method;
     const requestId = req.requestId; // Assuming requestId middleware is active
 
+    // Simple device parsing from User-Agent
+    let device = "Unknown";
+    if (userAgent) {
+      if (userAgent.includes("Mobile")) device = "Mobile";
+      else if (userAgent.includes("Tablet")) device = "Tablet";
+      else device = "Desktop";
+      
+      if (userAgent.includes("Windows")) device += " (Windows)";
+      else if (userAgent.includes("Mac")) device += " (Mac)";
+      else if (userAgent.includes("Linux")) device += " (Linux)";
+      else if (userAgent.includes("Android")) device += " (Android)";
+      else if (userAgent.includes("iPhone") || userAgent.includes("iPad")) device += " (iOS)";
+    }
+
     const logEntry = {
-      userId: user?._id,
-      userEmail: user?.email,
+      userId: userId || user?._id,
+      userEmail: user?.email, // Note: For failed logins, this might need manual passing if we want it, but usually userId=null is enough or pass via metadata
       role: user?.role,
       action,
       entityType,
@@ -77,18 +95,22 @@ export const logActivity = async ({
       metadata: sanitizeMetadata(metadata),
       ip,
       userAgent,
+      device,
       endpoint,
       method,
       status,
       severity,
       requestId,
+      category,
     };
 
-    // Fire and forget - don't await strictly if performance is key, 
-    // but catching errors is good for stability.
+    // Fire and forget
     await ActivityLog.create(logEntry);
   } catch (error) {
     console.error("Activity Logging Failed:", error);
-    // Silent fail to not disrupt main flow
   }
+};
+
+export const logSecurityEvent = async (params) => {
+  return logActivity({ ...params, category: "SECURITY" });
 };

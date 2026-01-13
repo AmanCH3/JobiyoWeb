@@ -78,6 +78,7 @@ import interviewRouter from "./routes/interview.routes.js";
 import chatRouter from "./routes/chat.routes.js";
 import logRouter from "./routes/logRoutes.js";
 import activityLogRouter from "./routes/activityLog.routes.js";
+import securityLogRouter from "./routes/securityLog.routes.js";
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use("/api/v1/users", userRouter);
@@ -92,6 +93,7 @@ app.use("/api/v1/chats", chatRouter);
 app.use("/api/v1/promotions", promotionRouter);
 app.use("/api/v1/admin/logs", logRouter);
 app.use("/api/v1/activity-logs", activityLogRouter);
+app.use("/api/v1/security-logs", securityLogRouter);
 app.use(errorHandler);
 
 export { app };

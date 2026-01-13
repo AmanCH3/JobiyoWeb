@@ -57,6 +57,15 @@ const activityLogSchema = new mongoose.Schema(
     requestId: {
       type: String,
     },
+    category: {
+      type: String,
+      enum: ["SECURITY", "ACTIVITY", "SYSTEM"],
+      default: "ACTIVITY",
+      index: true,
+    },
+    device: {
+      type: String,
+    },
   },
   { timestamps: true } // adds createdAt, updatedAt
 );

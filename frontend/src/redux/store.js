@@ -15,6 +15,7 @@ import { interviewApi } from "@/api/interviewApi";
 import { chatbotApi } from "@/api/chatbotApi";
 import { promotionApi } from "@/api/promotionApi";
 import { activityLogApi } from "@/api/activityLogApi";
+import { securityLogApi } from "@/api/securityLogApi";
 import chatNotificationReducer from './slices/chatNotificationSlice';
 const persistConfig = {
  key: 'root',
@@ -37,6 +38,7 @@ const rootReducer = combineReducers({
    [chatbotApi.reducerPath]: chatbotApi.reducer,
    [promotionApi.reducerPath]: promotionApi.reducer,
    [activityLogApi.reducerPath]: activityLogApi.reducer,
+   [securityLogApi.reducerPath]: securityLogApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -60,6 +62,7 @@ export const store = configureStore({
        chatbotApi.middleware,
        promotionApi.middleware,
        activityLogApi.middleware,
+       securityLogApi.middleware,
    ).concat(rtkQueryErrorLogger),
 });
 
