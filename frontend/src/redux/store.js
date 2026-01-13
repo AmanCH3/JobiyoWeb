@@ -13,6 +13,8 @@ import { adminApi } from "@/api/adminApi";
 import { chatApi } from "@/api/chatApi";
 import { interviewApi } from "@/api/interviewApi";
 import { chatbotApi } from "@/api/chatbotApi";
+import { promotionApi } from "@/api/promotionApi";
+import { activityLogApi } from "@/api/activityLogApi";
 import chatNotificationReducer from './slices/chatNotificationSlice';
 const persistConfig = {
  key: 'root',
@@ -33,6 +35,8 @@ const rootReducer = combineReducers({
    [chatApi.reducerPath]: chatApi.reducer,
    [interviewApi.reducerPath]: interviewApi.reducer,
    [chatbotApi.reducerPath]: chatbotApi.reducer,
+   [promotionApi.reducerPath]: promotionApi.reducer,
+   [activityLogApi.reducerPath]: activityLogApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -54,6 +58,8 @@ export const store = configureStore({
        chatApi.middleware,
        interviewApi.middleware,
        chatbotApi.middleware,
+       promotionApi.middleware,
+       activityLogApi.middleware,
    ).concat(rtkQueryErrorLogger),
 });
 

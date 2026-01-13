@@ -6,6 +6,7 @@ import { errorHandler } from "./middleware/error.middleware.js";
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import requestLogger from "./middleware/requestLogger.js";
+import { requestTracker } from "./middleware/requestTracker.js";
 const app = express();
 
 app.use(cors({
@@ -28,6 +29,7 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
 app.use(requestLogger);
+app.use(requestTracker);
 
 const swaggerOptions = {
   definition: {
@@ -75,6 +77,7 @@ import chatbotRouter from "./routes/chatbot.routes.js";
 import interviewRouter from "./routes/interview.routes.js";
 import chatRouter from "./routes/chat.routes.js";
 import logRouter from "./routes/logRoutes.js";
+import activityLogRouter from "./routes/activityLog.routes.js";
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use("/api/v1/users", userRouter);
@@ -88,6 +91,7 @@ app.use("/api/v1/interviews", interviewRouter);
 app.use("/api/v1/chats", chatRouter);  
 app.use("/api/v1/promotions", promotionRouter);
 app.use("/api/v1/admin/logs", logRouter);
+app.use("/api/v1/activity-logs", activityLogRouter);
 app.use(errorHandler);
 
 export { app };

@@ -119,8 +119,22 @@ const JobsPublic = () => {
                 </div>
             )}
 
-            {!isLoading && !isError && jobs?.length > 0 && (
+            {!isLoading && !isError && (
                 <>
+                    {/* Featured/Pinned Jobs Section */}
+                    {data?.pinned?.length > 0 && (
+                        <div className="mb-12">
+                             <div className="flex items-center gap-2 mb-6">
+                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Featured Opportunities</h2>
+                                <span className="px-2 py-0.5 rounded text-xs font-bold bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 uppercase tracking-wide">Promoted</span>
+                             </div>
+                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 border-b border-gray-100 dark:border-slate-800 pb-12">
+                                {data.pinned.map(job => <JobCard key={job._id} job={job} />)}
+                             </div>
+                        </div>
+                    )}
+
+                    {/* Standard Jobs Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
                         {jobs.map(job => <JobCard key={job._id} job={job} />)}
                     </div>

@@ -7,6 +7,7 @@ const VITE_API_BASE_URL = "/api/v1";
 
 const baseQuery = fetchBaseQuery({
     baseUrl: VITE_API_BASE_URL,
+    credentials: 'include', // Include cookies for auth
     prepareHeaders: (headers, { getState }) => {
         const token = getState().user.token;
         if (token) {

@@ -36,12 +36,18 @@ const transports = [
   new winston.transports.File({
     filename: path.join('logs', 'error.log'),
     level: 'error',
-    format: winston.format.json(),
+    format: winston.format.combine(
+      winston.format.timestamp(),
+      winston.format.json()
+    ),
   }),
   new winston.transports.File({
     filename: path.join('logs', 'app.log'),
     level: 'info', // Captures info, warn, and error
-    format: winston.format.json(),
+    format: winston.format.combine(
+      winston.format.timestamp(),
+      winston.format.json()
+    ),
   }),
 ];
 

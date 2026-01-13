@@ -22,6 +22,8 @@ import AdminCompanies from './pages/admin/AdminCompanies';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminChatbot from './pages/admin/AdminChatbot';
 import SystemLogs from './pages/admin/SystemLogs';
+import ActivityLogs from './pages/admin/ActivityLogs';
+import MyActivity from './pages/user/MyActivity';
 import MyInterviews from './pages/shared/MyInterviews';
 import ChatPage from './pages/shared/ChatPage';
 import { Chatbot } from './components/shared/Chatbot';
@@ -52,9 +54,7 @@ function App() {
          <Route path="contact" element={<Contact />} />
        </Route>
 
-import ChangePassword from './pages/Auth/ChangePassword';
 
-// ... (in routes)
        {/* Unified Auth Page with animated transitions */}
        <Route path="/login" element={<AuthPage />} />
        <Route path="/register" element={<AuthPage />} />
@@ -104,6 +104,7 @@ import ChangePassword from './pages/Auth/ChangePassword';
          <Route path="users" element={<AdminUsers />} />
          <Route path="chatbot" element={<AdminChatbot />} />
          <Route path="logs" element={<SystemLogs />} />
+         <Route path="activity-logs" element={<ActivityLogs />} />
        </Route>
 
        <Route
@@ -131,6 +132,17 @@ import ChangePassword from './pages/Auth/ChangePassword';
          }
        />
        </Route>
+
+       <Route
+         path="/my-activity"
+         element={
+           <ProtectedRoute>
+             <MainLayout>
+                <MyActivity />
+             </MainLayout>
+           </ProtectedRoute>
+         }
+       />
 
               <Route path="*" element={<NotFound />} />
 

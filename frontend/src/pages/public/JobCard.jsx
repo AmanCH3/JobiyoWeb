@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { MapPin, Building2, Bookmark } from "lucide-react";
+import { MapPin, Building2, Bookmark, Star, TrendingUp } from "lucide-react";
 import { useState } from "react";
 
 // Fallback company logos from real companies
@@ -46,9 +46,28 @@ const JobCard = ({ job }) => {
   const [saved, setSaved] = useState(false);
   const [imageError, setImageError] = useState(false);
   const companyLogo = job.company?.logo || getFallbackLogo(job.company?.name);
+  
+  const isPromoted = job.promotion?.type === 'PROMOTED';
+  const isFeatured = job.promotion?.type === 'FEATURED';
+  const hasBoost = isPromoted || isFeatured;
 
   return (
-    <Card className="relative bg-gray-50 dark:bg-slate-800/50 hover:bg-emerald-300 dark:hover:bg-emerald-800/30 rounded-3xl p-6 border border-transparent hover:border-emerald-300 dark:hover:border-emerald-700 hover:shadow-[0_20px_50px_-12px_rgba(16,185,129,0.25)] hover:-translate-y-2 transition-all duration-300 cursor-pointer group">
+    <Card className={`relative rounded-3xl p-6 transition-all duration-300 cursor-pointer group
+        ${hasBoost ? 'border-2 border-emerald-500/30 dark:border-emerald-500/30 shadow-lg shadow-emerald-500/5' : 'border border-transparent hover:border-emerald-300 dark:hover:border-emerald-700 hover:shadow-lg'}
+        bg-gray-50 dark:bg-slate-800/50 hover:-translate-y-2
+    `}>
+      {hasBoost && (
+          <div className="absolute -top-3 right-6 z-10">
+              <Badge className={`
+                  ${isPromoted ? 'bg-purple-600 hover:bg-purple-700' : 'bg-emerald-600 hover:bg-emerald-700'} 
+                  text-white border-0 px-3 py-1 shadow-md flex items-center gap-1.5
+              `}>
+                  {isPromoted ? <TrendingUp className="w-3 h-3" /> : <Star className="w-3 h-3" />}
+                  {isPromoted ? 'Promoted' : 'Featured'}
+              </Badge>
+          </div>
+      )}
+
       {/* Header - Logo and Save Button */}
       <div className="flex items-start justify-between mb-5">
         {/* Company Logo */}
@@ -85,7 +104,7 @@ const JobCard = ({ job }) => {
       </div>
 
       {/* Job Title */}
-      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 line-clamp-2">
         {job.title}
       </h3>
 

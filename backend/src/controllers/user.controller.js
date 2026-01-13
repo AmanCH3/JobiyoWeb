@@ -18,6 +18,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { COOKIE_OPTIONS, ACCESS_COOKIE_OPTIONS, REFRESH_COOKIE_OPTIONS } from "../constants.js";
 import { RefreshToken } from "../models/refreshToken.model.js";
+import { logActivity } from "../utils/activityLogger.js";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -84,6 +85,9 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Something went wrong while registering the user");
   }
 
+  req.user = createdUser; // Set for logger
+  await logActivity({ req, action: "AUTH_REGISTER", severity: "INFO", entityType: "USER", entityId: createdUser._id });
+
   return res.status(201).json(new ApiResponse(201, createdUser, "User registered Successfully"));
 });
 
@@ -126,6 +130,13 @@ const loginUser = asyncHandler(async (req, res) => {
             attempts: 1,
         });
     }
+    await logActivity({ 
+        req, 
+        action: "AUTH_LOGIN_FAIL", 
+        status: "FAIL", 
+        severity: "WARN", 
+        metadata: { email, reason: "Invalid credentials" } 
+    });
     throw new ApiError(401, "Invalid user credentials");
   }
 
@@ -141,6 +152,10 @@ const loginUser = asyncHandler(async (req, res) => {
   // SESSION FIXATION PROTECTION:
   // 1. Clear any existing session cookies before setting new ones to ensure no pre-login context remains.
   // 2. generateAccessAndRefreshTokens() above rotates the refresh token in the DB, invalidating any old tokens.
+  // Manually attach user to req for logging since verifyJWT didn't run
+  req.user = loggedInUser;
+  await logActivity({ req, action: "AUTH_LOGIN", severity: "INFO" });
+
   return res
     .status(200)
     .clearCookie("accessToken", COOKIE_OPTIONS)
@@ -198,6 +213,15 @@ const updateProfile = asyncHandler(async (req, res) => {
 
     const updatedUser = await User.findById(req.user._id).select("-password -refreshToken");
 
+    // Log the profile update
+    await logActivity({ 
+        req, 
+        action: "PROFILE_UPDATE", 
+        entityType: "USER", 
+        entityId: updatedUser._id,
+        metadata: { updatedFields: Object.keys(req.body) }
+    });
+
     return res
         .status(200)
         .json(new ApiResponse(200, updatedUser, "Profile updated successfully"));
@@ -229,6 +253,8 @@ const logoutUser = asyncHandler(async (req, res) => {
 
     // SESSION FIXATION PROTECTION:
     // Explicitly destroy the session by removing the refresh token from DB and clearing cookies.
+    await logActivity({ req, action: "AUTH_LOGOUT", severity: "INFO" });
+
     return res
         .status(200)
         .clearCookie("accessToken", COOKIE_OPTIONS)
@@ -452,6 +478,13 @@ const resetPassword = asyncHandler(async (req, res) => {
         { revoked: new Date() }
     );
 
+    // Hack: Attach user to req for logging since this might be a public endpoint (forgot password flow)
+    // Actually, req.user might be undefined if this is public.
+    // The logger utility expects req.user. If undefined, it just logs unknown user.
+    // We can manually reconstruct a partial user object for the logger.
+    req.user = user; 
+    await logActivity({ req, action: "AUTH_PASSWORD_RESET", severity: "WARN", entityType: "USER", entityId: user._id });
+
     await user.save();
 
     return res.status(200).json(new ApiResponse(200, {}, "Password reset successfully"));
@@ -500,6 +533,8 @@ const changePassword = asyncHandler(async (req, res) => {
     );
     
     const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+
+    await logActivity({ req, action: "AUTH_PASSWORD_CHANGE", severity: "INFO", entityType: "USER", entityId: user._id });
 
     return res
         .status(200)
@@ -558,6 +593,9 @@ const googleAuth = asyncHandler(async (req, res) => {
         const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
 
         const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
+
+        req.user = loggedInUser;
+        await logActivity({ req, action: "AUTH_LOGIN_GOOGLE", severity: "INFO", entityType: "USER", entityId: loggedInUser._id });
 
         return res
             .status(200)

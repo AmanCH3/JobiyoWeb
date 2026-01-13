@@ -4,6 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { Job } from "../models/job.model.js";
 import { Company } from "../models/company.model.js";
 import { JobPromotion } from "../models/jobPromotion.model.js";
+import { logActivity } from "../utils/activityLogger.js";
 
 
 const postJob = asyncHandler(async (req, res) => {
@@ -34,6 +35,8 @@ const postJob = asyncHandler(async (req, res) => {
         postedBy: req.user._id,
     });
 
+    await logActivity({ req, action: "JOB_CREATE", severity: "INFO", entityType: "JOB", entityId: job._id });
+
     return res.status(201).json(new ApiResponse(201, job, "Job posted successfully"));
 });
 
@@ -57,6 +60,8 @@ const updateJob = asyncHandler(async (req, res) => {
 
     const updatedJob = await Job.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
 
+    await logActivity({ req, action: "JOB_UPDATE", severity: "INFO", entityType: "JOB", entityId: updatedJob._id, metadata: { updatedFields: Object.keys(req.body) } });
+
     return res.status(200).json(new ApiResponse(200, updatedJob, "Job updated successfully"));
 });
 
@@ -74,6 +79,8 @@ const deleteJob = asyncHandler(async (req, res) => {
     }
     
     await job.deleteOne();
+
+    await logActivity({ req, action: "JOB_DELETE", severity: "WARN", entityType: "JOB", entityId: id });
 
     return res.status(200).json(new ApiResponse(200, {}, "Job deleted successfully"));
 });
