@@ -958,3 +958,5 @@
 {"level":"info","message":"Request Completed: GET /api/v1/chats | Status: 304 | User: Guest | ReqID: 78e627c7-1448-4d15-b335-e9d308ac237e","timestamp":"2026-01-13T06:01:03.358Z"}
 {"level":"info","message":"Request Completed: GET /api/v1/companies/public | Status: 304 | User: Guest | ReqID: 425891d2-405e-427a-9639-9d1730b4f115","timestamp":"2026-01-13T06:01:03.363Z"}
 {"level":"info","message":"Request Completed: GET /api/v1/jobs/public? | Status: 304 | User: Guest | ReqID: 377e7841-ca7c-4394-8178-9be076c15855","timestamp":"2026-01-13T06:01:03.391Z"}
+{"level":"info","message":"Incoming Request: POST /api/v1/users/logout | User: Guest | IP: ::1 | ReqID: 1a7b9251-dc1f-40e9-8517-e1b994f9462e","timestamp":"2026-01-13T06:02:56.878Z"}
+{"level":"info","message":"Request Completed: POST /api/v1/users/logout | Status: 200 | User: Guest | ReqID: 1a7b9251-dc1f-40e9-8517-e1b994f9462e","timestamp":"2026-01-13T06:02:56.917Z"}
