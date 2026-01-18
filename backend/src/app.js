@@ -10,31 +10,59 @@ import { requestId } from "./middleware/requestId.middleware.js";
 import { initLogRetention } from "./services/logRetention.service.js";
 
 const app = express();
-
 initLogRetention(); // Initialize Scheduled Jobs
-
 app.use(cors({
     origin: process.env.CORS_ORIGIN === "*" ? "https://localhost:5173" : process.env.CORS_ORIGIN,
     credentials: true,
 }));
-
 app.use(requestId); // Ensure Request ID is assigned early
-
 app.set('trust proxy', 1); // Trust first proxy (required for secure cookies in production)
 
-app.use(helmet()); // Set security headers
+// ============================================
+// HELMET.JS - HTTP Header Security Configuration
+// Protects against XSS, clickjacking, and data leakage
+// ============================================
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "https://accounts.google.com", "https://www.gstatic.com"],
+            styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://accounts.google.com"],
+            imgSrc: ["'self'", "data:", "blob:", "https:", "http:"],
+            fontSrc: ["'self'", "https://fonts.gstatic.com"],
+            connectSrc: ["'self'", "https://accounts.google.com", "wss:", "ws:"],
+            frameSrc: ["'self'", "https://accounts.google.com", "https://www.google.com"],
+            objectSrc: ["'none'"],
+            upgradeInsecureRequests: [],
+        },
+    },
+    frameguard: { action: 'deny' },
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+    noSniff: true,
+    dnsPrefetchControl: { allow: false },
+    ieNoOpen: true,
+    permittedCrossDomainPolicies: { permittedPolicies: 'none' },
+    hsts: {
+        maxAge: 31536000, 
+        includeSubDomains: true,
+        preload: true,
+    },
+    xssFilter: true,
+    hidePoweredBy: true,
+}));
 
-// app.use(helmet()); // Removed duplicate
-
-// Stripe Webhook requires RAW body for signature verification.
-// Handled in promotion.routes.js now
 import promotionRouter from "./routes/promotion.routes.js";
+
+import mongoSanitize from 'express-mongo-sanitize';
 
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
 app.use(requestLogger);
+
+// Data Sanitization against NoSQL query injection
+app.use(mongoSanitize());
 
 const swaggerOptions = {
   definition: {

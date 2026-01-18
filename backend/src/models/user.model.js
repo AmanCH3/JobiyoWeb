@@ -59,6 +59,26 @@ const userSchema = new mongoose.Schema(
     passwordExpiresAt: {
       type: Date,
     },
+    twoFactorEnabled: {
+      type: Boolean,
+      default: false
+    },
+    loginOTP: {
+      type: String
+    },
+    loginOTPExpiry: {
+      type: Date
+    },
+    isEmailVerified: {
+      type: Boolean,
+      default: false
+    },
+    emailVerificationOTP: {
+      type: String
+    },
+    emailVerificationOTPExpiry: {
+      type: Date
+    },
     passwordHistory: [
       {
         hash: { type: String, required: true },

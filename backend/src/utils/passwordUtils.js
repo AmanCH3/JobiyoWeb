@@ -4,20 +4,6 @@ import bcrypt from 'bcryptjs';
 export const PASSWORD_MIN_LEN = 8;
 export const PASSWORD_HISTORY_COUNT = 5;
 export const PASSWORD_EXPIRE_DAYS = 90;
-
-/**
- * Validates password against policy:
- * - Minimum length (8)
- * - At least one uppercase letter
- * - At least one lowercase letter
- * - At least one number
- * - At least one special character
- * - Not in common blocklist
- * - Does not contain parts of user's full name
- * @param {string} password 
- * @param {object} [user] - User object containing fullName (optional)
- * @returns {object} { isValid: boolean, message: string }
- */
 export const validatePasswordPolicy = (password, user = null) => {
     const details = [];
     
@@ -68,7 +54,6 @@ export const isPasswordReused = async (user, newPassword) => {
     if (!user.passwordHistory || user.passwordHistory.length === 0) {
         return false;
     }
-
     // Check current password as well if needed (though usually history covers it if we push before save)
     // But typically we check history.
     for (const historyItem of user.passwordHistory) {

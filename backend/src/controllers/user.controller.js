@@ -6,7 +6,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import path from "path";
 import sendEmail from "../utils/sendEmail.js";
 import crypto from "crypto";
-import { getPasswordResetTemplate } from "../utils/emailTemplates.js";
+import { getPasswordResetTemplate, get2FAVerificationTemplate, getVerificationEmailTemplate } from "../utils/emailTemplates.js";
 import { OAuth2Client } from 'google-auth-library';
 import { LoginAttempt } from "../models/loginAttempt.model.js";
 import { 
@@ -54,14 +54,17 @@ const generateAccessAndRefreshTokens = async (userId) => {
 
 const registerUser = asyncHandler(async (req, res) => {
   const { fullName, email, phoneNumber, password, role } = req.body;
+  console.log("Register Request Body:", { fullName, email, phoneNumber, role, password: password ? "***" : "MISSING" });
 
   if ([fullName, email, phoneNumber, password, role].some((field) => field?.trim() === "")) {
+    console.error("Validation Failed: Missing required fields");
     throw new ApiError(400, "All fields are required");
   }
 
   // Validate Password Policy
   const passwordCheck = validatePasswordPolicy(password, { fullName });
   if (!passwordCheck.isValid) {
+      console.error("Password Policy Failed:", passwordCheck.message, passwordCheck.details);
       throw new ApiError(400, passwordCheck.message, passwordCheck.details, "", "WEAK_PASSWORD");
   }
 
@@ -85,10 +88,82 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Something went wrong while registering the user");
   }
 
-  req.user = createdUser; // Set for logger
-  await logActivity({ req, action: "AUTH_REGISTER", severity: "INFO", entityType: "USER", entityId: createdUser._id });
+  // Generate 6 digit OTP for Email Verification
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  createdUser.emailVerificationOTP = otp;
+  createdUser.emailVerificationOTPExpiry = Date.now() + 5 * 60 * 1000; // 5 minutes
+  await createdUser.save({ validateBeforeSave: false });
 
-  return res.status(201).json(new ApiResponse(201, createdUser, "User registered Successfully"));
+  // Send Verification Email
+  try {
+      await sendEmail({
+          email: createdUser.email,
+          subject: "Verify your email address - Jobiyo",
+          html: getVerificationEmailTemplate(otp, createdUser.email)
+      });
+  } catch (emailError) {
+      console.error("Failed to send verification email:", emailError);
+      // We don't rollback registration, but user will need to resend OTP logic if we implemented resend
+      // for now, allow them to proceed to verify step (they might not get email, which is an issue)
+      // Ideally rollback or warn.
+  }
+
+  req.user = createdUser; // Set for logger
+  await logActivity({ req, action: "AUTH_REGISTER_INIT", severity: "INFO", entityType: "USER", entityId: createdUser._id });
+
+  return res.status(201).json(new ApiResponse(201, { email: createdUser.email }, "User registered successfully. Please verify your email."));
+});
+
+const verifyEmail = asyncHandler(async (req, res) => {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+        throw new ApiError(400, "Email and OTP are required");
+    }
+
+    const user = await User.findOne({
+        email,
+        emailVerificationOTP: otp,
+        emailVerificationOTPExpiry: { $gt: Date.now() }
+    });
+
+    if (!user) {
+        throw new ApiError(400, "Invalid or Expired OTP");
+    }
+
+    user.isEmailVerified = true;
+    user.emailVerificationOTP = undefined;
+    user.emailVerificationOTPExpiry = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+
+    const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
+
+    await logActivity({ 
+        req, 
+        action: "AUTH_EMAIL_VERIFIED", 
+        severity: "INFO", 
+        entityType: "USER", 
+        entityId: user._id,
+        user: user // ensure user is attached for log logic
+    });
+
+    return res
+        .status(200)
+        .cookie("accessToken", accessToken, ACCESS_COOKIE_OPTIONS)
+        .cookie("refreshToken", refreshToken, REFRESH_COOKIE_OPTIONS)
+        .json(
+            new ApiResponse(
+                200,
+                {
+                    user: loggedInUser,
+                    accessToken,
+                    refreshToken,
+                },
+                "Email verified successfully. You are now logged in."
+            )
+        );
 });
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -111,6 +186,10 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(404, "User does not exist");
   }
 
+  if (!user.isEmailVerified) {
+      throw new ApiError(403, "Please verify your email address before logging in.", { requiresVerification: true, email: user.email });
+  }
+
   if (user.role !== role) {
     throw new ApiError(403, `User is not registered as a ${role}.`);
   }
@@ -118,28 +197,32 @@ const loginUser = asyncHandler(async (req, res) => {
   const isPasswordValid = await user.isPasswordCorrect(password);
 
   if (!isPasswordValid) {
-    if (existingAttempt) {
-        existingAttempt.attempts += 1;
-        if (existingAttempt.attempts >= 5) {
-            existingAttempt.blockExpires = Date.now() + 10 * 60 * 1000; // 10 minutes block
-            
-            // Log Suspicious Activity
-            await logActivity({ 
-                req, 
-                action: "SUSPICIOUS_ACTIVITY", 
-                status: "FAIL", 
-                severity: "CRITICAL", 
-                category: "SECURITY",
-                metadata: { email, reason: "Rate limit triggered (5 failed attempts)" } 
-            });
-        }
-        await existingAttempt.save();
-    } else {
-        await LoginAttempt.create({
-            email,
-            attempts: 1,
+    // Atomic increment to prevent race conditions
+    const updatedAttempt = await LoginAttempt.findOneAndUpdate(
+        { email },
+        { $inc: { attempts: 1 } },
+        { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
+
+    if (updatedAttempt.attempts >= 5 && (!updatedAttempt.blockExpires || updatedAttempt.blockExpires < Date.now())) {
+        updatedAttempt.blockExpires = Date.now() + 10 * 60 * 1000; // 10 minutes block
+        await updatedAttempt.save();
+        
+        // Log Suspicious Activity
+        await logActivity({ 
+            req, 
+            action: "SUSPICIOUS_ACTIVITY", 
+            status: "FAIL", 
+            severity: "CRITICAL", 
+            category: "SECURITY",
+            metadata: { email, reason: "Rate limit triggered (5 failed attempts)" } 
         });
+
+        // Throw 429 immediately so user knows they are blocked
+        throw new ApiError(429, "Too many login attempts. Account locked for 10 minutes.");
     }
+
+    // Log normal login failure
     await logActivity({ 
         req, 
         action: "AUTH_LOGIN_FAIL", 
@@ -148,6 +231,7 @@ const loginUser = asyncHandler(async (req, res) => {
         category: "SECURITY",
         metadata: { email, reason: "Invalid credentials" } 
     });
+
     throw new ApiError(401, "Invalid user credentials");
   }
 
@@ -156,9 +240,38 @@ const loginUser = asyncHandler(async (req, res) => {
       await LoginAttempt.deleteOne({ email });
   }
 
+  // Check for 2FA
+  if (user.twoFactorEnabled) {
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      user.loginOTP = otp;
+      user.loginOTPExpiry = Date.now() + 5 * 60 * 1000; // 5 minutes
+      await user.save({ validateBeforeSave: false });
+
+      const message = `Your 2FA verification code is: ${otp}`;
+      const htmlEmail = get2FAVerificationTemplate(otp);
+
+      try {
+          await sendEmail({
+              email: user.email,
+              subject: `Jobiyo Login Verification`,
+              message,
+              html: htmlEmail,
+          });
+
+          return res.status(200).json(
+              new ApiResponse(200, { requiresVerification: true, email: user.email }, "2FA verification code sent to your email")
+          );
+      } catch (error) {
+          user.loginOTP = undefined;
+          user.loginOTPExpiry = undefined;
+          await user.save({ validateBeforeSave: false });
+          throw new ApiError(500, "Failed to send verification email");
+      }
+  }
+
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
 
-  const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
+  const loggedInUser = await User.findById(user._id).select("-password -refreshToken -loginOTP -loginOTPExpiry");
 
   // SESSION FIXATION PROTECTION:
   // 1. Clear any existing session cookies before setting new ones to ensure no pre-login context remains.
@@ -183,6 +296,73 @@ const loginUser = asyncHandler(async (req, res) => {
         },
         "User logged In Successfully"
       )
+    );
+});
+
+const verifyLoginOTP = asyncHandler(async (req, res) => {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+        throw new ApiError(400, "Email and OTP are required");
+    }
+
+    const user = await User.findOne({ 
+        email,
+        loginOTP: otp,
+        loginOTPExpiry: { $gt: Date.now() }
+    });
+
+    if (!user) {
+        throw new ApiError(400, "Invalid or Expired OTP");
+    }
+
+    // Clear OTP
+    user.loginOTP = undefined;
+    user.loginOTPExpiry = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+    const loggedInUser = await User.findById(user._id).select("-password -refreshToken -loginOTP -loginOTPExpiry");
+
+    req.user = loggedInUser;
+    await logActivity({ req, action: "AUTH_LOGIN_2FA", severity: "INFO", category: "SECURITY" });
+
+    return res
+        .status(200)
+        .clearCookie("accessToken", COOKIE_OPTIONS)
+        .clearCookie("refreshToken", COOKIE_OPTIONS)
+        .cookie("accessToken", accessToken, ACCESS_COOKIE_OPTIONS)
+        .cookie("refreshToken", refreshToken, REFRESH_COOKIE_OPTIONS)
+        .json(
+            new ApiResponse(
+                200,
+                {
+                    user: loggedInUser,
+                    accessToken,
+                    refreshToken,
+                },
+                "2FA Verified Successfully"
+            )
+        );
+});
+
+const toggle2FA = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    user.twoFactorEnabled = !user.twoFactorEnabled;
+    await user.save({ validateBeforeSave: false });
+
+    const status = user.twoFactorEnabled ? "enabled" : "disabled";
+    
+    await logActivity({ 
+        req, 
+        action: "AUTH_2FA_TOGGLE", 
+        severity: "INFO", 
+        category: "SECURITY",
+        metadata: { status } 
+    });
+
+    return res.status(200).json(
+        new ApiResponse(200, { twoFactorEnabled: user.twoFactorEnabled }, `Two-Factor Authentication ${status}`)
     );
 });
 
@@ -637,5 +817,8 @@ export {
     changePassword,
     googleAuth,
     logoutUser,
-    refreshAccessToken
+    refreshAccessToken,
+    verifyLoginOTP,
+    toggle2FA,
+    verifyEmail, // Exported
 };

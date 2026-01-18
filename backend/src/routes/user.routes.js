@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registerUser, loginUser, updateProfile, getCurrentUser, getJobRecommendations, getUserPublicProfile, forgotPassword, verifyOTP, resetPassword, googleAuth, changePassword, logoutUser, refreshAccessToken } from "../controllers/user.controller.js";
+import { registerUser, loginUser, updateProfile, getCurrentUser, getJobRecommendations, getUserPublicProfile, forgotPassword, verifyOTP, resetPassword, googleAuth, changePassword, logoutUser, refreshAccessToken, verifyLoginOTP, toggle2FA, verifyEmail } from "../controllers/user.controller.js";
 import { verifyJWT, requireNonExpiredPassword } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
 import { verifyRecaptcha } from "../middleware/recaptcha.middleware.js";
@@ -300,6 +300,9 @@ router.route("/profile/:userId").get(verifyJWT, requireNonExpiredPassword, getUs
 // Forgot Password Routes (no Swagger docs yet for brevity)
 router.route("/forgot-password").post(forgotPassword);
 router.route("/verify-otp").post(verifyOTP);
+router.route("/verify-email").post(verifyEmail); // Email Verification
+router.route("/verify-login-otp").post(verifyLoginOTP); // 2FA Verification
+router.route("/toggle-2fa").post(verifyJWT, toggle2FA); // 2FA Toggle
 router.route("/reset-password").post(resetPassword);
 router.route("/auth/google").post(googleAuth);
 router.route("/change-password").post(verifyJWT, changePassword);
