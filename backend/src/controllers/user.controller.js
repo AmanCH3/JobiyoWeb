@@ -12,7 +12,8 @@ import { LoginAttempt } from "../models/loginAttempt.model.js";
 import { 
     validatePasswordPolicy, 
     isPasswordReused, 
-    pushPasswordHistory 
+    pushPasswordHistory,
+    isPasswordExpired 
 } from "../utils/passwordUtils.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -273,12 +274,21 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const loggedInUser = await User.findById(user._id).select("-password -refreshToken -loginOTP -loginOTPExpiry");
 
+  // Check if password is expired
+  const passwordExpired = isPasswordExpired(user);
+
   // SESSION FIXATION PROTECTION:
   // 1. Clear any existing session cookies before setting new ones to ensure no pre-login context remains.
   // 2. generateAccessAndRefreshTokens() above rotates the refresh token in the DB, invalidating any old tokens.
   // Manually attach user to req for logging since verifyJWT didn't run
   req.user = loggedInUser;
   await logActivity({ req, action: "AUTH_LOGIN", severity: "INFO", category: "SECURITY" });
+
+  // Build response message
+  let message = "User logged In Successfully";
+  if (passwordExpired) {
+      message = "Login successful, but your password has expired. Please change it immediately.";
+  }
 
   return res
     .status(200)
@@ -293,8 +303,9 @@ const loginUser = asyncHandler(async (req, res) => {
           user: loggedInUser,
           accessToken,
           refreshToken,
+          passwordExpired, // Include expiry flag in response
         },
-        "User logged In Successfully"
+        message
       )
     );
 });
@@ -455,11 +466,9 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
     const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
-
     if (!incomingRefreshToken) {
         throw new ApiError(401, "unauthorized request")
     }
-
     // Verify JWT integrity FIRST
     let decodedToken;
     try {
@@ -470,16 +479,13 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     } catch (error) {
         throw new ApiError(401, "Invalid refresh token")
     }
-
     // Verify against DB (Rotation & Reuse Detection)
     const tokenHash = crypto.createHash('sha256').update(incomingRefreshToken).digest('hex');
     const existingToken = await RefreshToken.findOne({ token: tokenHash });
-
     if (!existingToken) {
         // Token valid signature but not in DB? Possible compromised or very old.
         throw new ApiError(401, "Refresh token not found or invalid");
     }
-
     // REUSE DETECTION
     if (existingToken.revoked) {
         // CRITICAL: Attempt to use a revoked token. Assume theft.
@@ -490,26 +496,20 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         );
         console.error(`[SECURITY] Refresh Token Reuse Detected! User: ${decodedToken._id}. All sessions revoked.`);
         throw new ApiError(403, "Security Alert: Session reuse detected. Please sign in again.");
-    }
-    
+    }    
     // Check if user still exists
     const user = await User.findById(decodedToken?._id)
     if (!user) {
         throw new ApiError(401, "User not found")
     }
-
     // ROTATION:
     // 1. Mark current token as revoked (and replaced)
     // 2. Issue NEW tokens
-    
     // We can't know the *next* token usage ID yet, but we will generate one.
     // Ideally we generate first.
-    
     const { accessToken, refreshToken: newRefreshToken } = await generateAccessAndRefreshTokens(user._id);
-    
     // Hash the NEW token to link them (optional chaining)
     const newTokenHash = crypto.createHash('sha256').update(newRefreshToken).digest('hex');
-
     existingToken.revoked = new Date();
     existingToken.replacedByToken = newTokenHash;
     existingToken.revoked = new Date();
@@ -652,7 +652,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 
     // Check for reuse
     if (await isPasswordReused(user, newPassword)) {
-        throw new ApiError(409, "You cannot reuse a recent password.", [], "", "PASSWORD_REUSED");
+        throw new ApiError(409, "This password was used recently. Please choose a new password you haven't used in your last 5 passwords.", [], "", "PASSWORD_REUSED");
     }
 
     // Push to history
@@ -707,7 +707,7 @@ const changePassword = asyncHandler(async (req, res) => {
 
     // Check for reuse
     if (await isPasswordReused(user, newPassword)) {
-        throw new ApiError(409, "You cannot reuse a recent password.", [], "", "PASSWORD_REUSED");
+        throw new ApiError(409, "This password was used recently. Please choose a new password you haven't used in your last 5 passwords.", [], "", "PASSWORD_REUSED");
     }
 
     // Push to history
@@ -741,20 +741,32 @@ const changePassword = asyncHandler(async (req, res) => {
 });
 
 const googleAuth = asyncHandler(async (req, res) => {
-    const { idToken, role } = req.body;
+    const { idToken, accessToken, role } = req.body;
 
-    if (!idToken) {
-        throw new ApiError(400, "Google ID Token is required");
-    }
+    let googleId, email, name, picture;
 
     try {
-        const ticket = await client.verifyIdToken({
-            idToken,
-            audience: process.env.GOOGLE_CLIENT_ID,
-        });
-
-        const payload = ticket.getPayload();
-        const { sub: googleId, email, name, picture } = payload;
+        if (accessToken) {
+            // Verify using Access Token
+            const response = await axios.get(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${accessToken}`);
+            email = response.data.email;
+            name = response.data.name;
+            picture = response.data.picture;
+            googleId = response.data.sub;
+        } else if (idToken) {
+            // Verify using ID Token
+            const ticket = await client.verifyIdToken({
+                idToken,
+                audience: process.env.GOOGLE_CLIENT_ID,
+            });
+            const payload = ticket.getPayload();
+            googleId = payload.sub;
+            email = payload.email;
+            name = payload.name;
+            picture = payload.picture;
+        } else {
+             throw new ApiError(400, "Google Token is required");
+        }
 
         let user = await User.findOne({ email });
 
@@ -765,6 +777,7 @@ const googleAuth = asyncHandler(async (req, res) => {
                 if (!user.profile?.avatar) {
                     user.profile = { ...user.profile, avatar: picture };
                 }
+                user.isEmailVerified = true;
                 await user.save({ validateBeforeSave: false });
             }
         } else {
@@ -781,11 +794,12 @@ const googleAuth = asyncHandler(async (req, res) => {
                 profile: {
                     avatar: picture
                 },
-                phoneNumber: "" // Providing empty string since it's optional but might be expected
+                phoneNumber: "",
+                isEmailVerified: true 
             });
         }
 
-        const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+        const { accessToken: newAccessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
 
         const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
 
@@ -794,9 +808,9 @@ const googleAuth = asyncHandler(async (req, res) => {
 
         return res
             .status(200)
-            .cookie("accessToken", accessToken, ACCESS_COOKIE_OPTIONS)
+            .cookie("accessToken", newAccessToken, ACCESS_COOKIE_OPTIONS)
             .cookie("refreshToken", refreshToken, REFRESH_COOKIE_OPTIONS)
-            .json(new ApiResponse(200, { user: loggedInUser, accessToken, refreshToken }, "Google login successful"));
+            .json(new ApiResponse(200, { user: loggedInUser, accessToken: newAccessToken, refreshToken }, "Google login successful"));
 
     } catch (error) {
         console.error("Google Auth Error:", error);

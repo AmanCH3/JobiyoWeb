@@ -14,16 +14,25 @@ export const validatePasswordPolicy = (password, user = null) => {
     const hasUpperCase = /[A-Z]/.test(password);
     const hasLowerCase = /[a-z]/.test(password);
     const hasNumbers = /\d/.test(password);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}`|<>]/.test(password);
 
     if (!hasUpperCase) details.push("Password must contain at least one uppercase letter.");
     if (!hasLowerCase) details.push("Password must contain at least one lowercase letter.");
     if (!hasNumbers) details.push("Password must contain at least one number.");
     if (!hasSpecialChar) details.push("Password must contain at least one special character.");
 
-    const commonPasswords = ['password', '12345678', 'qwertyuiop', 'admin123']; 
+    // Check for common passwords
+    const commonPasswords = ['password', '12345678', 'qwertyuiop', 'admin123', 'letmein', 'welcome', 'monkey', 'dragon', 'master', 'abc123']; 
     if (commonPasswords.some(cp => password.toLowerCase().includes(cp))) {
-         details.push("Password is too common or easily guessable.");
+         details.push("Password is too common. Please choose a more unique password.");
+    }
+
+    // Check if password contains parts of email (username)
+    if (user && user.email) {
+        const emailUsername = user.email.split('@')[0].toLowerCase();
+        if (emailUsername.length >= 3 && password.toLowerCase().includes(emailUsername)) {
+            details.push("Password cannot contain your email username.");
+        }
     }
 
     // Check if password contains parts of full name
@@ -38,7 +47,7 @@ export const validatePasswordPolicy = (password, user = null) => {
     }
 
     if (details.length > 0) {
-        return { isValid: false, message: "Password does not meet policy.", details };
+        return { isValid: false, message: "Password does not meet security requirements.", details };
     }
 
     return { isValid: true, message: "Password is valid." };

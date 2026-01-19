@@ -42,6 +42,7 @@ app.use(helmet({
     dnsPrefetchControl: { allow: false },
     ieNoOpen: true,
     permittedCrossDomainPolicies: { permittedPolicies: 'none' },
+    crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
     hsts: {
         maxAge: 31536000, 
         includeSubDomains: true,
@@ -63,6 +64,9 @@ app.use(requestLogger);
 
 // Data Sanitization against NoSQL query injection
 app.use(mongoSanitize());
+
+import { cleanInput } from "./middleware/cleanInput.middleware.js";
+app.use(cleanInput);
 
 const swaggerOptions = {
   definition: {
