@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
+import { useToast } from "@/context/ToastContext";
 import { Mail, Phone, MapPin, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -17,6 +17,7 @@ const contactSchema = z.object({
 });
 
 const Contact = () => {
+    const { toast } = useToast();
     const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm({
         resolver: zodResolver(contactSchema),
     });

@@ -1,5 +1,5 @@
 import { useToggleCompanyVerificationMutation } from "@/api/adminApi";
-import { toast } from "sonner";
+import { useToast } from "@/context/ToastContext";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -7,15 +7,16 @@ import { format } from 'date-fns';
 import { Badge } from "@/components/ui/badge";
 
 const AdminCompaniesTable = ({ companies }) => {
+    const { toast } = useToast();
     const [toggleVerification, { isLoading: isToggling }] = useToggleCompanyVerificationMutation();
 
-    const handleToggle = (companyId, currentStatus) => {
-        const promise = toggleVerification(companyId).unwrap();
-        toast.promise(promise, {
-            loading: 'Updating status...',
-            success: (response) => response.message,
-            error: (err) => err?.data?.message || 'Failed to update status.',
-        });
+    const handleToggle = async (companyId) => {
+        try {
+            const response = await toggleVerification(companyId).unwrap();
+            toast.success(response.message || "Status updated successfully.");
+        } catch (err) {
+            toast.error(err?.data?.message || "Failed to update status.");
+        }
     };
 
     return (

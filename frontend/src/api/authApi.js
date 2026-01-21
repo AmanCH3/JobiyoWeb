@@ -80,6 +80,26 @@ export const authApi = createApi({
                method: 'POST',
            }),
        }),
+       verifyLoginOtp: builder.mutation({
+           query: (data) => ({
+               url: '/users/verify-login-otp',
+               method: 'POST',
+               body: data,
+           }),
+       }),
+       toggle2FA: builder.mutation({
+           query: () => ({
+               url: '/users/toggle-2fa',
+               method: 'POST',
+           }),
+       }),
+       verifyEmail: builder.mutation({
+           query: (data) => ({
+               url: '/users/verify-email',
+               method: 'POST',
+               body: data,
+           }),
+       }),
    }),
 });
 
@@ -94,5 +114,8 @@ export const {
     useGoogleAuthMutation,
     useChangePasswordMutation,
     useLogoutMutation,
-    useRefreshTokenMutation
+    useRefreshTokenMutation,
+    useVerifyLoginOtpMutation,
+    useToggle2FAMutation,
+    useVerifyEmailMutation
 } = authApi;

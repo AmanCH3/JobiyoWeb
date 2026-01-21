@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Loader2, Wand2 } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { useToast } from "@/context/ToastContext";
 import { useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const AdminChatbot = () => {
+    const { toast } = useToast();
     const { data: settings, isLoading: isFetching, isError } = useGetChatbotSettingsQuery();
     const [updateSettings, { isLoading: isUpdating }] = useUpdateChatbotSettingsMutation();
     
@@ -22,12 +23,12 @@ const AdminChatbot = () => {
     }, [settings, reset]);
 
     const onSubmit = async (data) => {
-        const promise = updateSettings(data).unwrap();
-        toast.promise(promise, {
-            loading: "Updating chatbot personality...",
-            success: (res) => res.message || "Settings updated!",
-            error: (err) => err?.data?.message || "Failed to update settings.",
-        });
+        try {
+            const res = await updateSettings(data).unwrap();
+            toast.success(res.message || "Settings updated!");
+        } catch (err) {
+            toast.error(err?.data?.message || "Failed to update settings.");
+        }
     };
 
     if (isFetching) {

@@ -8,6 +8,43 @@ import { ChatbotSetting } from "../models/chatbotSetting.model.js";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
+// Helper function for delay
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Extract retry delay from error response (in milliseconds)
+const getRetryDelay = (error, attempt) => {
+    // Try to get retry delay from error details
+    const retryInfo = error.errorDetails?.find(d => d['@type']?.includes('RetryInfo'));
+    if (retryInfo?.retryDelay) {
+        const seconds = parseInt(retryInfo.retryDelay);
+        if (!isNaN(seconds)) {
+            return seconds * 1000;
+        }
+    }
+    // Exponential backoff: 2^attempt * 1000ms (2s, 4s, 8s...)
+    return Math.pow(2, attempt) * 1000;
+};
+
+// Send message with retry logic for rate limiting
+const sendMessageWithRetry = async (chat, message, maxRetries = 3) => {
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+        try {
+            return await chat.sendMessage(message);
+        } catch (error) {
+            const isRateLimited = error.status === 429;
+            const hasRetriesLeft = attempt < maxRetries - 1;
+            
+            if (isRateLimited && hasRetriesLeft) {
+                const retryDelay = getRetryDelay(error, attempt);
+                console.log(`Rate limited (attempt ${attempt + 1}/${maxRetries}). Retrying in ${retryDelay / 1000}s...`);
+                await delay(retryDelay);
+            } else {
+                throw error;
+            }
+        }
+    }
+};
+
 const generateKnowledgeBase = async () => {
     const jobs = await Job.find({}).limit(50).sort({ createdAt: -1 }).populate('company', 'name location');
     const companies = await Company.find({ verified: true }).limit(50).select('name description location');
@@ -88,7 +125,7 @@ export const handleChatQuery = asyncHandler(async (req, res) => {
           },
         });
 
-        const result = await chat.sendMessage(query);
+        const result = await sendMessageWithRetry(chat, query);
         const response = result.response;
         const text = response.text();
 
@@ -99,8 +136,17 @@ export const handleChatQuery = asyncHandler(async (req, res) => {
         
         // Handle quota exceeded error gracefully
         if (error.status === 429) {
+            // Check if it's a daily limit (limit: 0 in error)
+            const isDailyLimitExceeded = error.errorDetails?.some(d => 
+                d.violations?.some(v => v.quotaId?.includes('PerDay'))
+            );
+            
+            const message = isDailyLimitExceeded
+                ? "I've reached my daily conversation limit. Please try again tomorrow, or contact the administrator about upgrading the API plan."
+                : "I'm a bit busy right now! Please wait a moment and try again.";
+            
             return res.status(200).json(new ApiResponse(200, { 
-                response: "I'm currently experiencing high demand. Please try again in a few moments. If this persists, the daily usage limit may have been reached." 
+                response: message 
             }, "Chatbot rate limited."));
         }
         
@@ -111,6 +157,9 @@ export const handleChatQuery = asyncHandler(async (req, res) => {
             }, "Chatbot service unavailable."));
         }
         
-        throw new ApiError(500, `Chatbot error: ${error.message}`);
+        // Generic fallback for other errors
+        return res.status(200).json(new ApiResponse(200, { 
+            response: "I apologize, but I'm having some technical difficulties. Please try again in a few moments." 
+        }, "Chatbot error."));
     }
 });

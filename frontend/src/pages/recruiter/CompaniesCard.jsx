@@ -5,19 +5,20 @@ import { Edit, Trash, Globe, MapPin } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useDeleteCompanyMutation } from "@/api/companyApi";
-import { toast } from "sonner";
+import { useToast } from "@/context/ToastContext";
 import { Badge } from "@/components/ui/badge";
 
 const CompanyCard = ({ company }) => {
+    const { toast } = useToast();
     const [deleteCompany, { isLoading }] = useDeleteCompanyMutation();
 
     const handleDelete = async () => {
-        const promise = deleteCompany(company._id).unwrap();
-        toast.promise(promise, {
-            loading: 'Deleting company...',
-            success: 'Company deleted successfully.',
-            error: (err) => err?.data?.message || 'Failed to delete company.',
-        });
+        try {
+            await deleteCompany(company._id).unwrap();
+            toast.success("Company deleted successfully.");
+        } catch (err) {
+            toast.error(err?.data?.message || "Failed to delete company.");
+        }
     };
 
     return (

@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { MoreHorizontal, Edit, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useDeleteCompanyMutation } from "@/api/companyApi";
-import { toast } from "sonner";
+import { useToast } from "@/context/ToastContext";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 const CompaniesTable = ({ companies }) => {
+    const { toast } = useToast();
     const [deleteCompany, { isLoading }] = useDeleteCompanyMutation();
 
     const handleDelete = async (id) => {

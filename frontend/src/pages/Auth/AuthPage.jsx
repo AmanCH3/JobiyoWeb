@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { toast } from "sonner";
+import { useToast } from "@/context/ToastContext";
 import { GoogleLogin } from '@react-oauth/google';
 import { useLoginMutation, useRegisterMutation, useGoogleAuthMutation } from "@/api/authApi";
 import { useDispatch } from "react-redux";
@@ -34,6 +34,7 @@ const registerSchema = z.object({
 });
 
 const AuthPage = () => {
+  const { toast } = useToast();
   const location = useLocation();
   const [isLogin, setIsLogin] = useState(location.pathname === '/login');
   const navigate = useNavigate();
@@ -99,22 +100,18 @@ const AuthPage = () => {
       return;
     }
 
-    const promise = loginUser({ ...data, recaptchaToken }).unwrap();
-    toast.promise(promise, {
-      loading: 'Logging in...',
-      success: (result) => {
-        dispatch(setCredentials(result.data));
-        const userRole = result.data.user.role;
-        const targetPath = userRole === 'admin' ? '/admin' : userRole === 'recruiter' ? '/recruiter' : '/';
-        navigate(targetPath);
-        return result.message || "Login successful!";
-      },
-      error: (err) => {
-        recaptchaRef.current?.reset();
-        setRecaptchaToken(null);
-        return err.data?.message || "Login failed. Please check your credentials.";
-      }
-    });
+    try {
+      const result = await loginUser({ ...data, recaptchaToken }).unwrap();
+      dispatch(setCredentials(result.data));
+      const userRole = result.data.user.role;
+      const targetPath = userRole === 'admin' ? '/admin' : userRole === 'recruiter' ? '/recruiter' : '/';
+      navigate(targetPath);
+      toast.success(result.message || "Login successful!");
+    } catch (err) {
+      recaptchaRef.current?.reset();
+      setRecaptchaToken(null);
+      toast.error(err.data?.message || "Login failed. Please check your credentials.");
+    }
   };
 
   const onRegisterSubmit = async (data) => {

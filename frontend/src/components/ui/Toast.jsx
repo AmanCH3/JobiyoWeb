@@ -1,43 +1,84 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react';
+import { X, Check, Info, AlertTriangle, XCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const icons = {
-  success: <CheckCircle className="w-5 h-5 text-emerald-500" />,
-  error: <AlertCircle className="w-5 h-5 text-red-500" />,
-  info: <Info className="w-5 h-5 text-blue-500" />,
-  warning: <AlertTriangle className="w-5 h-5 text-amber-500" />,
+const toastConfig = {
+  success: {
+    borderColor: "border-l-emerald-500",
+    iconBg: "bg-emerald-500",
+    icon: Check,
+    title: "Success",
+  },
+  error: {
+    borderColor: "border-l-red-500",
+    iconBg: "bg-red-500",
+    icon: XCircle,
+    title: "Error",
+  },
+  info: {
+    borderColor: "border-l-blue-500",
+    iconBg: "bg-blue-500",
+    icon: Info,
+    title: "Info",
+  },
+  warning: {
+    borderColor: "border-l-yellow-500",
+    iconBg: "bg-yellow-500",
+    icon: AlertTriangle,
+    title: "Warning",
+  },
 };
 
-const Toast = ({ message, description, type, onClose }) => {
+const Toast = ({ message, description, type = 'info', onClose }) => {
+  const config = toastConfig[type] || toastConfig.info;
+  const IconComponent = config.icon;
+
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: -20, scale: 0.9 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-      transition={{ type: "spring", damping: 25, stiffness: 400 }}
+      initial={{ opacity: 0, x: 80, scale: 0.9 }}
+      animate={{ opacity: 1, x: 0, scale: 1 }}
+      exit={{ opacity: 0, x: 80, scale: 0.9, transition: { duration: 0.15 } }}
+      transition={{ type: "spring", damping: 20, stiffness: 300 }}
       className={cn(
-        "pointer-events-auto flex items-start w-full max-w-sm gap-3 p-4 rounded-xl shadow-xl border",
-        "backdrop-blur-md bg-white/90 dark:bg-slate-950/90 border-slate-200 dark:border-slate-800",
-        "hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
+        "pointer-events-auto flex items-start w-full max-w-md gap-4 px-4 py-4 rounded-lg shadow-xl",
+        "bg-white dark:bg-slate-900",
+        "border border-slate-200 dark:border-slate-700",
+        "border-l-4",
+        config.borderColor
       )}
     >
-      <div className="mt-0.5 shrink-0">{icons[type] || icons.info}</div>
-      <div className="flex-1 space-y-1">
-        <p className="font-semibold text-sm text-foreground leading-tight">
-          {message}
+      {/* Circular Icon */}
+      <div className={cn(
+        "flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full",
+        config.iconBg
+      )}>
+        <IconComponent className="w-4 h-4 text-white" strokeWidth={2.5} />
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 min-w-0">
+        <p className="font-semibold text-base text-slate-900 dark:text-white leading-tight">
+          {message || config.title}
         </p>
         {description && (
-          <p className="text-xs text-muted-foreground leading-snug">
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
             {description}
           </p>
         )}
       </div>
+
+      {/* Close Button */}
       <button
         onClick={onClose}
-        className="shrink-0 p-1 rounded-md text-slate-500 hover:text-foreground hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+        className={cn(
+          "flex-shrink-0 p-1.5 rounded-full transition-all duration-150",
+          "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300",
+          "hover:bg-slate-100 dark:hover:bg-slate-800",
+          "focus:outline-none focus:ring-2 focus:ring-slate-300 dark:focus:ring-slate-600"
+        )}
+        aria-label="Close notification"
       >
         <X className="w-4 h-4" />
       </button>

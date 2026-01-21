@@ -1,19 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Mail, Lock, KeyRound, Loader2, ArrowLeft } from 'lucide-react';
-import { toast } from 'sonner';
+import { Mail, Lock, KeyRound, Loader2, ArrowLeft, Eye, EyeOff, Check, X } from 'lucide-react';
+import { useToast } from '@/context/ToastContext';
 import { useForgotPasswordMutation, useVerifyOtpMutation, useResetPasswordMutation } from '../../api/authApi';
 import Lottie from "lottie-react";
 import forgotAnimation from "@/lottie/forgot_screen.json";
 import PasswordStrengthMeter from '@/components/shared/PasswordStrengthMeter';
+import { validatePasswordPolicy, getPasswordRequirements } from '@/utils/passwordPolicy';
 
 const ForgotPassword = () => {
+    const { toast } = useToast();
     const [step, setStep] = useState(1); // 1: Email, 2: OTP, 3: New Password
     const [email, setEmail] = useState('');
     const [otp, setOtp] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
+
+    // Password requirements for display
+    const passwordRequirements = getPasswordRequirements();
 
     // API Mutations
     const [forgotPassword, { isLoading: isSendingOtp }] = useForgotPasswordMutation();
@@ -23,7 +30,9 @@ const ForgotPassword = () => {
     // Forms
     const { register: registerEmail, handleSubmit: handleEmailSubmit, formState: { errors: emailErrors }, setValue: setEmailValue } = useForm();
     const { register: registerOtp, handleSubmit: handleOtpSubmit, formState: { errors: otpErrors }, setValue: setOtpValue } = useForm();
-    const { register: registerPassword, handleSubmit: handlePasswordSubmit, watch, formState: { errors: passwordErrors } } = useForm();
+    const { register: registerPassword, handleSubmit: handlePasswordSubmit, watch, formState: { errors: passwordErrors }, setError } = useForm();
+
+    const watchedPassword = watch('password', '');
 
     // Magic Link Handler
     useEffect(() => {
@@ -75,6 +84,14 @@ const ForgotPassword = () => {
     };
 
     const onPasswordSubmit = async (data) => {
+        // Frontend validation
+        const validation = validatePasswordPolicy(data.password, { email });
+        if (!validation.isValid) {
+            validation.errors.forEach(err => toast.error(err));
+            setError('password', { type: 'manual', message: validation.errors[0] });
+            return;
+        }
+
         try {
             await resetPassword({ email, otp, newPassword: data.password }).unwrap();
             toast.success('Password reset successfully');
@@ -197,13 +214,43 @@ const ForgotPassword = () => {
                                             required: 'Password is required',
                                             minLength: { value: 8, message: 'Password must be at least 8 characters' }
                                         })}
-                                        type="password"
-                                        className="w-full pl-9 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none"
+                                        type={showPassword ? "text" : "password"}
+                                        className="w-full pl-9 pr-10 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none"
                                         placeholder="••••••••"
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                    >
+                                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                    </button>
                                 </div>
                                 {passwordErrors.password && <p className="text-xs text-red-500">{passwordErrors.password.message}</p>}
-                                <PasswordStrengthMeter password={watch('password') || ''} />
+                                
+                                {/* Password Requirements Checklist */}
+                                <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+                                    <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">Password Requirements:</p>
+                                    <ul className="space-y-1">
+                                        {passwordRequirements.map((req) => {
+                                            const isMet = watchedPassword && req.check(watchedPassword);
+                                            return (
+                                                <li key={req.id} className="flex items-center gap-2 text-xs">
+                                                    {isMet ? (
+                                                        <Check className="w-3.5 h-3.5 text-emerald-500" />
+                                                    ) : (
+                                                        <X className="w-3.5 h-3.5 text-gray-300 dark:text-gray-600" />
+                                                    )}
+                                                    <span className={isMet ? "text-emerald-600 dark:text-emerald-400" : "text-gray-500 dark:text-gray-400"}>
+                                                        {req.label}
+                                                    </span>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                </div>
+                                
+                                <PasswordStrengthMeter password={watchedPassword} />
                             </div>
 
                             <div className="space-y-2">
@@ -221,10 +268,17 @@ const ForgotPassword = () => {
                                                 }
                                             }
                                         })}
-                                        type="password"
-                                        className="w-full pl-9 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none"
+                                        type={showConfirmPassword ? "text" : "password"}
+                                        className="w-full pl-9 pr-10 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none"
                                         placeholder="••••••••"
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                    >
+                                        {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                    </button>
                                 </div>
                                 {passwordErrors.confirmPassword && <p className="text-xs text-red-500">{passwordErrors.confirmPassword.message}</p>}
                             </div>

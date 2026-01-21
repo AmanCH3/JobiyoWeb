@@ -50,5 +50,9 @@ export default defineConfig({
         secure: false,
       },
     },
+    headers: {
+      'Referrer-Policy': 'no-referrer-when-downgrade',
+      'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
+    },
   },
 });

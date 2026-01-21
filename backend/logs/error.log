@@ -131,3 +131,4 @@
 {"level":"error","message":"Request Failed: PATCH /api/v1/users/update-profile | Status: 500 | User: Guest | ReqID: 85f9b07e-0677-4e9c-9eb4-ae1373eb4261","timestamp":"2026-01-19T17:43:31.597Z"}
 {"level":"error","message":"Request Failed: PATCH /api/v1/users/update-profile | Status: 500 | User: Guest | ReqID: 31d9d138-3441-4fe5-87d5-c849a71a64db","timestamp":"2026-01-19T17:44:26.828Z"}
 {"level":"error","message":"Request Failed: PATCH /api/v1/users/update-profile | Status: 500 | User: Guest | ReqID: 2d3b1d54-87eb-4a5a-8a10-16dff3baab88","timestamp":"2026-01-19T17:44:44.160Z"}
+{"level":"error","message":"Request Failed: PATCH /api/v1/users/update-profile | Status: 500 | User: Guest | ReqID: fe17e95a-cdc3-4df1-8229-1328d31c6e40","timestamp":"2026-01-19T17:50:22.758Z"}

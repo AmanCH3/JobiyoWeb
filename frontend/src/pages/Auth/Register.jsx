@@ -6,15 +6,23 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Link, useNavigate } from "react-router-dom";
-import { GoogleLogin } from '@react-oauth/google';
-import { useRegisterMutation, useGoogleAuthMutation } from "@/api/authApi";
+import { useToast } from "@/context/ToastContext";
+import { useGoogleLogin } from '@react-oauth/google';
+import { FcGoogle } from "react-icons/fc";
+import { useRegisterMutation, useGoogleAuthMutation, useVerifyEmailMutation } from "@/api/authApi";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@/redux/slices/userSlice";
-import { Loader2, Eye, EyeOff } from "lucide-react";
+import { Loader2, Eye, EyeOff, ShieldCheck } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useRef, useState } from "react"; 
 import PasswordStrengthMeter from "@/components/shared/PasswordStrengthMeter";
-import { useToast } from "@/context/ToastContext";
 
 const registerSchema = z.object({
   fullName: z.string().min(3, { message: "Full name must be at least 3 characters." }),
@@ -25,7 +33,7 @@ const registerSchema = z.object({
     .regex(/[A-Z]/, { message: "Password must contain at least one uppercase letter." })
     .regex(/[a-z]/, { message: "Password must contain at least one lowercase letter." })
     .regex(/\d/, { message: "Password must contain at least one number." })
-    .regex(/[!@#$%^&*(),.?":{}|<>]/, { message: "Password must contain at least one special character." }),
+    .regex(/[!@#$%^&*(),.?":{}`|<>]/, { message: "Password must contain at least one special character." }),
   role: z.enum(["student", "recruiter"], { required_error: "You must select a role." }),
 }).refine((data) => {
   if (data.fullName && data.password) {
@@ -43,13 +51,20 @@ const registerSchema = z.object({
 });
 
 const Register = () => {
+  const { toast } = useToast();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [registerUser, { isLoading }] = useRegisterMutation();
   const [googleAuth, { isLoading: isGoogleLoading }] = useGoogleAuthMutation();
+  const [verifyEmail, { isLoading: isVerifying }] = useVerifyEmailMutation();
   const recaptchaRef = useRef(null);
   const [recaptchaToken, setRecaptchaToken] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  
+  // OTP Verification State
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [registeredEmail, setRegisteredEmail] = useState("");
 
   const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm({
     resolver: zodResolver(registerSchema),
@@ -58,14 +73,14 @@ const Register = () => {
   const password = watch('password', '');
   const selectedRole = watch('role');
 
-  const handleGoogleSuccess = async (response) => {
+  const handleGoogleSuccess = async (tokenResponse) => {
     if (!selectedRole) {
       toast.error("Please select a role before signing up with Google.");
       return;
     }
 
     try {
-      const result = await googleAuth({ idToken: response.credential, role: selectedRole }).unwrap();
+      const result = await googleAuth({ accessToken: tokenResponse.access_token, role: selectedRole }).unwrap();
       dispatch(setCredentials(result.data));
       toast.success("Google registration successful!");
       const userRole = result.data.user.role;
@@ -76,6 +91,11 @@ const Register = () => {
     }
   };
 
+  const loginWithGoogle = useGoogleLogin({
+    onSuccess: handleGoogleSuccess,
+    onError: () => toast.error("Google Registration Failed"),
+  });
+
   const onSubmit = async (data) => {
     if (!recaptchaToken) {
       toast.error("Please complete the reCAPTCHA verification.");
@@ -84,13 +104,36 @@ const Register = () => {
 
     try {
       const result = await registerUser({ ...data, recaptchaToken }).unwrap();
-      toast.success(result.message || "Registration successful! Please log in.");
-      navigate("/login");
+      toast.success(result.message || "Registration successful! Please verify your email.");
+      
+      // Open OTP Modal instead of navigating
+      setRegisteredEmail(data.email);
+      setShowOtpModal(true);
+      
     } catch (err) {
       toast.error(err.data?.message || "Registration failed. Please try again.");
-      recaptchaRef.current.reset();
+      recaptchaRef.current?.reset();
       setRecaptchaToken(null);
     }
+  };
+
+  const handleVerifyOtp = async () => {
+      if (!otp || otp.length !== 6) {
+          toast.error("Please enter a valid 6-digit OTP.");
+          return;
+      }
+
+      try {
+          const result = await verifyEmail({ email: registeredEmail, otp }).unwrap();
+          dispatch(setCredentials(result.data));
+          toast.success("Email verified successfully!");
+          setShowOtpModal(false);
+          
+          // Redirect to Landing Page as requested
+          navigate('/');
+      } catch (err) {
+          toast.error(err.data?.message || "Verification failed. Invalid or expired OTP.");
+      }
   };
 
   return (
@@ -322,15 +365,16 @@ const Register = () => {
             </div>
 
             {/* Social Login Buttons */}
-            <div className="flex justify-center gap-4">
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={() => toast.error("Google Registration Failed")}
-                theme="outline"
-                shape="circle"
-                size="large"
-                locale="en"
-              />
+            <div className="flex justify-center w-full">
+              <Button 
+                type="button"
+                variant="outline"
+                onClick={() => loginWithGoogle()}
+                className="w-full h-12 rounded-lg border-2 border-gray-200 hover:bg-gray-50 flex items-center justify-center gap-3 font-semibold text-gray-600 transition-all"
+              >
+                <FcGoogle className="h-6 w-6" />
+                Sign up with Google
+              </Button>
             </div>
 
             {/* Terms */}
@@ -351,6 +395,53 @@ const Register = () => {
           </div>
         </div>
       </div>
+      {/* OTP Verification Modal */}
+      <Dialog open={showOtpModal} onOpenChange={setShowOtpModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center flex flex-col items-center gap-2">
+              <div className="h-12 w-12 rounded-full bg-emerald-100 flex items-center justify-center">
+                <ShieldCheck className="h-6 w-6 text-emerald-600" />
+              </div>
+              Verify Email Address
+            </DialogTitle>
+            <DialogDescription className="text-center">
+              We sent a verification code to <span className="font-semibold text-gray-900">{registeredEmail}</span>. 
+              Please enter the code below to activate your account.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="flex flex-col items-center gap-4 py-4">
+            <p className="text-sm font-medium text-gray-500">Enter the 6-digit code sent to your email</p>
+            <Input 
+                 type="text" 
+                 placeholder="000000" 
+                 value={otp}
+                 onChange={(e) => setOtp(e.target.value)}
+                 className="text-center text-3xl tracking-[0.5em] font-mono h-16 w-60 border-2 focus-visible:ring-emerald-500 focus-visible:border-emerald-500"
+                 maxLength={6}
+            />
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <Button 
+              onClick={handleVerifyOtp} 
+              disabled={isVerifying || otp.length !== 6}
+              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+            >
+              {isVerifying && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Verify & Register
+            </Button>
+            <Button 
+              variant="ghost" 
+              onClick={() => setShowOtpModal(false)}
+              className="text-gray-500"
+            >
+              Cancel
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

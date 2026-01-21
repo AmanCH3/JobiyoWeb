@@ -21,8 +21,9 @@ import { Button } from "@/components/ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { logOut, selectCurrentUser } from "@/redux/slices/userSlice";
 import { useLogoutMutation } from "@/api/authApi";
-import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/context/ToastContext";
+import LogoutModal from "@/components/shared/LogoutModal";
 
 const SidebarData = {
     recruiter: [

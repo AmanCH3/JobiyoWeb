@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Loader2, Globe, MapPin, ArrowLeft } from "lucide-react";
 import JobCard from "@/pages/public/JobCard";
 import JobCardSkeleton from "@/components/skeletons/JobCardSkeleton";
+import { sanitizeHTML } from "@/utils/sanitize";
 
 const CompanyDetails = () => {
     const { companyId } = useParams();
@@ -47,9 +48,10 @@ const CompanyDetails = () => {
                                     )}
                                 </div>
                             </div>
-                            <p className="mt-4 text-gray-700 max-w-3xl prose-sm">
-                                {company.description}
-                            </p>
+                            <div 
+                                className="mt-4 text-gray-700 max-w-3xl prose-sm"
+                                dangerouslySetInnerHTML={sanitizeHTML(company.description)}
+                            />
                         </div>
                     </div>
                 </div>

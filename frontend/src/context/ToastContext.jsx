@@ -15,17 +15,25 @@ export const useToast = () => {
 export const ToastProvider = ({ children }) => {
   const [toasts, setToasts] = useState([]);
 
-  const addToast = useCallback((message, type = 'info', options = {}) => {
+  const addToast = useCallback((messageOrOptions, type = 'info', options = {}) => {
     const id = Math.random().toString(36).substr(2, 9);
-    const newToast = { id, message, type, ...options };
+    
+    // Support both (message, type, options) and ({ message, description, type, ...options })
+    let newToast;
+    if (typeof messageOrOptions === 'object') {
+      newToast = { id, type: messageOrOptions.type || type, ...messageOrOptions };
+    } else {
+      newToast = { id, message: messageOrOptions, type, ...options };
+    }
     
     setToasts((prev) => [...prev, newToast]);
 
     // Auto dismiss
-    if (options.duration !== Infinity) {
-        setTimeout(() => {
-            removeToast(id);
-        }, options.duration || 3000);
+    const duration = newToast.duration ?? 4000;
+    if (duration !== Infinity) {
+      setTimeout(() => {
+        removeToast(id);
+      }, duration);
     }
   }, []);
 
@@ -38,12 +46,14 @@ export const ToastProvider = ({ children }) => {
     error: (message, options) => addToast(message, 'error', options),
     info: (message, options) => addToast(message, 'info', options),
     warning: (message, options) => addToast(message, 'warning', options),
+    // New: Support object-based toast for more control
+    custom: (options) => addToast(options),
   };
 
   return (
     <ToastContext.Provider value={{ toast, addToast, removeToast }}>
       {children}
-      <div className="fixed top-4 right-4 z-[100] flex flex-col gap-2 pointer-events-none">
+      <div className="fixed top-4 right-4 z-[100] flex flex-col gap-3 pointer-events-none max-w-md w-full px-4 sm:px-0">
         <AnimatePresence mode="popLayout">
           {toasts.map((t) => (
             <Toast key={t.id} {...t} onClose={() => removeToast(t.id)} />

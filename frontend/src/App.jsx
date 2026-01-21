@@ -9,6 +9,7 @@ import PublicProfile from './pages/public/PublicProfile';
 import AuthPage from './pages/Auth/AuthPage';
 import ForgotPassword from './pages/Auth/ForgotPassword';
 import ChangePassword from './pages/Auth/ChangePassword';
+import VerifyEmail from './pages/Auth/VerifyEmail';
 import Profile from './pages/student/Profile';
 import MyApplications from './pages/student/MyApplications';
 import DashboardLayout from './components/layout/DashboardLayout';
@@ -37,6 +38,8 @@ import About from './pages/public/About';
 import Contact from './pages/public/Contact';
 import NotFound from './pages/public/NotFound';
 
+import { Toaster } from "@/components/ui/sonner";
+
 function App() {
    const user = useSelector(selectCurrentUser);
    const isPasswordExpired = useSelector((state) => state.user.isPasswordExpired);
@@ -62,6 +65,7 @@ function App() {
        <Route path="/register" element={<AuthPage />} />
        <Route path="/forgot-password" element={<ForgotPassword />} />
        <Route path="/change-password" element={<ChangePassword />} />
+       <Route path="/verify-email" element={<VerifyEmail />} />
 
        <Route
          path="/student"
@@ -163,6 +167,7 @@ function App() {
      </Routes>
      
      {!isPasswordExpired && <Chatbot />}
+     <Toaster />
    </>
  );
 }

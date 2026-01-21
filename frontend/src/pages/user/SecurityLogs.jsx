@@ -13,13 +13,18 @@ import {
     ChevronLeft,
     ChevronRight,
     RefreshCw,
-    AlertOctagon
+    AlertOctagon,
+    ShieldCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { format } from 'date-fns';
 import { toast } from 'sonner';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectCurrentUser, setCredentials } from '@/redux/slices/userSlice';
+import { useToggle2FAMutation } from '@/api/authApi';
+import { Switch } from "@/components/ui/switch";
 
 const SecurityLogs = () => {
     const [page, setPage] = useState(1);
@@ -112,14 +117,32 @@ const SecurityLogs = () => {
                 </Card>
                  <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-500">Account Status</CardTitle>
+                        <CardTitle className="text-sm font-medium text-gray-500">Account Security</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="flex items-center gap-2">
-                           <div className="h-3 w-3 rounded-full bg-green-500"></div>
-                           <span className="text-md font-bold text-green-700">Active & Secure</span>
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                               {user?.twoFactorEnabled ? (
+                                   <div className="flex items-center gap-2 text-green-700 font-bold">
+                                       <ShieldCheck className="h-4 w-4" /> 2FA Active
+                                   </div>
+                               ) : (
+                                   <div className="flex items-center gap-2 text-amber-600 font-bold">
+                                       <AlertTriangle className="h-4 w-4" /> 2FA Disabled
+                                   </div>
+                               )}
+                            </div>
+                            <Switch 
+                                checked={user?.twoFactorEnabled} 
+                                onCheckedChange={handleToggle2FA}
+                                disabled={isToggling}
+                            />
                         </div>
-                         <p className="text-xs text-gray-500 mt-1">No critical alerts</p>
+                        <p className="text-xs text-gray-500 mt-2">
+                            {user?.twoFactorEnabled 
+                                ? "Your account is secured with email verification." 
+                                : "Enable to add an extra layer of security."}
+                        </p>
                     </CardContent>
                 </Card>
             </div>

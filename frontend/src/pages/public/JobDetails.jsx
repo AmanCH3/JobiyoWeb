@@ -3,7 +3,7 @@ import { useApplyForJobMutation } from "@/api/applicationApi";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "@/redux/slices/userSlice";
-import { toast } from "sonner";
+import { useToast } from "@/context/ToastContext";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -22,8 +22,10 @@ import {
     Bookmark,
     Share2
 } from "lucide-react";
+import { sanitizeHTML } from "@/utils/sanitize";
 
 const JobDetails = () => {
+    const { toast } = useToast();
     const { jobId } = useParams();
     const navigate = useNavigate();
     const { data: job, isLoading, isError, refetch } = useGetPublicJobByIdQuery(jobId);
@@ -204,9 +206,10 @@ const JobDetails = () => {
                                 Job Description
                             </h2>
                             <div className="prose prose-gray dark:prose-invert max-w-none">
-                                <p className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
-                                    {job.description}
-                                </p>
+                                <div 
+                                className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap leading-relaxed"
+                                dangerouslySetInnerHTML={sanitizeHTML(job.description)}
+                            />
                             </div>
                         </Card>
 
