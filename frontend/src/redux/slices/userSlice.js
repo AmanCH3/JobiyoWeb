@@ -31,3 +31,4 @@ export const { setCredentials, logOut, setPasswordExpired } = userSlice.actions;
 export default userSlice.reducer;
 
 export const selectCurrentUser = (state) => state.user.user;
+export const selectCurrentToken = (state) => state.user.token;
