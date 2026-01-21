@@ -55,6 +55,10 @@ export const SocketProvider = ({ children }) => {
             });
             
             setSocket(newSocket);
+            
+            // TESTING ONLY: Expose socket to window for rate limit testing
+            // Remove this line in production!
+            window.testSocket = newSocket;
 
             return () => newSocket.close();
         } else {

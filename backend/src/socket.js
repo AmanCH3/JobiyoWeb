@@ -227,18 +227,24 @@ const initSocketIO = (httpServer) => {
             }
 
             // SECURITY: Ensure 'from' matches authenticated user
-            if (from !== socket.userId) {
-                console.warn(`Security: Spoofed call attempt from ${socket.userId} as ${from}`);
-                socket.emit('error', { message: 'Invalid caller ID' });
+            // Convert both to string for proper comparison
+            const authenticatedUserId = socket.userId.toString();
+            const claimedUserId = from?.toString() || '';
+            
+            console.log(`Call attempt - Authenticated: ${authenticatedUserId}, Claimed: ${claimedUserId}`);
+            
+            if (claimedUserId !== authenticatedUserId) {
+                console.warn(`🚨 Security: Spoofed call attempt! User ${authenticatedUserId} tried to call as ${claimedUserId}`);
+                socket.emit('error', { message: 'Invalid caller ID - identity spoofing detected' });
                 return;
             }
 
             // Emit to target user
             io.to(userToCall).emit('callIncoming', { 
                 signal: signalData, 
-                from: socket.userId // Use verified userId, not the one from client
+                from: authenticatedUserId // Use verified userId, not the one from client
             });
-            console.log(`Call initiated: ${socket.userId} -> ${userToCall}`);
+            console.log(`✅ Call initiated: ${authenticatedUserId} -> ${userToCall}`);
         });
 
         // ============================================
