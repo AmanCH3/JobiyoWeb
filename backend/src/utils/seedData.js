@@ -28,9 +28,9 @@ const seedAllData = async () => {
         console.log("Creating users...");
         const recruiters = await User.create([
             {
-                fullName: "Rajesh Hamal",
-                email: "recruiter1@Jobiyo.com",
-                phoneNumber: "9800000001",
+                fullName: "Aman Chaudhary",
+                email: "aman@jobiyo.com",
+                phoneNumber: "9841234567",
                 password: "password123",
                 role: "recruiter",
                 isEmailVerified: true,

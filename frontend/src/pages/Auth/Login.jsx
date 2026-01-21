@@ -51,6 +51,7 @@ const Login = () => {
   const [show2FA, setShow2FA] = useState(false);
   const [otp, setOtp] = useState("");
   const [tempEmail, setTempEmail] = useState("");
+  const [verificationMethod, setVerificationMethod] = useState("email");
   
   // Password Expiry Dialog State
   const [showPasswordExpiredDialog, setShowPasswordExpiredDialog] = useState(false);
@@ -116,8 +117,11 @@ const Login = () => {
       // Check if 2FA verification is required
       if (result.data?.requiresVerification) {
         setTempEmail(result.data.email);
+        setVerificationMethod(result.data.method || 'email');
         setShow2FA(true);
-        toast.info("Please check your email for verification code.");
+        if (result.data.method !== 'authenticator') {
+            toast.info("Please check your email for verification code.");
+        }
         return;
       }
 
@@ -400,8 +404,10 @@ const Login = () => {
               Two-Factor Authentication
             </DialogTitle>
             <DialogDescription className="text-center">
-              We sent a verification code to <span className="font-semibold text-gray-900">{tempEmail}</span>. 
-              Please enter the code below to continue.
+              {verificationMethod === 'authenticator' 
+                  ? "Open your Google Authenticator app and enter the 6-digit code."
+                  : <>We sent a verification code to <span className="font-semibold text-gray-900">{tempEmail}</span>. Please enter the code below to continue.</>
+              }
             </DialogDescription>
           </DialogHeader>
           

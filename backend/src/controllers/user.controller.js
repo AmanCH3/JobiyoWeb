@@ -20,6 +20,8 @@ import jwt from "jsonwebtoken";
 import { COOKIE_OPTIONS, ACCESS_COOKIE_OPTIONS, REFRESH_COOKIE_OPTIONS } from "../constants.js";
 import { RefreshToken } from "../models/refreshToken.model.js";
 import { logActivity } from "../utils/activityLogger.js";
+import speakeasy from "speakeasy";
+import QRCode from "qrcode";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -243,6 +245,14 @@ const loginUser = asyncHandler(async (req, res) => {
 
   // Check for 2FA
   if (user.twoFactorEnabled) {
+      // Priority: Google Authenticator > Email
+      if (user.twoFactorSecret) {
+          return res.status(200).json(
+              new ApiResponse(200, { requiresVerification: true, email: user.email, method: 'authenticator' }, "Please enter code from Authenticator App")
+          );
+      }
+
+      // Legacy/Fallback: Email OTP
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       user.loginOTP = otp;
       user.loginOTPExpiry = Date.now() + 5 * 60 * 1000; // 5 minutes
@@ -260,7 +270,7 @@ const loginUser = asyncHandler(async (req, res) => {
           });
 
           return res.status(200).json(
-              new ApiResponse(200, { requiresVerification: true, email: user.email }, "2FA verification code sent to your email")
+              new ApiResponse(200, { requiresVerification: true, email: user.email, method: 'email' }, "2FA verification code sent to your email")
           );
       } catch (error) {
           user.loginOTP = undefined;
@@ -317,20 +327,40 @@ const verifyLoginOTP = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Email and OTP are required");
     }
 
-    const user = await User.findOne({ 
-        email,
-        loginOTP: otp,
-        loginOTPExpiry: { $gt: Date.now() }
-    });
+    const user = await User.findOne({ email });
 
     if (!user) {
-        throw new ApiError(400, "Invalid or Expired OTP");
+        throw new ApiError(404, "User not found");
     }
 
-    // Clear OTP
-    user.loginOTP = undefined;
-    user.loginOTPExpiry = undefined;
-    await user.save({ validateBeforeSave: false });
+    if (user.twoFactorEnabled && user.twoFactorSecret) {
+        // Verify Google Authenticator Code
+        const verified = speakeasy.totp.verify({
+            secret: user.twoFactorSecret,
+            encoding: 'base32',
+            token: otp,
+            window: 1 // Allow 30s slack
+        });
+
+        if (!verified) {
+            throw new ApiError(400, "Invalid 2FA Code");
+        }
+    } else {
+        // Verify Email OTP (Legacy)
+        if (
+            !user.loginOTP || 
+            user.loginOTP !== otp || 
+            !user.loginOTPExpiry || 
+            user.loginOTPExpiry < Date.now()
+        ) {
+            throw new ApiError(400, "Invalid or Expired OTP");
+        }
+
+        // Clear OTP only for email flow (as it's one-time)
+        user.loginOTP = undefined;
+        user.loginOTPExpiry = undefined;
+        await user.save({ validateBeforeSave: false });
+    }
 
     const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken -loginOTP -loginOTPExpiry");
@@ -357,23 +387,81 @@ const verifyLoginOTP = asyncHandler(async (req, res) => {
         );
 });
 
-const toggle2FA = asyncHandler(async (req, res) => {
+const setup2FA = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
-    user.twoFactorEnabled = !user.twoFactorEnabled;
+    
+    // Generate a temporary secret
+    const secret = speakeasy.generateSecret({
+        name: `Jobiyo (${user.email})`
+    });
+
+    // Generate QR Code
+    const qrCodeUrl = await QRCode.toDataURL(secret.otpauth_url);
+
+    return res.status(200).json(
+        new ApiResponse(200, { 
+            secret: secret.base32, 
+            qrCode: qrCodeUrl 
+        }, "Scan this QR code with your authenticator app")
+    );
+});
+
+const verify2FASetup = asyncHandler(async (req, res) => {
+    const { token, secret } = req.body;
+    
+    if (!token || !secret) {
+        throw new ApiError(400, "Token and secret are required");
+    }
+
+    const verified = speakeasy.totp.verify({
+        secret: secret,
+        encoding: 'base32',
+        token: token
+    });
+
+    if (!verified) {
+        throw new ApiError(400, "Invalid verification code");
+    }
+
+    const user = await User.findById(req.user._id);
+    user.twoFactorEnabled = true;
+    user.twoFactorSecret = secret;
     await user.save({ validateBeforeSave: false });
 
-    const status = user.twoFactorEnabled ? "enabled" : "disabled";
-    
     await logActivity({ 
         req, 
-        action: "AUTH_2FA_TOGGLE", 
+        action: "AUTH_2FA_ENABLED", 
         severity: "INFO", 
-        category: "SECURITY",
-        metadata: { status } 
+        category: "SECURITY"
     });
 
     return res.status(200).json(
-        new ApiResponse(200, { twoFactorEnabled: user.twoFactorEnabled }, `Two-Factor Authentication ${status}`)
+        new ApiResponse(200, { twoFactorEnabled: true }, "2FA Enabled Successfully")
+    );
+});
+
+const toggle2FA = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    
+    // This endpoint now only supports DISABLING 2FA
+    // To enable, use setup2FA and verify2FASetup
+    if (!user.twoFactorEnabled) {
+         throw new ApiError(400, "To enable 2FA, please use the setup process.");
+    }
+
+    user.twoFactorEnabled = false;
+    user.twoFactorSecret = undefined; // Clear the secret for security when disabled
+    await user.save({ validateBeforeSave: false });
+
+    await logActivity({ 
+        req, 
+        action: "AUTH_2FA_DISABLED", 
+        severity: "INFO", 
+        category: "SECURITY"
+    });
+
+    return res.status(200).json(
+        new ApiResponse(200, { twoFactorEnabled: false }, "Two-Factor Authentication Disabled")
     );
 });
 
@@ -835,4 +923,6 @@ export {
     verifyLoginOTP,
     toggle2FA,
     verifyEmail, // Exported
+    setup2FA,
+    verify2FASetup
 };

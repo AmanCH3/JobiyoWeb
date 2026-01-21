@@ -87,6 +87,20 @@ export const authApi = createApi({
                body: data,
            }),
        }),
+       setup2FA: builder.mutation({
+            query: () => ({
+                url: '/users/setup-2fa',
+                method: 'POST',
+            }),
+        }),
+        verify2FASetup: builder.mutation({
+            query: (data) => ({
+                url: '/users/verify-2fa-setup',
+                method: 'POST',
+                body: data,
+            }),
+            invalidatesTags: ['User'],
+        }),
        toggle2FA: builder.mutation({
            query: () => ({
                url: '/users/toggle-2fa',
@@ -117,5 +131,7 @@ export const {
     useRefreshTokenMutation,
     useVerifyLoginOtpMutation,
     useToggle2FAMutation,
-    useVerifyEmailMutation
+    useVerifyEmailMutation,
+    useSetup2FAMutation,
+    useVerify2FASetupMutation
 } = authApi;

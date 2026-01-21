@@ -63,6 +63,9 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
+    twoFactorSecret: {
+      type: String,
+    },
     loginOTP: {
       type: String
     },

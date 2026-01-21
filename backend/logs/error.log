@@ -168,3 +168,13 @@
 {"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 890b5da4-2cd0-476c-bc37-3f89bfb24e33","timestamp":"2026-01-21T06:17:56.858Z"}
 {"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: a6b5277b-04b2-40a6-993c-2b927d4e1a70","timestamp":"2026-01-21T06:17:56.916Z"}
 {"level":"error","message":"Request Failed: GET /api/v1/chats | Status: 401 | User: Guest | ReqID: 9052dad9-811d-4ff2-907f-514b98ec827b","timestamp":"2026-01-21T08:46:18.478Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 403 | User: Guest | ReqID: 981711a5-e03e-4ee8-82fe-305f8e9c2226","timestamp":"2026-01-21T09:17:03.057Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 401 | User: Guest | ReqID: 7cbcfa2c-a0f4-440b-b05e-edceb5c99e4e","timestamp":"2026-01-21T09:18:26.535Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: 525ac48b-66cc-47b7-af6f-aef750912db1","timestamp":"2026-01-21T09:18:26.570Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 404 | User: Guest | ReqID: 6fa45e89-42ee-40c9-94f1-826cdc2d1a82","timestamp":"2026-01-21T09:18:37.115Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/chats | Status: 401 | User: Guest | ReqID: 2c890e53-80bd-4e07-8490-93609cdebbad","timestamp":"2026-01-21T09:21:59.269Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 403 | User: Guest | ReqID: c7a63dc7-a6b4-491c-aede-6df36b1b7b8b","timestamp":"2026-01-21T09:21:59.358Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/chats | Status: 401 | User: Guest | ReqID: 0b310f9f-5ea0-4350-9a1b-6b286d861808","timestamp":"2026-01-21T09:22:11.194Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: ccf36ddb-0384-49e4-b085-126d118597b4","timestamp":"2026-01-21T09:22:11.248Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/chats | Status: 401 | User: Guest | ReqID: 7c03537f-6787-4205-8f16-d0b205d25fce","timestamp":"2026-01-21T09:22:11.961Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: e98942d7-1de7-46b8-916b-c761bea88a4f","timestamp":"2026-01-21T09:22:11.992Z"}
