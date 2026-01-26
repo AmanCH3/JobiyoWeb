@@ -99,13 +99,21 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // Send Verification Email
   try {
+      console.log(`[REGISTRATION] Sending verification email to: ${createdUser.email}`);
       await sendEmail({
           email: createdUser.email,
           subject: "Verify your email address - Jobiyo",
           html: getVerificationEmailTemplate(otp, createdUser.email)
       });
+      console.log(`[REGISTRATION] ✅ Verification email sent successfully to: ${createdUser.email}`);
   } catch (emailError) {
-      console.error("Failed to send verification email:", emailError);
+      console.error("[REGISTRATION] ❌ Failed to send verification email:", emailError);
+      console.error("[REGISTRATION] Error details:", {
+          name: emailError.name,
+          message: emailError.message,
+          code: emailError.code,
+          command: emailError.command
+      });
       // We don't rollback registration, but user will need to resend OTP logic if we implemented resend
       // for now, allow them to proceed to verify step (they might not get email, which is an issue)
       // Ideally rollback or warn.
