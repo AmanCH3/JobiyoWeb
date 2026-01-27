@@ -3632,3 +3632,15 @@
 {"level":"info","message":"Request Completed: GET /api/v1/jobs/public? | Status: 200 | User: Guest | ReqID: 373cca1b-353d-4779-b765-9dde75249193","timestamp":"2026-01-25T15:19:27.626Z"}
 {"level":"info","message":"Incoming Request: POST /api/v1/users/refresh-token | User: Guest | IP: ::1 | ReqID: eca6fd24-7ed5-4561-8581-a7d9d5565173","timestamp":"2026-01-25T15:19:27.764Z"}
 {"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: eca6fd24-7ed5-4561-8581-a7d9d5565173","timestamp":"2026-01-25T15:19:27.773Z"}
+{"level":"info","message":"Incoming Request: GET /api/v1/companies/public | User: Guest | IP: ::1 | ReqID: 6d0164c4-62ac-437e-9e8c-7d6cd6ee4104","timestamp":"2026-01-27T04:43:41.173Z"}
+{"level":"info","message":"Incoming Request: GET /api/v1/jobs/public? | User: Guest | IP: ::1 | ReqID: 0f0b92a6-81e9-4116-87cb-a9daa0fb8d9a","timestamp":"2026-01-27T04:43:41.184Z"}
+{"level":"info","message":"Request Completed: GET /api/v1/companies/public | Status: 200 | User: Guest | ReqID: 6d0164c4-62ac-437e-9e8c-7d6cd6ee4104","timestamp":"2026-01-27T04:43:41.271Z"}
+{"level":"info","message":"Request Completed: GET /api/v1/jobs/public? | Status: 200 | User: Guest | ReqID: 0f0b92a6-81e9-4116-87cb-a9daa0fb8d9a","timestamp":"2026-01-27T04:43:41.579Z"}
+{"level":"info","message":"Incoming Request: POST /api/v1/users/login | User: Guest | IP: ::1 | ReqID: 5e69301b-5626-476a-8bcd-30fb8efd091f","timestamp":"2026-01-27T04:44:37.903Z"}
+{"level":"info","message":"Request Completed: POST /api/v1/users/login | Status: 200 | User: Guest | ReqID: 5e69301b-5626-476a-8bcd-30fb8efd091f","timestamp":"2026-01-27T04:44:38.381Z"}
+{"level":"info","message":"Incoming Request: GET /api/v1/chats | User: Guest | IP: ::1 | ReqID: 9e386a09-bd87-4aae-add2-d9b81bec6b18","timestamp":"2026-01-27T04:44:38.509Z"}
+{"level":"info","message":"Request Completed: GET /api/v1/chats | Status: 200 | User: Guest | ReqID: 9e386a09-bd87-4aae-add2-d9b81bec6b18","timestamp":"2026-01-27T04:44:38.594Z"}
+{"level":"info","message":"Incoming Request: PATCH /api/v1/users/update-profile | User: Guest | IP: ::1 | ReqID: 0a7a9a30-33e6-4209-9149-b3e48a6e644a","timestamp":"2026-01-27T04:45:00.522Z"}
+{"level":"info","message":"Request Completed: PATCH /api/v1/users/update-profile | Status: 200 | User: Guest | ReqID: 0a7a9a30-33e6-4209-9149-b3e48a6e644a","timestamp":"2026-01-27T04:45:03.119Z"}
+{"level":"info","message":"Incoming Request: PATCH /api/v1/users/update-profile | User: Guest | IP: ::1 | ReqID: 4e20b3a8-3637-433e-8f50-58170733a914","timestamp":"2026-01-27T04:48:19.185Z"}
+{"level":"error","message":"Request Failed: PATCH /api/v1/users/update-profile | Status: 500 | User: Guest | ReqID: 4e20b3a8-3637-433e-8f50-58170733a914","timestamp":"2026-01-27T04:48:21.899Z"}

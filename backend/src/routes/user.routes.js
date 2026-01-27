@@ -2,6 +2,7 @@ import { Router } from "express";
 import { registerUser, loginUser, updateProfile, getCurrentUser, getJobRecommendations, getUserPublicProfile, forgotPassword, verifyOTP, resetPassword, googleAuth, changePassword, logoutUser, refreshAccessToken, verifyLoginOTP, toggle2FA, verifyEmail, setup2FA, verify2FASetup } from "../controllers/user.controller.js";
 import { verifyJWT, requireNonExpiredPassword } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
+import { validateFileContents } from "../middleware/validateFile.middleware.js";
 import { verifyRecaptcha } from "../middleware/recaptcha.middleware.js";
 
 const router = Router();
@@ -250,6 +251,7 @@ router.route("/update-profile").patch(
     verifyJWT,
     requireNonExpiredPassword,
     upload.fields([{ name: 'avatar', maxCount: 1 }, { name: 'resume', maxCount: 1 }]),
+    validateFileContents,
     updateProfile
 );
 

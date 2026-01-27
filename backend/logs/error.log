@@ -193,3 +193,4 @@
 {"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 404 | User: Guest | ReqID: 304ff1de-8530-49b0-8d00-1597ee58a440","timestamp":"2026-01-25T15:13:37.413Z"}
 {"level":"error","message":"Request Failed: GET /api/v1/chats | Status: 401 | User: Guest | ReqID: 398c26f9-7d83-48a4-b771-340c500ea97f","timestamp":"2026-01-25T15:19:27.545Z"}
 {"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: eca6fd24-7ed5-4561-8581-a7d9d5565173","timestamp":"2026-01-25T15:19:27.772Z"}
+{"level":"error","message":"Request Failed: PATCH /api/v1/users/update-profile | Status: 500 | User: Guest | ReqID: 4e20b3a8-3637-433e-8f50-58170733a914","timestamp":"2026-01-27T04:48:21.898Z"}

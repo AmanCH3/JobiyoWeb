@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { verifyJWT, isRecruiter } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
+import { validateFileContents } from "../middleware/validateFile.middleware.js";
 import {
     createCompany,
     getMyCompanies,
@@ -170,7 +171,7 @@ router.use(verifyJWT, isRecruiter);
  *         description: An array of the recruiter's company objects.
  */
 router.route("/")
-    .post(upload.single('logo'), createCompany)
+    .post(upload.single('logo'), validateFileContents, createCompany)
     .get(getMyCompanies);
 
 /**
@@ -251,7 +252,7 @@ router.route("/")
  */
 router.route("/:id")
     .get(getCompanyById)
-    .patch(upload.single('logo'), updateCompany)
+    .patch(upload.single('logo'), validateFileContents, updateCompany)
     .delete(deleteCompany);
 
 export default router;

@@ -1,19 +1,34 @@
 import { ApiError } from '../utils/ApiError.js';
 import { logActivity } from "../utils/activityLogger.js";
+import { MulterError } from "multer";
 
 const errorHandler = (err, req, res, next) => {
     let error = err;
 
-    if (!(error instanceof ApiError)) {
+    if (err instanceof MulterError) {
+        // Handle Multer specific errors
+        error = new ApiError(400, err.message, [], err.stack);
+    } else if (!(error instanceof ApiError)) {
         const statusCode = error.statusCode || 500;
         const message = error.message || "Something went wrong";
         error = new ApiError(statusCode, message, error?.errors || [], err.stack);
     }
 
+    // Check for file upload related errors to strictly suppress stack trace
+    const isFileUploadError = err instanceof MulterError || (
+        error instanceof ApiError && (
+             error.message.includes("Invalid file type") ||
+             error.message.includes("Double extension") ||
+             error.message.includes("This file type is not allowed") || 
+             error.message.includes("Invalid filename") ||
+             error.message.includes("Failed to upload")
+        )
+    );
+
     const response = {
         ...error,
         message: error.message,
-        ...(process.env.NODE_ENV === 'development' ? { stack: error.stack } : {}),
+        ...(process.env.NODE_ENV === 'development' && !isFileUploadError ? { stack: error.stack } : {}),
     };
 
     // Log critical or unexpected errors
