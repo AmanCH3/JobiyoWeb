@@ -6,6 +6,7 @@ import { JobPromotion } from "../models/jobPromotion.model.js";
 import { PaymentLedger } from "../models/paymentLedger.model.js";
 import { PROMOTION_PLANS } from "../constants.js";
 import Stripe from "stripe";
+import mongoose from "mongoose";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -114,39 +115,61 @@ const handleStripeWebhook = asyncHandler(async (req, res) => {
     }
 
     if (event.type === "checkout.session.completed") {
-        const session = event.data.object;
-        const { promotionId, planId, recruiterId, jobId } = session.metadata;
+        const stripeSession = event.data.object;
+        const { promotionId, recruiterId, jobId } = stripeSession.metadata;
 
-        // Idempotency: Check if already processed
-        const existingLedger = await PaymentLedger.findOne({ stripeCheckoutSessionId: session.id });
-        if (existingLedger) {
-             return res.status(200).json({ received: true });
-        }
+        const dbSession = await mongoose.startSession();
+        dbSession.startTransaction();
 
-        // 1. Record Payment
-        await PaymentLedger.create({
-            user: recruiterId,
-            stripeCheckoutSessionId: session.id,
-            stripePaymentIntentId: session.payment_intent,
-            status: "PAID",
-            amountCents: session.amount_total,
-            currency: session.currency,
-            metadata: session,
-        });
+        try {
+            // Idempotency: Check if already processed
+            const existingLedger = await PaymentLedger.findOne({ stripeCheckoutSessionId: stripeSession.id }).session(dbSession);
+            if (existingLedger) {
+                await dbSession.abortTransaction();
+                return res.status(200).json({ received: true });
+            }
 
-        // 2. Activate Promotion
-        const startAt = new Date();
-        const promotion = await JobPromotion.findById(promotionId);
-        
-        if (promotion) {
-            const durationDays = promotion.planDurationDays;
-            const endAt = new Date(startAt.getTime() + durationDays * 24 * 60 * 60 * 1000);
+            // 1. Record Payment
+            await PaymentLedger.create([{
+                user: recruiterId,
+                stripeCheckoutSessionId: stripeSession.id,
+                stripePaymentIntentId: stripeSession.payment_intent,
+                status: "PAID",
+                amountCents: stripeSession.amount_total,
+                currency: stripeSession.currency,
+                metadata: stripeSession,
+            }], { session: dbSession });
 
-            promotion.status = "ACTIVE";
-            promotion.startAt = startAt;
-            promotion.endAt = endAt;
-            promotion.stripePaymentIntentId = session.payment_intent;
-            await promotion.save();
+            // 2. Activate Promotion
+            const startAt = new Date();
+            const promotion = await JobPromotion.findById(promotionId).session(dbSession);
+            
+            if (promotion) {
+                const durationDays = promotion.planDurationDays;
+                const endAt = new Date(startAt.getTime() + durationDays * 24 * 60 * 60 * 1000);
+
+                promotion.status = "ACTIVE";
+                promotion.startAt = startAt;
+                promotion.endAt = endAt;
+                promotion.stripePaymentIntentId = stripeSession.payment_intent;
+                await promotion.save({ session: dbSession });
+            }
+
+            await dbSession.commitTransaction();
+            console.log(`[PAYMENT] atomic transaction successful for Job ${jobId}`);
+
+        } catch (error) {
+            await dbSession.abortTransaction();
+            console.error("Payment Transaction Failed:", error);
+            // We return 200 to Stripe to prevent retry loops if it's a logic error, 
+            // but ideally we should only return 200 if we handled it gracefully.
+            // If we throw, Stripe retries. 
+            // For now, let's allow Stripe to retry cleanly by throwing error if appropriate or consuming it.
+            // But to avoid "webhook delivery failed" spam, let's catch critical db errors and log them.
+            // If it's a transient error, throwing will invoke retry.
+             throw new ApiError(500, "Transaction failed");
+        } finally {
+            await dbSession.endSession();
         }
     }
 
