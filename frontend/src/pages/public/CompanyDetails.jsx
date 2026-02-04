@@ -1,11 +1,13 @@
 import { useGetCompanyDetailPublicQuery } from "@/api/companyApi";
-import { useParams } from "react-router-dom";
-import { Loader2, Globe, MapPin } from "lucide-react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Loader2, Globe, MapPin, ArrowLeft } from "lucide-react";
 import JobCard from "@/pages/public/JobCard";
 import JobCardSkeleton from "@/components/skeletons/JobCardSkeleton";
+import { sanitizeHTML } from "@/utils/sanitize";
 
 const CompanyDetails = () => {
     const { companyId } = useParams();
+    const navigate = useNavigate();
     const { data, isLoading, isError } = useGetCompanyDetailPublicQuery(companyId, { skip: !companyId });
     
     if (isLoading) return <div className="flex min-h-[60vh] justify-center items-center"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
@@ -17,6 +19,15 @@ const CompanyDetails = () => {
         <div className="bg-muted/30">
             <div className="bg-card border-b">
                 <div className="container mx-auto py-12 md:py-16">
+                    {/* Back Button */}
+                    <button 
+                        onClick={() => navigate(-1)} 
+                        className="flex items-center gap-2 text-gray-600 hover:text-emerald-600 mb-6 transition-colors group"
+                    >
+                        <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+                        <span className="font-medium">Back</span>
+                    </button>
+                    
                     <div className="flex flex-col md:flex-row items-start gap-8">
                         <img src={company.logo || '/placeholder.gif'} alt={company.name} className="h-28 w-28 rounded-xl object-cover border shadow-sm" />
                         <div className="flex-grow">
@@ -37,9 +48,10 @@ const CompanyDetails = () => {
                                     )}
                                 </div>
                             </div>
-                            <p className="mt-4 text-gray-700 max-w-3xl prose-sm">
-                                {company.description}
-                            </p>
+                            <div 
+                                className="mt-4 text-gray-700 max-w-3xl prose-sm"
+                                dangerouslySetInnerHTML={sanitizeHTML(company.description)}
+                            />
                         </div>
                     </div>
                 </div>

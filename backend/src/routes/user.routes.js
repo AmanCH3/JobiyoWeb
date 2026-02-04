@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { registerUser, loginUser, updateProfile, getCurrentUser, getJobRecommendations, getUserPublicProfile } from "../controllers/user.controller.js";
-import { verifyJWT } from "../middleware/auth.middleware.js";
+import { registerUser, loginUser, updateProfile, getCurrentUser, getJobRecommendations, getUserPublicProfile, forgotPassword, verifyOTP, resetPassword, googleAuth, changePassword, logoutUser, refreshAccessToken, verifyLoginOTP, toggle2FA, verifyEmail, setup2FA, verify2FASetup } from "../controllers/user.controller.js";
+import { verifyJWT, requireNonExpiredPassword } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
+import { validateFileContents } from "../middleware/validateFile.middleware.js";
 import { verifyRecaptcha } from "../middleware/recaptcha.middleware.js";
 
 const router = Router();
@@ -176,7 +177,16 @@ router.route("/register").post(verifyRecaptcha, registerUser);
  *       '404':
  *         description: User does not exist.
  */
-router.route("/login").post(verifyRecaptcha, loginUser);
+import { rateLimit } from "../middleware/rateLimiter.js";
+
+// Login: Allow 10 attempts per 15 minutes
+router.route("/login").post(rateLimit(15 * 60 * 1000, 10), verifyRecaptcha, loginUser);
+
+// Secured Routes
+router.route("/logout").post(verifyJWT, logoutUser);
+
+// Refresh: Allow 50 attempts per hour (generous for legitimate usage, blocks abuse)
+router.route("/refresh-token").post(rateLimit(60 * 60 * 1000, 50), refreshAccessToken);
 
 /**
  * @swagger
@@ -198,7 +208,7 @@ router.route("/login").post(verifyRecaptcha, loginUser);
  *       '401':
  *         description: Unauthorized. Invalid or missing token.
  */
-router.route("/current-user").get(verifyJWT, getCurrentUser);
+router.route("/current-user").get(verifyJWT, requireNonExpiredPassword, getCurrentUser);
 
 /**
  * @swagger
@@ -239,7 +249,9 @@ router.route("/current-user").get(verifyJWT, getCurrentUser);
  */
 router.route("/update-profile").patch(
     verifyJWT,
+    requireNonExpiredPassword,
     upload.fields([{ name: 'avatar', maxCount: 1 }, { name: 'resume', maxCount: 1 }]),
+    validateFileContents,
     updateProfile
 );
 
@@ -264,7 +276,7 @@ router.route("/update-profile").patch(
  *       '404':
  *         description: User not found.
  */
-router.route("/profile/:userId").get(verifyJWT, getUserPublicProfile);
+router.route("/profile/:userId").get(verifyJWT, requireNonExpiredPassword, getUserPublicProfile);
 
 /**
  * @swagger
@@ -287,6 +299,18 @@ router.route("/profile/:userId").get(verifyJWT, getUserPublicProfile);
  *                   items:
  *                     type: object # You will define a full 'Job' schema in job.routes.js
  */
-router.route("/recommendations").get(verifyJWT, getJobRecommendations);
+// Forgot Password Routes (no Swagger docs yet for brevity)
+router.route("/forgot-password").post(forgotPassword);
+router.route("/verify-otp").post(verifyOTP);
+router.route("/verify-email").post(verifyEmail); // Email Verification
+router.route("/verify-login-otp").post(verifyLoginOTP); // 2FA Verification
+router.route("/setup-2fa").post(verifyJWT, setup2FA); // 2FA Setup (Generate Secret/QR)
+router.route("/verify-2fa-setup").post(verifyJWT, verify2FASetup); // Verify Setup
+router.route("/toggle-2fa").post(verifyJWT, toggle2FA); // 2FA Toggle (Disable only)
+router.route("/reset-password").post(resetPassword);
+router.route("/auth/google").post(googleAuth);
+router.route("/change-password").post(verifyJWT, changePassword);
+
+router.route("/recommendations").get(verifyJWT, requireNonExpiredPassword, getJobRecommendations);
 
 export default router;

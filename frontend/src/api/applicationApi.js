@@ -1,10 +1,9 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
-const VITE_API_BASE_URL = "/api/v1";
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQueryWithReauth } from './baseQuery';
 
 export const applicationApi = createApi({
    reducerPath: 'applicationApi',
-   baseQuery: fetchBaseQuery({ baseUrl: VITE_API_BASE_URL, credentials: 'include' }),
+   baseQuery: baseQueryWithReauth,
    tagTypes: ['Application', 'Applicant', 'Job', 'PublicCompany'],
    endpoints: (builder) => ({
        applyForJob: builder.mutation({

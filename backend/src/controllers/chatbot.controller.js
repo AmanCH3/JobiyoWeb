@@ -8,6 +8,43 @@ import { ChatbotSetting } from "../models/chatbotSetting.model.js";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
+// Helper function for delay
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Extract retry delay from error response (in milliseconds)
+const getRetryDelay = (error, attempt) => {
+    // Try to get retry delay from error details
+    const retryInfo = error.errorDetails?.find(d => d['@type']?.includes('RetryInfo'));
+    if (retryInfo?.retryDelay) {
+        const seconds = parseInt(retryInfo.retryDelay);
+        if (!isNaN(seconds)) {
+            return seconds * 1000;
+        }
+    }
+    // Exponential backoff: 2^attempt * 1000ms (2s, 4s, 8s...)
+    return Math.pow(2, attempt) * 1000;
+};
+
+// Send message with retry logic for rate limiting
+const sendMessageWithRetry = async (chat, message, maxRetries = 3) => {
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+        try {
+            return await chat.sendMessage(message);
+        } catch (error) {
+            const isRateLimited = error.status === 429;
+            const hasRetriesLeft = attempt < maxRetries - 1;
+            
+            if (isRateLimited && hasRetriesLeft) {
+                const retryDelay = getRetryDelay(error, attempt);
+                console.log(`Rate limited (attempt ${attempt + 1}/${maxRetries}). Retrying in ${retryDelay / 1000}s...`);
+                await delay(retryDelay);
+            } else {
+                throw error;
+            }
+        }
+    }
+};
+
 const generateKnowledgeBase = async () => {
     const jobs = await Job.find({}).limit(50).sort({ createdAt: -1 }).populate('company', 'name location');
     const companies = await Company.find({ verified: true }).limit(50).select('name description location');
@@ -48,46 +85,81 @@ export const handleChatQuery = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Query is required.");
     }
     
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    
-    const settings = await ChatbotSetting.findOne({ singletonKey: "Jobiyo-main-settings" });
-    const adminDefinedPrompt = settings ? settings.systemPrompt : DEFAULT_SYSTEM_PROMPT;
+    try {
+        console.log("GEMINI_API_KEY exists:", !!process.env.GEMINI_API_KEY);
+        
+        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+        
+        const settings = await ChatbotSetting.findOne({ singletonKey: "Jobiyo-main-settings" });
+        const adminDefinedPrompt = settings ? settings.systemPrompt : DEFAULT_SYSTEM_PROMPT;
 
-    const knowledgeBase = await generateKnowledgeBase();
-    
-    const finalSystemPrompt = `${adminDefinedPrompt}
-    
-    You will use the following real-time data as your context to answer questions about jobs and companies.
-    --- START OF CONTEXT ---
-    ${knowledgeBase}
-    --- END OF CONTEXT ---
-    `;
+        const knowledgeBase = await generateKnowledgeBase();
+        
+        const finalSystemPrompt = `${adminDefinedPrompt}
+        
+        You will use the following real-time data as your context to answer questions about jobs and companies.
+        --- START OF CONTEXT ---
+        ${knowledgeBase}
+        --- END OF CONTEXT ---
+        `;
 
-    // --- STEP 4: Format chat history safely ---
-    const formattedHistory = history.map(item => {
-        if (!item || typeof item.role !== 'string' || typeof item.text !== 'string') {
-            return null;
+        // --- STEP 4: Format chat history safely ---
+        const formattedHistory = history.map(item => {
+            if (!item || typeof item.role !== 'string' || typeof item.text !== 'string') {
+                return null;
+            }
+            return {
+                role: item.role,
+                parts: [{ text: item.text }],
+            };
+        }).filter(Boolean);
+
+        const chat = model.startChat({
+          history: [
+              { role: "user", parts: [{ text: finalSystemPrompt }] },
+              { role: "model", parts: [{ text: "Namaste! I am Jobiyo Helper. How can I assist you today?" }] },
+              ...formattedHistory,
+          ],
+          generationConfig: {
+            maxOutputTokens: 250,
+          },
+        });
+
+        const result = await sendMessageWithRetry(chat, query);
+        const response = result.response;
+        const text = response.text();
+
+        return res.status(200).json(new ApiResponse(200, { response: text }, "Chatbot responded successfully."));
+    } catch (error) {
+        console.error("Chatbot Error Details:", error.message);
+        console.error("Full Error:", error);
+        
+        // Handle quota exceeded error gracefully
+        if (error.status === 429) {
+            // Check if it's a daily limit (limit: 0 in error)
+            const isDailyLimitExceeded = error.errorDetails?.some(d => 
+                d.violations?.some(v => v.quotaId?.includes('PerDay'))
+            );
+            
+            const message = isDailyLimitExceeded
+                ? "I've reached my daily conversation limit. Please try again tomorrow, or contact the administrator about upgrading the API plan."
+                : "I'm a bit busy right now! Please wait a moment and try again.";
+            
+            return res.status(200).json(new ApiResponse(200, { 
+                response: message 
+            }, "Chatbot rate limited."));
         }
-        return {
-            role: item.role,
-            parts: [{ text: item.text }],
-        };
-    }).filter(Boolean);
-
-    const chat = model.startChat({
-      history: [
-          { role: "user", parts: [{ text: finalSystemPrompt }] },
-          { role: "model", parts: [{ text: "Namaste! I am Jobiyo Helper. How can I assist you today?" }] },
-          ...formattedHistory,
-      ],
-      generationConfig: {
-        maxOutputTokens: 250,
-      },
-    });
-
-    const result = await chat.sendMessage(query);
-    const response = result.response;
-    const text = response.text();
-
-    return res.status(200).json(new ApiResponse(200, { response: text }, "Chatbot responded successfully."));
+        
+        // Handle other API errors gracefully
+        if (error.status === 404) {
+            return res.status(200).json(new ApiResponse(200, { 
+                response: "I'm having trouble connecting right now. Please try again later." 
+            }, "Chatbot service unavailable."));
+        }
+        
+        // Generic fallback for other errors
+        return res.status(200).json(new ApiResponse(200, { 
+            response: "I apologize, but I'm having some technical difficulties. Please try again in a few moments." 
+        }, "Chatbot error."));
+    }
 });

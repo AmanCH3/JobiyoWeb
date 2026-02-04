@@ -8,7 +8,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { toast } from "sonner";
+import { useToast } from "@/context/ToastContext";
 import { format } from "date-fns";
 import { CalendarIcon, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -21,6 +21,7 @@ const interviewSchema = z.object({
 });
 
 const ScheduleInterviewForm = ({ applicationId, closeDialog }) => {
+    const { toast } = useToast();
     const [scheduleInterview, { isLoading }] = useScheduleInterviewMutation();
     const { register, handleSubmit, control, watch, formState: { errors } } = useForm({
         resolver: zodResolver(interviewSchema),
@@ -29,15 +30,13 @@ const ScheduleInterviewForm = ({ applicationId, closeDialog }) => {
     const interviewType = watch("interviewType");
 
     const onSubmit = async (data) => {
-        const promise = scheduleInterview({ ...data, applicationId }).unwrap();
-        toast.promise(promise, {
-            loading: "Scheduling interview...",
-            success: (res) => {
-                closeDialog();
-                return res.message || "Interview scheduled successfully!";
-            },
-            error: (err) => err?.data?.message || "Failed to schedule interview.",
-        });
+        try {
+            const res = await scheduleInterview({ ...data, applicationId }).unwrap();
+            closeDialog();
+            toast.success(res.message || "Interview scheduled successfully!");
+        } catch (err) {
+            toast.error(err?.data?.message || "Failed to schedule interview.");
+        }
     };
     
     return (

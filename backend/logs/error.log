@@ -1,0 +1,196 @@
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 404 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 404 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 404 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 404 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 404 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/forgot-password | Status: 404 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/forgot-password | Status: 404 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 401 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 401 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 401 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 404 | User: Guest"}
+{"level":"error","message":"Request Failed: GET /api/v1/jobs/6960fae9b176dd307822d7fe | Status: 404 | User: Guest"}
+{"level":"error","message":"Request Failed: HEAD / | Status: 404 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: GET / | Status: 404 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: POST /api/v1/promotions/checkout-session | Status: 400 | User: Guest"}
+{"level":"error","message":"Request Failed: GET /api/v1/security-logs?userId=696510f6351528c99cc49210&page=1&limit=10& | Status: 401 | User: Guest","timestamp":"2026-01-13T05:08:07.096Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/security-logs?userId=69650fe553a7a5ccca1ae1c5&page=1&limit=10& | Status: 401 | User: Guest","timestamp":"2026-01-13T05:08:15.805Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/security-logs?userId=696510f6351528c99cc49210&page=1&limit=10& | Status: 401 | User: Guest","timestamp":"2026-01-13T05:08:27.775Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/security-logs/export?startDate=2026-01-06&endDate=2026-01-13 | Status: 401 | User: Guest | ReqID: d9ec5f38-e84d-4295-9b36-a42dc68c5e26","timestamp":"2026-01-13T05:26:40.072Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 401 | User: Guest | ReqID: a5f5b89a-9aec-4952-b2a6-dbcc680865d4","timestamp":"2026-01-13T06:58:02.038Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: 819449bc-c180-45da-bda3-a3ae7e32ab0a","timestamp":"2026-01-13T06:58:02.076Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 401 | User: Guest | ReqID: 90c84562-b7cd-4a18-a501-1cd0ffdaf440","timestamp":"2026-01-13T06:58:24.721Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: 879301ca-c92c-4f51-9beb-706f9dd6786a","timestamp":"2026-01-13T06:58:24.760Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 401 | User: Guest | ReqID: ac5b1be4-d8bc-461a-b24a-1791aaa5dfc9","timestamp":"2026-01-13T06:58:29.726Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: 4ebe023c-d5c8-42fc-b7e2-124d9babed89","timestamp":"2026-01-13T06:58:29.748Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 401 | User: Guest | ReqID: ba614bab-b82f-45c2-8f70-489f444e1b72","timestamp":"2026-01-13T06:58:54.567Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: 2d55e01d-44df-40a2-94ad-aaa23076acce","timestamp":"2026-01-13T06:58:54.586Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 401 | User: Guest | ReqID: 6aa466af-d356-4ad6-abe9-79b0c7aef693","timestamp":"2026-01-13T06:59:19.739Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: 7f994ad2-6353-4ebe-b1d5-324223e821e0","timestamp":"2026-01-13T06:59:19.774Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: 852f5130-f809-44fd-80f1-451ee673eaff","timestamp":"2026-01-13T07:01:28.331Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: 7720aa39-05b5-4b53-a43f-2351ad81caa9","timestamp":"2026-01-13T07:03:09.798Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/register | Status: 401 | User: Guest | ReqID: 56b8a306-ef38-474c-8a0d-f2cb28e4bcd8","timestamp":"2026-01-16T17:58:43.473Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: 2aa9865d-5693-4c14-b077-5a7499cf6be0","timestamp":"2026-01-16T17:58:43.544Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/register | Status: 401 | User: Guest | ReqID: a0be57dd-dd0a-4f0f-9f48-75859d5fee40","timestamp":"2026-01-16T17:59:27.124Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: ec86872f-0792-4559-8c96-83622f3c49b2","timestamp":"2026-01-16T17:59:27.185Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 401 | User: Guest | ReqID: f012599a-6fc7-413f-bb21-fd6e34cf40c3","timestamp":"2026-01-17T11:29:45.937Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: c78ba206-bb3c-4d26-8767-5814967c19f8","timestamp":"2026-01-17T11:29:45.983Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/register | Status: 400 | User: Guest | ReqID: 99e8b765-f22a-405b-a9e8-cb1e379f7916","timestamp":"2026-01-17T12:19:41.324Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/register | Status: 400 | User: Guest | ReqID: 9d211ace-9174-439f-b0a3-3c81307cdb32","timestamp":"2026-01-17T12:23:43.892Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 401 | User: Guest | ReqID: 58fc1c52-1f20-4104-84b4-5b38e33faf72","timestamp":"2026-01-18T04:25:56.419Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: d7fc15dc-1737-4bd2-9c68-e1a2a18e102c","timestamp":"2026-01-18T04:25:56.458Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 401 | User: Guest | ReqID: b225d68f-1039-4714-910d-7b8e182a533d","timestamp":"2026-01-18T04:25:59.887Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: aaafc913-9df1-416b-a353-8f51d631ceab","timestamp":"2026-01-18T04:25:59.914Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 401 | User: Guest | ReqID: 41e36165-89e2-4b96-af65-95973b4e0eae","timestamp":"2026-01-18T04:26:06.049Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: 67f37fb2-c252-488d-b6bc-621e64d82ddb","timestamp":"2026-01-18T04:26:06.078Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 401 | User: Guest | ReqID: c8d19497-cc55-41ed-a5fb-9668b98a1696","timestamp":"2026-01-18T04:26:22.868Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: 2b6d21f8-21b1-496b-97e5-af503180191e","timestamp":"2026-01-18T04:26:22.901Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 401 | User: Guest | ReqID: 03cc3840-091c-46f3-89f2-83a0a5982425","timestamp":"2026-01-18T04:26:33.333Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: aff90260-c1f3-40f7-a1ed-9c298bb2c319","timestamp":"2026-01-18T04:26:33.364Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: 9600458d-e0a3-457d-8332-de5b65355d87","timestamp":"2026-01-18T04:26:42.491Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: a8ec0703-79df-4b1d-b00b-035fd6aa387a","timestamp":"2026-01-18T04:26:57.732Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: c11914e9-077c-4fd1-a02d-154abe7ae9e6","timestamp":"2026-01-18T04:27:10.227Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: 6cec1c66-d023-446a-982e-f49360d46208","timestamp":"2026-01-18T04:27:23.905Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: 37c81458-20ad-4b05-aa21-b95e1481ec1d","timestamp":"2026-01-18T04:28:01.100Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: 57a735a0-0524-4fd5-84d4-b22d0e4745d4","timestamp":"2026-01-18T04:28:21.212Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: 02f14fe0-24c0-4fb1-a8b9-4ccc43082cdf","timestamp":"2026-01-18T04:28:35.970Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: 9176e1a5-4296-468a-9ef4-188807c6bd75","timestamp":"2026-01-18T04:28:46.059Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: fba37186-da3a-49fe-a282-afbf6dcd92d5","timestamp":"2026-01-18T04:28:59.578Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 401 | User: Guest | ReqID: 1a2455cf-2fe2-4887-abd5-6da7ba317509","timestamp":"2026-01-18T05:01:52.995Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: dc15ea8d-f274-4a7f-9988-be0d231be1e8","timestamp":"2026-01-18T05:01:53.038Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 401 | User: Guest | ReqID: 8cebdc42-faf8-43d2-9eec-3419bcdc56f6","timestamp":"2026-01-18T05:02:05.652Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: d185f4ce-df72-4e52-ad20-7a2b9d6bbd22","timestamp":"2026-01-18T05:02:05.722Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 401 | User: Guest | ReqID: 74566176-af51-450b-99f9-5ade113c0db0","timestamp":"2026-01-18T05:03:36.227Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: df084ddc-e1fc-4e2a-8d06-f88e326f9737","timestamp":"2026-01-18T05:03:36.260Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: 3599a92a-f191-40f8-8419-f5bcac005cf6","timestamp":"2026-01-18T05:07:50.841Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: bb583fb2-125f-4789-9d2e-666a8a056826","timestamp":"2026-01-18T05:10:26.200Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: dfc10b7c-5b9f-4105-9d33-9c3a5c2c91ff","timestamp":"2026-01-18T05:12:14.413Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/chats | Status: 401 | User: Guest | ReqID: 1d9034f8-7a61-4be5-9855-7f637fe596d7","timestamp":"2026-01-18T05:33:33.120Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: 1c78ae4b-b911-4121-8bc1-9ce83fd4a085","timestamp":"2026-01-18T05:33:33.163Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/chats | Status: 401 | User: Guest | ReqID: 9ddc54b7-ad23-4533-b638-9bec6e51ecb1","timestamp":"2026-01-18T05:35:06.112Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: d49ec753-e5b9-47c7-b707-a0b937edb33f","timestamp":"2026-01-18T05:35:06.141Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/forgot-password | Status: 404 | User: Guest | ReqID: 11035318-63ce-498e-a361-bc4be6e34c03","timestamp":"2026-01-18T05:40:28.733Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/forgot-password | Status: 404 | User: Guest | ReqID: 87ff4326-680b-4c15-a0f8-f6f505369ffa","timestamp":"2026-01-18T05:41:07.816Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/chatbot/query | Status: 500 | User: Guest | ReqID: ffd23463-98cf-4458-bc28-04941d71f1f3","timestamp":"2026-01-18T05:41:22.820Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/forgot-password | Status: 404 | User: Guest | ReqID: 8c611bcc-1ce6-47f3-b31b-424c1f246bf0","timestamp":"2026-01-18T05:41:58.859Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/forgot-password | Status: 404 | User: Guest | ReqID: 3a9b5bc2-5493-4e6e-aeee-30a7d3991824","timestamp":"2026-01-18T05:43:11.641Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/forgot-password | Status: 404 | User: Guest | ReqID: 79a2a67e-5969-47b9-abb9-ef545cdb91af","timestamp":"2026-01-18T05:43:46.577Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/forgot-password | Status: 404 | User: Guest | ReqID: 957ddbbe-d6a5-4b85-bed9-ff272d01e72a","timestamp":"2026-01-18T05:43:51.874Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/reset-password | Status: 409 | User: Guest | ReqID: 48a16585-e9cf-4596-a38d-a987990134aa","timestamp":"2026-01-18T05:47:21.342Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/reset-password | Status: 409 | User: Guest | ReqID: fb1feaf9-187c-41c2-907b-6d6c47dfb061","timestamp":"2026-01-18T05:47:27.562Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/chats | Status: 401 | User: Guest | ReqID: 10640a38-6b19-4ee7-bae8-e3a8b04bb840","timestamp":"2026-01-18T05:48:52.161Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: 9cfc1401-e848-46e4-b1e8-dc077669bfd1","timestamp":"2026-01-18T05:48:52.408Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/register | Status: 409 | User: Guest | ReqID: c886b00b-84bb-41c1-a5a1-ac14dcf267d3","timestamp":"2026-01-18T07:17:48.276Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 403 | User: Guest | ReqID: d92723ff-145d-4c32-bd23-81e52d652778","timestamp":"2026-01-18T07:25:50.513Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/chats | Status: 401 | User: Guest | ReqID: f214a4e1-bf01-4c0b-abc2-2f3bc7fa1a7c","timestamp":"2026-01-18T07:32:47.026Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: de62ad4a-e979-412d-baaa-ea40d2d7254c","timestamp":"2026-01-18T07:32:47.132Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 403 | User: Guest | ReqID: 38ea0659-6261-4c24-ae7e-936702687cbf","timestamp":"2026-01-18T07:42:04.886Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 404 | User: Guest | ReqID: ae59dfce-15df-4be7-9b95-ddeb6a6c86b1","timestamp":"2026-01-18T10:32:32.211Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 404 | User: Guest | ReqID: 2f767d0f-6c3b-4c85-9eb3-a432c1c27dad","timestamp":"2026-01-19T14:00:23.033Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 404 | User: Guest | ReqID: ee9e104e-85ed-47e4-bc4d-b192c75e0137","timestamp":"2026-01-19T14:30:53.435Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/chatbot/query | Status: 500 | User: Guest | ReqID: ff600cb1-35be-4aa4-b7da-c2cc4a2de01d","timestamp":"2026-01-19T15:11:41.937Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/chatbot/query | Status: 500 | User: Guest | ReqID: 2b0beb10-3001-48cb-9dea-abe83650f621","timestamp":"2026-01-19T15:13:40.745Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/chatbot/query | Status: 500 | User: Guest | ReqID: a964f2b6-3f21-47c8-a6ae-06524da3b98a","timestamp":"2026-01-19T15:17:27.627Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/chatbot/query | Status: 500 | User: Guest | ReqID: 1029a4a7-b432-4d83-83d1-1404bfe77458","timestamp":"2026-01-19T15:19:23.352Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/chatbot/query | Status: 500 | User: Guest | ReqID: 6490e4d5-e6df-4b98-af17-b9b31123fc91","timestamp":"2026-01-19T15:21:34.348Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/chatbot/query | Status: 500 | User: Guest | ReqID: f5f27972-6f13-40a3-a363-2dff05f9593e","timestamp":"2026-01-19T15:23:41.847Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/chats | Status: 401 | User: Guest | ReqID: aaad18c7-9751-4e81-8a99-c529ebb53768","timestamp":"2026-01-19T15:27:20.445Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 401 | User: Guest | ReqID: 4004facf-6b47-4209-b486-2e6cc6c8d353","timestamp":"2026-01-19T16:16:12.588Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: 66168d39-2b56-47ee-9793-721cd3cebbcb","timestamp":"2026-01-19T16:16:12.631Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: bd5c52a2-402e-4f0e-8ca9-5f024909f935","timestamp":"2026-01-19T16:16:35.801Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: f735fb68-475e-41d3-9907-0d51ad4f4fdf","timestamp":"2026-01-19T16:16:46.609Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: 8289dce7-d4f8-4122-ad8f-a1f85d039d96","timestamp":"2026-01-19T16:24:15.087Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: 001d523d-c56f-4f1d-91e6-165a4cb6647e","timestamp":"2026-01-19T16:27:05.068Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: 0ea9bb5a-0941-4565-8ca6-1d178a7b2ea7","timestamp":"2026-01-19T16:33:52.486Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: 741bce6d-b0e7-4dc3-ab4d-df050b63be8d","timestamp":"2026-01-19T16:33:56.101Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: 3abd0459-04e7-4209-97ed-62714f893cf8","timestamp":"2026-01-19T16:34:16.194Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: e1b5a972-4699-4cb6-9ee2-e9319f1d1b79","timestamp":"2026-01-19T16:34:17.809Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: 749792eb-104a-4a5d-90b7-74ff06d0c484","timestamp":"2026-01-19T16:34:28.319Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: 0febff7e-968a-41bd-ba55-9e5b86d84fff","timestamp":"2026-01-19T16:34:57.080Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: 45cd2b24-ac24-4424-b7a9-603e1cb563bc","timestamp":"2026-01-19T16:37:36.780Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 429 | User: Guest | ReqID: cd03719a-4f07-4a83-be54-69cd63c1225c","timestamp":"2026-01-19T16:37:44.842Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/forgot-password | Status: 404 | User: Guest | ReqID: e914820d-8d16-4beb-8393-1ca8580056e0","timestamp":"2026-01-19T16:51:17.829Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/reset-password | Status: 400 | User: Guest | ReqID: 9ccd4d20-5683-427d-bb29-b33ef26c6982","timestamp":"2026-01-19T16:54:04.105Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/register | Status: 400 | User: Guest | ReqID: 354f7614-c4f5-4074-b786-2eef44280bdf","timestamp":"2026-01-19T16:56:57.604Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/register | Status: 400 | User: Guest | ReqID: 6cb9163b-6398-4854-84e9-e9d701708b50","timestamp":"2026-01-19T16:57:07.181Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/register | Status: 400 | User: Guest | ReqID: b633d1e9-1aa2-4e49-80e1-fe12725faaba","timestamp":"2026-01-19T16:57:14.702Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 403 | User: Guest | ReqID: 0086e643-6a88-4e52-9cf6-5d315395a5c1","timestamp":"2026-01-19T17:05:52.633Z"}
+{"level":"error","message":"Request Failed: PATCH /api/v1/users/update-profile | Status: 403 | User: Guest | ReqID: fd530453-242e-4c41-95b9-4cfc632e8ea1","timestamp":"2026-01-19T17:37:06.565Z"}
+{"level":"error","message":"Request Failed: PATCH /api/v1/users/update-profile | Status: 500 | User: Guest | ReqID: 85f9b07e-0677-4e9c-9eb4-ae1373eb4261","timestamp":"2026-01-19T17:43:31.597Z"}
+{"level":"error","message":"Request Failed: PATCH /api/v1/users/update-profile | Status: 500 | User: Guest | ReqID: 31d9d138-3441-4fe5-87d5-c849a71a64db","timestamp":"2026-01-19T17:44:26.828Z"}
+{"level":"error","message":"Request Failed: PATCH /api/v1/users/update-profile | Status: 500 | User: Guest | ReqID: 2d3b1d54-87eb-4a5a-8a10-16dff3baab88","timestamp":"2026-01-19T17:44:44.160Z"}
+{"level":"error","message":"Request Failed: PATCH /api/v1/users/update-profile | Status: 500 | User: Guest | ReqID: fe17e95a-cdc3-4df1-8229-1328d31c6e40","timestamp":"2026-01-19T17:50:22.758Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 1814d550-bcab-4b52-ac6c-39ae4bf1910f","timestamp":"2026-01-21T06:17:55.225Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: f6e40a65-49ee-4eec-a633-01287cfee2a9","timestamp":"2026-01-21T06:17:55.271Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 8a1dcff0-7217-4ace-b042-b05f6ec6cd24","timestamp":"2026-01-21T06:17:55.304Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 71a23b33-ef57-4401-9eab-eceb63240718","timestamp":"2026-01-21T06:17:55.356Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 599b8ed2-7dfc-4312-a7de-ecc3681adcc3","timestamp":"2026-01-21T06:17:55.418Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 6b173f6c-cdb8-4ad5-b669-0a87b7d97a13","timestamp":"2026-01-21T06:17:55.470Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 631b4031-4dad-4a10-bbc5-1651eb5b072e","timestamp":"2026-01-21T06:17:55.506Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: ac9f5564-3e07-48d3-9383-87ac8ab5b8c1","timestamp":"2026-01-21T06:17:55.553Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 004ac832-4e31-4ccd-a519-916496283b1e","timestamp":"2026-01-21T06:17:55.603Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 32f526ea-122f-4886-bdd6-ba5c5b321a8a","timestamp":"2026-01-21T06:17:55.665Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: d25cfc15-f084-4915-a51d-65210b50ce59","timestamp":"2026-01-21T06:17:55.712Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: cd809f85-8e50-4dc5-ac5e-4243bfe51167","timestamp":"2026-01-21T06:17:55.756Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 2dceaea6-80c8-49e0-be01-b418e058bea5","timestamp":"2026-01-21T06:17:55.820Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 24dd6ba6-d38c-451b-9c43-e174b40f6807","timestamp":"2026-01-21T06:17:55.871Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 95391f4d-a6f2-4111-a48a-01f2a9037eaa","timestamp":"2026-01-21T06:17:55.913Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: c24de58c-d150-4448-bda2-b3e1d79c46ef","timestamp":"2026-01-21T06:17:55.955Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: a7edc1ec-a201-4f2c-92b0-b67505a00175","timestamp":"2026-01-21T06:17:56.009Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 037680f5-455e-4ba6-8f1b-f6a728b89fa7","timestamp":"2026-01-21T06:17:56.066Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 4bda728e-f227-45f5-a09a-584618891f40","timestamp":"2026-01-21T06:17:56.104Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: f6e2c3e9-19aa-41cc-bb09-c0ca719e48d3","timestamp":"2026-01-21T06:17:56.171Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 5528b254-7f29-40c8-b494-fcae1a1c264a","timestamp":"2026-01-21T06:17:56.207Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 6c3bc9ff-84a9-4095-957a-29cbca574f24","timestamp":"2026-01-21T06:17:56.253Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: c0b50e47-83b5-45e6-87bb-8c01cfdb1b4e","timestamp":"2026-01-21T06:17:56.335Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 5f986bcf-c3c1-4b2f-890f-aef5348750ae","timestamp":"2026-01-21T06:17:56.380Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 7a6aec0f-1395-426c-a3a1-6587c7bf218d","timestamp":"2026-01-21T06:17:56.403Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 65b1eec8-a9c7-4c4f-9b7a-5bd65adfc73e","timestamp":"2026-01-21T06:17:56.453Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 60304017-df76-4bf0-a492-91699dc20bcc","timestamp":"2026-01-21T06:17:56.523Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 3d5a1948-50b8-4736-8a8b-8e34cc800c27","timestamp":"2026-01-21T06:17:56.560Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 60f5ac77-20c9-42c2-900c-ca081b3ad15a","timestamp":"2026-01-21T06:17:56.615Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 4e4aff4e-d48e-4a85-954e-25c4436ae9e0","timestamp":"2026-01-21T06:17:56.659Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: d8642483-6465-4d3f-8c55-40835d4d816c","timestamp":"2026-01-21T06:17:56.702Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: e1884807-3fcc-4fff-a321-ce808ef11a41","timestamp":"2026-01-21T06:17:56.771Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 46ff848a-2174-4107-b986-4a06ff9983d9","timestamp":"2026-01-21T06:17:56.805Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: 890b5da4-2cd0-476c-bc37-3f89bfb24e33","timestamp":"2026-01-21T06:17:56.858Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/user/me | Status: 404 | User: Guest | ReqID: a6b5277b-04b2-40a6-993c-2b927d4e1a70","timestamp":"2026-01-21T06:17:56.916Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/chats | Status: 401 | User: Guest | ReqID: 9052dad9-811d-4ff2-907f-514b98ec827b","timestamp":"2026-01-21T08:46:18.478Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 403 | User: Guest | ReqID: 981711a5-e03e-4ee8-82fe-305f8e9c2226","timestamp":"2026-01-21T09:17:03.057Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 401 | User: Guest | ReqID: 7cbcfa2c-a0f4-440b-b05e-edceb5c99e4e","timestamp":"2026-01-21T09:18:26.535Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: 525ac48b-66cc-47b7-af6f-aef750912db1","timestamp":"2026-01-21T09:18:26.570Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 404 | User: Guest | ReqID: 6fa45e89-42ee-40c9-94f1-826cdc2d1a82","timestamp":"2026-01-21T09:18:37.115Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/chats | Status: 401 | User: Guest | ReqID: 2c890e53-80bd-4e07-8490-93609cdebbad","timestamp":"2026-01-21T09:21:59.269Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 403 | User: Guest | ReqID: c7a63dc7-a6b4-491c-aede-6df36b1b7b8b","timestamp":"2026-01-21T09:21:59.358Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/chats | Status: 401 | User: Guest | ReqID: 0b310f9f-5ea0-4350-9a1b-6b286d861808","timestamp":"2026-01-21T09:22:11.194Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: ccf36ddb-0384-49e4-b085-126d118597b4","timestamp":"2026-01-21T09:22:11.248Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/chats | Status: 401 | User: Guest | ReqID: 7c03537f-6787-4205-8f16-d0b205d25fce","timestamp":"2026-01-21T09:22:11.961Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: e98942d7-1de7-46b8-916b-c761bea88a4f","timestamp":"2026-01-21T09:22:11.992Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/chats | Status: 401 | User: Guest | ReqID: 1b6e8bbe-9702-4c65-8da1-9e5f5fcedf5a","timestamp":"2026-01-25T14:28:09.532Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/toggle-2fa | Status: 400 | User: Guest | ReqID: 649cf19c-f378-4ce9-a351-93d31db8ee4c","timestamp":"2026-01-25T14:28:22.898Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/toggle-2fa | Status: 400 | User: Guest | ReqID: 3a1a1aa4-7139-452a-b368-20ded61fad99","timestamp":"2026-01-25T14:28:24.131Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/toggle-2fa | Status: 400 | User: Guest | ReqID: f9256321-78c8-40e3-98a9-2df790bf59d9","timestamp":"2026-01-25T14:29:28.182Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 403 | User: Guest | ReqID: 4717b73d-d695-47d2-8f9d-9d920348431e","timestamp":"2026-01-25T14:32:42.555Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 403 | User: Guest | ReqID: c71ed7aa-5162-42bf-aa38-2d5cbb80df8f","timestamp":"2026-01-25T14:33:55.275Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/chats/messages/69709ab77d362f8945c8f50c | Status: 403 | User: Guest | ReqID: 84108cb8-23fb-45f1-b1e6-20231841c352","timestamp":"2026-01-25T14:53:59.630Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/applications/my-applications | Status: 401 | User: Guest | ReqID: 36c69291-cf42-42bf-847a-81e4298b215c","timestamp":"2026-01-25T15:05:48.692Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/chats | Status: 401 | User: Guest | ReqID: 662a6d17-f112-4a2c-b515-2dfc1013c0e9","timestamp":"2026-01-25T15:05:48.744Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: 42609fd0-8d1a-4638-8140-4c652fb32605","timestamp":"2026-01-25T15:05:48.913Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/chats | Status: 401 | User: Guest | ReqID: fa2328cb-f573-49fc-9e9e-496fc619ec54","timestamp":"2026-01-25T15:05:49.045Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 404 | User: Guest | ReqID: be24eade-dde2-4779-b799-4a6905d58c50","timestamp":"2026-01-25T15:13:34.018Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/login | Status: 404 | User: Guest | ReqID: 304ff1de-8530-49b0-8d00-1597ee58a440","timestamp":"2026-01-25T15:13:37.413Z"}
+{"level":"error","message":"Request Failed: GET /api/v1/chats | Status: 401 | User: Guest | ReqID: 398c26f9-7d83-48a4-b771-340c500ea97f","timestamp":"2026-01-25T15:19:27.545Z"}
+{"level":"error","message":"Request Failed: POST /api/v1/users/refresh-token | Status: 401 | User: Guest | ReqID: eca6fd24-7ed5-4561-8581-a7d9d5565173","timestamp":"2026-01-25T15:19:27.772Z"}
+{"level":"error","message":"Request Failed: PATCH /api/v1/users/update-profile | Status: 500 | User: Guest | ReqID: 4e20b3a8-3637-433e-8f50-58170733a914","timestamp":"2026-01-27T04:48:21.898Z"}

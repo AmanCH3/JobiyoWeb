@@ -1,14 +1,10 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
-const VITE_API_BASE_URL = "http://localhost:8000/api/v1";
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQueryWithReauth } from './baseQuery';
 
 export const companyApi = createApi({
     reducerPath: 'companyApi',
-    baseQuery: fetchBaseQuery({
-        baseUrl: '/api/v1', 
-        credentials: 'include',
-    }),
-    tagTypes: ['Company'],
+    baseQuery: baseQueryWithReauth,
+    tagTypes: ['Company', 'PublicCompany'],
     endpoints: (builder) => ({
         getMyCompanies: builder.query({
             query: () => '/companies',

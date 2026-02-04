@@ -1,5 +1,5 @@
 import { useUpdateApplicationStatusMutation } from "@/api/applicationApi";
-import { toast } from "sonner";
+import { useToast } from "@/context/ToastContext";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ const StatusBadge = ({ status }) => {
 };
 
 const ApplicantsTable = ({ applicants }) => {
+    const { toast } = useToast();
     const [updateStatus, { isLoading: isUpdatingStatus }] = useUpdateApplicationStatusMutation();
     const navigate = useNavigate();
 
@@ -28,12 +29,12 @@ const ApplicantsTable = ({ applicants }) => {
     const [selectedApplication, setSelectedApplication] = useState(null);
 
     const handleStatusUpdate = async (applicationId, status) => {
-        const promise = updateStatus({ applicationId, status }).unwrap();
-        toast.promise(promise, {
-            loading: 'Updating status...',
-            success: 'Status updated successfully!',
-            error: (err) => err?.data?.message || 'Failed to update status.',
-        });
+        try {
+            await updateStatus({ applicationId, status }).unwrap();
+            toast.success("Status updated successfully!");
+        } catch (err) {
+            toast.error(err?.data?.message || "Failed to update status.");
+        }
     };
 
     const openScheduleDialog = (application) => {

@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Loader2, Mail, FileText, Code } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { sanitizeHTML } from "@/utils/sanitize";
 
 const PublicProfile = () => {
     const { userId } = useParams();
@@ -32,7 +33,10 @@ const PublicProfile = () => {
                         </div>
                          <div>
                             <h3 className="text-lg font-semibold">Bio</h3>
-                            <p className="mt-2 text-muted-foreground">{user.profile?.bio || "No bio provided."}</p>
+                            <div 
+                                className="mt-2 text-muted-foreground"
+                                dangerouslySetInnerHTML={sanitizeHTML(user.profile?.bio || "No bio provided.")}
+                            />
                         </div>
                         <div>
                             <h3 className="text-lg font-semibold">Resume</h3>

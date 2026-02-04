@@ -3,16 +3,17 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAccessChatMutation, useFetchMyChatsQuery } from "@/api/chatApi";
 import ChatList from "@/components/chat/ChatList";
 import ChatBox from "@/components/chat/ChatBox";
-import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { selectCurrentUser } from "@/redux/slices/userSlice";
 import { useSelector } from "react-redux";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/context/ToastContext";
 
 const ChatPage = () => {
   const [selectedChat, setSelectedChat] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const currentUser = useSelector(selectCurrentUser);
 
   const [accessChat, { isLoading: isAccessingChat }] = useAccessChatMutation();

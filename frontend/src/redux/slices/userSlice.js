@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   user: null,
   token: null,
+  isPasswordExpired: false,
 };
 
 const userSlice = createSlice({
@@ -17,12 +18,17 @@ const userSlice = createSlice({
     logOut: (state) => {
       state.user = null;
       state.token = null;
+      state.isPasswordExpired = false;
+    },
+    setPasswordExpired: (state, action) => {
+        state.isPasswordExpired = action.payload;
     },
   },
 });
 
-export const { setCredentials, logOut } = userSlice.actions;
+export const { setCredentials, logOut, setPasswordExpired } = userSlice.actions;
 
 export default userSlice.reducer;
 
 export const selectCurrentUser = (state) => state.user.user;
+export const selectCurrentToken = (state) => state.user.token;

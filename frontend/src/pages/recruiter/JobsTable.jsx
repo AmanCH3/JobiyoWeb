@@ -5,11 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { MoreHorizontal, Edit, Trash, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useDeleteJobMutation } from "@/api/jobApi";
-import { toast } from "sonner";
+import { useToast } from "@/context/ToastContext";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { format } from 'date-fns';
 
 const JobsTable = ({ jobs }) => {
+    const { toast } = useToast();
     const [deleteJob, { isLoading }] = useDeleteJobMutation();
 
     const handleDelete = async (id) => {

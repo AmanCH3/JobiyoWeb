@@ -1,17 +1,32 @@
 import { selectCurrentUser, setCredentials } from "@/redux/slices/userSlice";
 import { useSelector, useDispatch } from "react-redux";
-import { useUpdateProfileMutation } from "@/api/authApi";
+import { useUpdateProfileMutation, useToggle2FAMutation, useSetup2FAMutation, useVerify2FASetupMutation } from "@/api/authApi";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+// import { toast } from "sonner"; // Removed
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, User, Mail, Link as LinkIcon, FileText } from "lucide-react";
+import { Loader2, User, Mail, Link as LinkIcon, FileText, Shield, ShieldCheck, QrCode } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useToast } from "@/context/ToastContext";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 
 const profileSchema = z.object({
   fullName: z.string().min(2, "Full name is required"),
@@ -24,8 +39,18 @@ const profileSchema = z.object({
 const Profile = () => {
     const dispatch = useDispatch();
     const user = useSelector(selectCurrentUser);
+    const { toast } = useToast();
     const [updateProfile, { isLoading }] = useUpdateProfileMutation();
+    const [toggle2FA, { isLoading: isToggling }] = useToggle2FAMutation();
+    const [setup2FA, { isLoading: isSettingUp }] = useSetup2FAMutation();
+    const [verify2FASetup, { isLoading: isVerifying }] = useVerify2FASetupMutation();
     
+    // 2FA Setup State
+    const [showSetupDialog, setShowSetupDialog] = useState(false);
+    const [qrCodeData, setQrCodeData] = useState(null);
+    const [setupSecret, setSetupSecret] = useState(null);
+    const [verificationCode, setVerificationCode] = useState("");
+
     const [avatarPreview, setAvatarPreview] = useState(user?.profile?.avatar);
     const [resumeName, setResumeName] = useState(user?.profile?.resumeOriginalName);
 
@@ -55,15 +80,63 @@ const Profile = () => {
         
         try {
             const result = await updateProfile(formData).unwrap();
-            dispatch(setCredentials({ user: result.data, accessToken: null })); // Update user in store
+            dispatch(setCredentials({ user: result.data, accessToken: null })); // Update user in store (keep token)
             toast.success("Profile updated successfully!");
         } catch (error) {
             toast.error(error?.data?.message || "Failed to update profile.");
         }
     };
 
+    const handleSwitchChange = async (checked) => {
+        if (checked) {
+            // Enable: Start Setup Process
+            try {
+                const result = await setup2FA().unwrap();
+                setQrCodeData(result.data.qrCode);
+                setSetupSecret(result.data.secret);
+                setShowSetupDialog(true);
+            } catch (error) {
+                toast.error(error?.data?.message || "Failed to start 2FA setup");
+            }
+        } else {
+            // Disable: Call Toggle (which disables)
+            try {
+                const result = await toggle2FA().unwrap();
+                 // Hack to update user in store since we don't have token here to perform full re-auth flow usually
+                 // For now, let's just trigger a reload or optimistic update if we can
+                 // The best way is to manually update the user object in Redux
+                 // We need to fetch the existing user state effectively.
+                 
+                // Ideally InvalidatesTags should update the queries. If we are using useGetUserPublicProfile, it will update.
+                // But we are using `user` from `selectCurrentUser`.
+                
+                window.location.reload(); 
+                toast.success("2FA Disabled successfully.");
+            } catch (error) {
+                toast.error(error?.data?.message || "Failed to disable 2FA");
+            }
+        }
+    };
+
+    const handleVerifySetup = async () => {
+        if (verificationCode.length !== 6) {
+            toast.error("Please enter a valid 6-digit code");
+            return;
+        }
+
+        try {
+            await verify2FASetup({ token: verificationCode, secret: setupSecret }).unwrap();
+            setShowSetupDialog(false);
+            setVerificationCode("");
+            toast.success("2FA Enabled successfully!");
+            window.location.reload(); // Reload to refresh user state
+        } catch (error) {
+            toast.error(error?.data?.message || "Verification failed. Please try again.");
+        }
+    };
+
     return (
-        <div className="container mx-auto py-10 max-w-4xl">
+        <div className="container mx-auto py-10 max-w-4xl space-y-8">
             <Card>
                 <CardHeader>
                     <CardTitle className="text-2xl">Manage Your Profile</CardTitle>
@@ -134,6 +207,96 @@ const Profile = () => {
                     </form>
                 </CardContent>
             </Card>
+
+            <Card>
+                <CardHeader>
+                    <div className="flex items-center gap-2">
+                        <Shield className="h-6 w-6 text-emerald-600" />
+                        <CardTitle className="text-xl">Account Security</CardTitle>
+                    </div>
+                    <CardDescription>Manage your account security settings.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between p-4 border rounded-lg bg-slate-50 dark:bg-slate-900/50">
+                        <div className="space-y-0.5">
+                            <div className="font-medium text-base flex items-center gap-2">
+                                Google Authenticator (2FA)
+                                {user?.twoFactorEnabled && <ShieldCheck className="h-4 w-4 text-emerald-600" />}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                                Secure your account using Google Authenticator or compatible app.
+                            </div>
+                        </div>
+                        <Switch 
+                            checked={user?.twoFactorEnabled} 
+                            onCheckedChange={handleSwitchChange}
+                            disabled={isToggling || isSettingUp}
+                        />
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* 2FA Setup Dialog */}
+            <Dialog open={showSetupDialog} onOpenChange={setShowSetupDialog}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle className="text-center flex flex-col items-center gap-2">
+                             <div className="h-12 w-12 rounded-full bg-emerald-100 flex items-center justify-center">
+                                <QrCode className="h-6 w-6 text-emerald-600" />
+                            </div>
+                            Set up Two-Factor Authentication
+                        </DialogTitle>
+                        <DialogDescription className="text-center">
+                            Scan the QR code below with your authenticator app (like Google Authenticator).
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="flex flex-col items-center gap-6 py-4">
+                        {qrCodeData && (
+                            <div className="bg-white p-2 rounded-lg border-2 border-emerald-100">
+                                <img src={qrCodeData} alt="2FA QR Code" className="w-48 h-48" />
+                            </div>
+                        )}
+                        
+                        <div className="space-y-2 text-center w-full">
+                            <Label className="text-sm font-medium text-gray-500">Enter the 6-digit code from your app</Label>
+                            <div className="flex justify-center">
+                                <InputOTP
+                                    maxLength={6}
+                                    value={verificationCode}
+                                    onChange={(value) => setVerificationCode(value)}
+                                >
+                                    <InputOTPGroup>
+                                        <InputOTPSlot index={0} />
+                                        <InputOTPSlot index={1} />
+                                        <InputOTPSlot index={2} />
+                                        <InputOTPSlot index={3} />
+                                        <InputOTPSlot index={4} />
+                                        <InputOTPSlot index={5} />
+                                    </InputOTPGroup>
+                                </InputOTP>
+                            </div>
+                        </div>
+                    </div>
+
+                    <DialogFooter className="flex-col sm:flex-row gap-2">
+                        <Button 
+                            variant="outline" 
+                            onClick={() => setShowSetupDialog(false)}
+                            className="w-full sm:w-auto"
+                        >
+                            Cancel
+                        </Button>
+                         <Button 
+                            onClick={handleVerifySetup}
+                            disabled={isVerifying || verificationCode.length !== 6}
+                            className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700"
+                        >
+                            {isVerifying ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Verify & Enable"}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

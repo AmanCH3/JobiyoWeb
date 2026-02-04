@@ -1,12 +1,9 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
-const VITE_API_BASE_URL = "/api/v1";
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQueryWithReauth } from './baseQuery';
 
 export const authApi = createApi({
    reducerPath: 'authApi',
-   baseQuery: fetchBaseQuery({
-       baseUrl: VITE_API_BASE_URL,
-   }),
+   baseQuery: baseQueryWithReauth,
    tagTypes: ['User'],
    endpoints: (builder) => ({
        register: builder.mutation({
@@ -35,7 +32,88 @@ export const authApi = createApi({
            query: (userId) => `/users/profile/${userId}`,
            transformResponse: (response) => response.data,
            providesTags: (result, error, id) => [{ type: 'User', id }],
-       })
+       }),
+       forgotPassword: builder.mutation({
+           query: (data) => ({
+               url: '/users/forgot-password',
+               method: 'POST',
+               body: data,
+           }),
+       }),
+       verifyOtp: builder.mutation({
+           query: (data) => ({
+               url: '/users/verify-otp',
+               method: 'POST',
+               body: data,
+           }),
+       }),
+       resetPassword: builder.mutation({
+           query: (data) => ({
+               url: '/users/reset-password',
+               method: 'POST',
+               body: data,
+           }),
+       }),
+       googleAuth: builder.mutation({
+           query: (data) => ({
+               url: '/users/auth/google',
+               method: 'POST',
+               body: data,
+           }),
+       }),
+       changePassword: builder.mutation({
+           query: (data) => ({
+               url: '/users/change-password',
+               method: 'POST',
+               body: data,
+           }),
+       }),
+       logout: builder.mutation({
+           query: () => ({
+               url: '/users/logout',
+               method: 'POST',
+           }),
+       }),
+       refreshToken: builder.mutation({
+           query: () => ({
+               url: '/users/refresh-token',
+               method: 'POST',
+           }),
+       }),
+       verifyLoginOtp: builder.mutation({
+           query: (data) => ({
+               url: '/users/verify-login-otp',
+               method: 'POST',
+               body: data,
+           }),
+       }),
+       setup2FA: builder.mutation({
+            query: () => ({
+                url: '/users/setup-2fa',
+                method: 'POST',
+            }),
+        }),
+        verify2FASetup: builder.mutation({
+            query: (data) => ({
+                url: '/users/verify-2fa-setup',
+                method: 'POST',
+                body: data,
+            }),
+            invalidatesTags: ['User'],
+        }),
+       toggle2FA: builder.mutation({
+           query: () => ({
+               url: '/users/toggle-2fa',
+               method: 'POST',
+           }),
+       }),
+       verifyEmail: builder.mutation({
+           query: (data) => ({
+               url: '/users/verify-email',
+               method: 'POST',
+               body: data,
+           }),
+       }),
    }),
 });
 
@@ -43,5 +121,17 @@ export const {
     useRegisterMutation,
     useLoginMutation, 
     useUpdateProfileMutation,
-    useGetUserPublicProfileQuery 
+    useGetUserPublicProfileQuery,
+    useForgotPasswordMutation,
+    useVerifyOtpMutation,
+    useResetPasswordMutation,
+    useGoogleAuthMutation,
+    useChangePasswordMutation,
+    useLogoutMutation,
+    useRefreshTokenMutation,
+    useVerifyLoginOtpMutation,
+    useToggle2FAMutation,
+    useVerifyEmailMutation,
+    useSetup2FAMutation,
+    useVerify2FASetupMutation
 } = authApi;

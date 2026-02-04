@@ -4,6 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { Company } from "../models/company.model.js";
 import { User } from "../models/user.model.js";
 import { ChatbotSetting } from "../models/chatbotSetting.model.js";
+import { logActivity } from "../utils/activityLogger.js";
 
  const getAllCompaniesForAdmin = asyncHandler(async (req, res) => {
     const companies = await Company.find({}).sort({ createdAt: -1 }).populate('owner', 'fullName email');
@@ -22,6 +23,16 @@ import { ChatbotSetting } from "../models/chatbotSetting.model.js";
     await company.save();
 
     const message = `Company "${company.name}" has been ${company.verified ? 'verified' : 'unverified'}.`;
+    
+    await logActivity({ 
+        req, 
+        action: "ADMIN_VERIFY_COMPANY", 
+        severity: "WARN", 
+        entityType: "COMPANY", 
+        entityId: company._id,
+        metadata: { verified: company.verified }
+    });
+
     return res.status(200).json(new ApiResponse(200, company, message));
 });
 
@@ -72,6 +83,13 @@ Your primary role is to help users find jobs and learn about companies. You must
             upsert: true,
         }
     );
+
+    await logActivity({ 
+        req, 
+        action: "ADMIN_UPDATE_SETTINGS", 
+        severity: "WARN", 
+        metadata: { setting: "chatbot", updatedBy: req.user._id }
+    });
 
     return res.status(200).json(new ApiResponse(200, settings, "Chatbot settings updated successfully."));
 });

@@ -19,7 +19,7 @@ module.exports = {
   	extend: {
   		 fontFamily: {
     		sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
-    		heading: ["Poppins", "Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+    		heading: ["Plus Jakarta Sans", "Inter", "ui-sans-serif", "system-ui", "sans-serif"],
   },
   		colors: {
   			border: 'hsl(var(--border))',

@@ -1,11 +1,10 @@
 // vite.config.js
-
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import fs from 'fs';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
@@ -19,24 +18,41 @@ export default defineConfig({
       protocolImports: true,
     }),
   ],
-  // This 'test' block is the Vitest configuration
+
   test: {
     globals: true,
     environment: 'jsdom',
     setupFiles: './tests/setup.js',
     css: true,
   },
+
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
   },
+
   server: {
+    https: {
+      key: fs.readFileSync('E:/Cyber Security/JobiyoWeb/certs/localhost+2-key.pem'),
+      cert: fs.readFileSync('E:/Cyber Security/JobiyoWeb/certs/localhost+2.pem'),
+    },
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',
+        target: 'https://localhost:8000', 
         changeOrigin: true,
+        secure: false, 
       },
+      '/socket.io': {
+        target: 'https://localhost:8000',
+        ws: true,
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+    headers: {
+      'Referrer-Policy': 'no-referrer-when-downgrade',
+      'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
     },
   },
 });

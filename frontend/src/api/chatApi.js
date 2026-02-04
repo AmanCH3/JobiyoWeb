@@ -1,10 +1,11 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQueryWithReauth } from './baseQuery';
 
 const VITE_API_BASE_URL = "/api/v1";
 
 export const chatApi = createApi({
     reducerPath: 'chatApi',
-    baseQuery: fetchBaseQuery({ baseUrl: VITE_API_BASE_URL, credentials: 'include' }),
+    baseQuery: baseQueryWithReauth,
     tagTypes: ['Chat', 'Message'],
     endpoints: (builder) => ({
         accessChat: builder.mutation({

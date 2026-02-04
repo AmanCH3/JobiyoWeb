@@ -3,6 +3,7 @@ import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, 
 import storage from 'redux-persist/lib/storage';
 
 import userReducer from "./slices/userSlice";
+import { rtkQueryErrorLogger } from './middleware/errorMiddleware';
 import { authApi } from '../api/authApi';
 import { companyApi } from '../api/companyApi';
 import { jobApi } from '../api/jobApi';
@@ -12,6 +13,9 @@ import { adminApi } from "@/api/adminApi";
 import { chatApi } from "@/api/chatApi";
 import { interviewApi } from "@/api/interviewApi";
 import { chatbotApi } from "@/api/chatbotApi";
+import { promotionApi } from "@/api/promotionApi";
+import { activityLogApi } from "@/api/activityLogApi";
+import { securityLogApi } from "@/api/securityLogApi";
 import chatNotificationReducer from './slices/chatNotificationSlice';
 const persistConfig = {
  key: 'root',
@@ -32,6 +36,9 @@ const rootReducer = combineReducers({
    [chatApi.reducerPath]: chatApi.reducer,
    [interviewApi.reducerPath]: interviewApi.reducer,
    [chatbotApi.reducerPath]: chatbotApi.reducer,
+   [promotionApi.reducerPath]: promotionApi.reducer,
+   [activityLogApi.reducerPath]: activityLogApi.reducer,
+   [securityLogApi.reducerPath]: securityLogApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -53,7 +60,10 @@ export const store = configureStore({
        chatApi.middleware,
        interviewApi.middleware,
        chatbotApi.middleware,
-   ),
+       promotionApi.middleware,
+       activityLogApi.middleware,
+       securityLogApi.middleware,
+   ).concat(rtkQueryErrorLogger),
 });
 
 export const persistor = persistStore(store);

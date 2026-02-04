@@ -2,6 +2,7 @@ import { useGetMyApplicationsQuery } from "@/api/applicationApi";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";

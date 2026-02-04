@@ -2,23 +2,22 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Button } from "@/components/ui/button";
 import { useForm, Controller } from "react-hook-form";
 import { useScheduleInterviewMutation } from "@/api/interviewApi";
-import { toast } from "sonner";
+import { useToast } from "@/context/ToastContext";
 
 export const ScheduleInterviewDialog = ({ open, setOpen, application }) => {
+    const { toast } = useToast();
     const { register, handleSubmit, control, watch } = useForm();
     const [scheduleInterview, { isLoading }] = useScheduleInterviewMutation();
     const interviewType = watch("interviewType");
 
     const onSubmit = async (data) => {
-        const promise = scheduleInterview({ ...data, applicationId: application._id }).unwrap();
-        toast.promise(promise, {
-            loading: 'Scheduling interview...',
-            success: (res) => {
-                setOpen(false);
-                return res.message;
-            },
-            error: (err) => err.data.message
-        });
+        try {
+            const res = await scheduleInterview({ ...data, applicationId: application._id }).unwrap();
+            setOpen(false);
+            toast.success(res.message || "Interview scheduled!");
+        } catch (err) {
+            toast.error(err?.data?.message || "Failed to schedule interview.");
+        }
     };
 
     return (

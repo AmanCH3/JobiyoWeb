@@ -24,8 +24,9 @@ import { useEffect, useRef, useState, Fragment } from "react";
 import { useSocket } from "@/context/SocketContext";
 import { cn } from "@/lib/utils";
 import VideoCall from "./VideoCall";
-import { toast } from "sonner";
 import { format, isSameDay } from "date-fns";
+import { sanitizeHTML } from "@/utils/sanitize";
+import { useToast } from "@/context/ToastContext";
 
 const DateSeparator = ({ date }) => (
   <div className="flex items-center my-4">
@@ -54,13 +55,17 @@ const ChatMessage = ({ msg, currentUser }) => {
             : "bg-muted rounded-bl-none"
         )}
       >
-        <p className="text-base whitespace-pre-wrap">{msg.content}</p>
+        <div 
+          className="text-base whitespace-pre-wrap"
+          dangerouslySetInnerHTML={sanitizeHTML(msg.content)}
+        />
       </div>
     </div>
   );
 };
 
 const ChatBox = ({ selectedChat, onBack }) => {
+  const { toast } = useToast();
   const currentUser = useSelector(selectCurrentUser);
   const {
     data: initialMessages,

@@ -6,20 +6,25 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store, persistor } from './redux/store.js';
 import { PersistGate } from 'redux-persist/integration/react';
-import { Toaster } from '@/components/ui/sonner.jsx';
+import { ToastProvider } from './context/ToastContext.jsx';
 import { SocketProvider } from './context/SocketContext.jsx';
+
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
  <React.StrictMode>
-   <Provider store={store}>
-     <PersistGate loading={null} persistor={persistor}>
-       <SocketProvider>
-         <BrowserRouter>
-           <App />
-           <Toaster richColors position="top-right" />
-         </BrowserRouter>
-       </SocketProvider>
-     </PersistGate>
-   </Provider>
+   <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+     <Provider store={store}>
+       <PersistGate loading={null} persistor={persistor}>
+         <SocketProvider>
+           <ToastProvider>
+             <BrowserRouter>
+               <App />
+             </BrowserRouter>
+           </ToastProvider>
+         </SocketProvider>
+       </PersistGate>
+     </Provider>
+   </GoogleOAuthProvider>
  </React.StrictMode>
 );

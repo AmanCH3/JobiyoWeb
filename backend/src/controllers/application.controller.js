@@ -3,6 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Application } from "../models/application.model.js";
 import { Job } from "../models/job.model.js";
+import { logActivity } from "../utils/activityLogger.js";
 
 
 export const applyForJob = asyncHandler(async (req, res) => {
@@ -28,6 +29,8 @@ export const applyForJob = asyncHandler(async (req, res) => {
         job: jobId,
         applicant: applicantId,
     });
+
+    await logActivity({ req, action: "APPLICATION_SUBMIT", severity: "INFO", entityType: "APPLICATION", entityId: application._id, metadata: { jobId } });
 
     job.applications.push(application._id);
     await job.save();
@@ -83,6 +86,8 @@ export const updateApplicationStatus = asyncHandler(async (req, res) => {
         applicationId: application._id,
         status: application.status,
     });
+
+    await logActivity({ req, action: "APPLICATION_STATUS_UPDATE", severity: "INFO", entityType: "APPLICATION", entityId: application._id, metadata: { status, jobId: job._id } });
 
     return res.status(200).json(new ApiResponse(200, application, "Application status updated successfully"));
 });

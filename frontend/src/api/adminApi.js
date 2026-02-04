@@ -1,13 +1,9 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
-const VITE_API_BASE_URL = "/api/v1";
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQueryWithReauth } from './baseQuery';
 
 export const adminApi = createApi({
    reducerPath: 'adminApi',
-   baseQuery: fetchBaseQuery({
-       baseUrl: VITE_API_BASE_URL,
-       credentials: 'include'
-   }),
+   baseQuery: baseQueryWithReauth,
    tagTypes: ['AdminCompany', 'AdminUser', 'PublicCompany', 'ChatbotSettings'],
    endpoints: (builder) => ({
        getCompaniesForAdmin: builder.query({
@@ -44,6 +40,11 @@ export const adminApi = createApi({
            }),
            invalidatesTags: ['ChatbotSettings'],
        }),
+
+       getSystemLogs: builder.query({
+           query: () => '/admin/logs',
+           transformResponse: (response) => response.logs, // access logs directly from response object which has keys success, count, logs
+       }),
    }),
 });
 
@@ -53,4 +54,5 @@ export const {
    useGetChatbotSettingsQuery,
    useUpdateChatbotSettingsMutation,
    useToggleCompanyVerificationMutation,
+   useGetSystemLogsQuery,
 } = adminApi;

@@ -6,8 +6,10 @@ import JobDetails from './pages/public/JobDetails';
 import CompaniesPublic from './pages/public/Companies';
 import CompanyDetails from './pages/public/CompanyDetails';
 import PublicProfile from './pages/public/PublicProfile';
-import Login from './pages/Auth/Login';
-import Register from './pages/Auth/Register';
+import AuthPage from './pages/Auth/AuthPage';
+import ForgotPassword from './pages/Auth/ForgotPassword';
+import ChangePassword from './pages/Auth/ChangePassword';
+import VerifyEmail from './pages/Auth/VerifyEmail';
 import Profile from './pages/student/Profile';
 import MyApplications from './pages/student/MyApplications';
 import DashboardLayout from './components/layout/DashboardLayout';
@@ -20,6 +22,11 @@ import Applicants from './pages/recruiter/Applicants';
 import AdminCompanies from './pages/admin/AdminCompanies';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminChatbot from './pages/admin/AdminChatbot';
+import SystemLogs from './pages/admin/SystemLogs';
+import ActivityLogs from './pages/admin/ActivityLogs';
+import LogPolicies from './pages/admin/LogPolicies';
+import MyActivity from './pages/user/MyActivity';
+import SecurityLogs from './pages/user/SecurityLogs';
 import MyInterviews from './pages/shared/MyInterviews';
 import ChatPage from './pages/shared/ChatPage';
 import { Chatbot } from './components/shared/Chatbot';
@@ -31,11 +38,15 @@ import About from './pages/public/About';
 import Contact from './pages/public/Contact';
 import NotFound from './pages/public/NotFound';
 
+import { Toaster } from "@/components/ui/sonner";
+
 function App() {
    const user = useSelector(selectCurrentUser);
+   const isPasswordExpired = useSelector((state) => state.user.isPasswordExpired);
+
  return (
    <>
-       {user && <SocketNotificationHandler />}
+       {user && !isPasswordExpired && <SocketNotificationHandler />}
      <Routes>
        <Route path="/" element={<MainLayout />}>
          <Route index element={<Home />} />
@@ -48,8 +59,13 @@ function App() {
          <Route path="contact" element={<Contact />} />
        </Route>
 
-       <Route path="/login" element={<Login />} />
-       <Route path="/register" element={<Register />} />
+
+       {/* Unified Auth Page with animated transitions */}
+       <Route path="/login" element={<AuthPage />} />
+       <Route path="/register" element={<AuthPage />} />
+       <Route path="/forgot-password" element={<ForgotPassword />} />
+       <Route path="/change-password" element={<ChangePassword />} />
+       <Route path="/verify-email" element={<VerifyEmail />} />
 
        <Route
          path="/student"
@@ -93,6 +109,9 @@ function App() {
          <Route path="companies" element={<AdminCompanies />} />
          <Route path="users" element={<AdminUsers />} />
          <Route path="chatbot" element={<AdminChatbot />} />
+         <Route path="logs" element={<SystemLogs />} />
+         <Route path="activity-logs" element={<ActivityLogs />} />
+         <Route path="log-policies" element={<LogPolicies />} />
        </Route>
 
        <Route
@@ -121,11 +140,34 @@ function App() {
        />
        </Route>
 
+       <Route
+         path="/my-activity"
+         element={
+           <ProtectedRoute>
+             <MainLayout>
+                <MyActivity />
+             </MainLayout>
+           </ProtectedRoute>
+         }
+       />
+       
+       <Route
+         path="/security-logs"
+         element={
+           <ProtectedRoute>
+             <MainLayout>
+                <SecurityLogs />
+             </MainLayout>
+           </ProtectedRoute>
+         }
+       />
+
               <Route path="*" element={<NotFound />} />
 
      </Routes>
      
-     <Chatbot />
+     {!isPasswordExpired && <Chatbot />}
+     <Toaster />
    </>
  );
 }
